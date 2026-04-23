@@ -25,6 +25,16 @@ class PhoneChanged extends RegisterInitEvent {
   PhoneChanged({ required this.phone });
 }
 
+class CareerChanged extends RegisterInitEvent {
+  final BlocFormItem career;
+  CareerChanged({ required this.career });
+}
+
+class ReferenceZoneChanged extends RegisterInitEvent {
+  final BlocFormItem referenceZone;
+  ReferenceZoneChanged({ required this.referenceZone });
+}
+
 class PasswordChanged extends RegisterInitEvent {
   final BlocFormItem password;
   PasswordChanged({ required this.password });

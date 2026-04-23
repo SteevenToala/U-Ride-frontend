@@ -10,6 +10,8 @@ class RegisterState extends Equatable {
   final BlocFormItem lastname;
   final BlocFormItem email;
   final BlocFormItem phone;
+  final BlocFormItem career;
+  final BlocFormItem referenceZone;
   final BlocFormItem password;
   final BlocFormItem confirmPassword;
   final GlobalKey<FormState>? formKey;
@@ -20,6 +22,8 @@ class RegisterState extends Equatable {
     this.lastname = const BlocFormItem(error: 'Ingresa el apellido'),
     this.email = const BlocFormItem(error: 'Ingresa el email'),
     this.phone = const BlocFormItem(error: 'Ingresa el telefono'),
+    this.career = const BlocFormItem(error: 'Ingresa tu carrera (ej. Software)'),
+    this.referenceZone = const BlocFormItem(error: 'Ingresa tu zona (ej. Conocoto)'),
     this.password = const BlocFormItem(error: 'Ingresa el password'),
     this.confirmPassword = const BlocFormItem(error: 'Confirma la contraseña'),
     this.formKey,
@@ -31,6 +35,8 @@ class RegisterState extends Equatable {
     lastname: lastname.value, 
     email: email.value, 
     phone: phone.value, 
+    career: career.value,
+    referenceZone: referenceZone.value,
     password: password.value
   );
 
@@ -39,6 +45,8 @@ class RegisterState extends Equatable {
     BlocFormItem? lastname,
     BlocFormItem? email,
     BlocFormItem? phone,
+    BlocFormItem? career,
+    BlocFormItem? referenceZone,
     BlocFormItem? password,
     BlocFormItem? confirmPassword,
     GlobalKey<FormState>? formKey,
@@ -49,6 +57,8 @@ class RegisterState extends Equatable {
       lastname: lastname ?? this.lastname,
       email: email ?? this.email,
       phone: phone ?? this.phone,
+      career: career ?? this.career,
+      referenceZone: referenceZone ?? this.referenceZone,
       password: password ?? this.password,
       confirmPassword: confirmPassword ?? this.confirmPassword,
       formKey: formKey,
@@ -57,6 +67,6 @@ class RegisterState extends Equatable {
   } 
 
   @override
-  List<Object?> get props => [name, lastname, email, phone, password, confirmPassword, response];
+  List<Object?> get props => [name, lastname, email, phone, career, referenceZone, password, confirmPassword, response];
 
 }

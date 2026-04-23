@@ -113,6 +113,28 @@ class RegisterContent extends StatelessWidget {
                         },
                       ),
                       DefaultTextFieldOutlined(
+                        text: 'Carrera (ej. Ing. Software)', 
+                        icon: Icons.school_outlined,
+                        margin: EdgeInsets.only(left: 50, right: 50, top: 15),
+                        onChanged: (text) {
+                          context.read<RegisterBloc>().add(CareerChanged(career: BlocFormItem(value: text)));
+                        },
+                        validator: (value) {
+                          return state.career.error;
+                        },
+                      ),
+                      DefaultTextFieldOutlined(
+                        text: 'Zona de residencia (ej. Conocoto)', 
+                        icon: Icons.map_outlined,
+                        margin: EdgeInsets.only(left: 50, right: 50, top: 15),
+                        onChanged: (text) {
+                          context.read<RegisterBloc>().add(ReferenceZoneChanged(referenceZone: BlocFormItem(value: text)));
+                        },
+                        validator: (value) {
+                          return state.referenceZone.error;
+                        },
+                      ),
+                      DefaultTextFieldOutlined(
                         text: 'Password', 
                         icon: Icons.lock_outlined,
                         margin: EdgeInsets.only(left: 50, right: 50, top: 15),

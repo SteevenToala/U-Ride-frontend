@@ -8,6 +8,8 @@ class User {
     String phone;
     String? password;
     String? image;
+    String? career;
+    String? referenceZone;
     String? notificationToken;
     DateTime? createdAt;
     DateTime? updatedAt;
@@ -20,6 +22,8 @@ class User {
         this.email,
         required this.phone,
         this.image,
+        this.career,
+        this.referenceZone,
         this.password,
         this.notificationToken,
         this.createdAt,
@@ -33,6 +37,8 @@ class User {
         lastname: json["lastname"],
         email: json["email"],
         phone: json["phone"],
+        career: json["career"],
+        referenceZone: json["reference_zone"],
         image: json["image"],
         password: json['password'],
         notificationToken: json["notification_token"],
@@ -45,6 +51,8 @@ class User {
         "lastname": lastname,
         "email": email,
         "phone": phone,
+        "career": career,
+        "reference_zone": referenceZone,
         "image": image,
         'password': password,
         "notification_token": notificationToken,

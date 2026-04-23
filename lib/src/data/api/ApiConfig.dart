@@ -1,5 +1,6 @@
 class ApiConfig {
 
-  static const String API_PROJECT = '192.168.80.15:3000';
+  // URL del backend Dockerizado para pruebas locales
+  static const String API_PROJECT = 'localhost:3000';
 
 }

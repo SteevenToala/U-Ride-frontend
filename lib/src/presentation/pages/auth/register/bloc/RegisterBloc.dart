@@ -50,7 +50,11 @@ class RegisterBloc extends Bloc<RegisterEvent, RegisterState> {
         state.copyWith(
           email: BlocFormItem(
             value: event.email.value,
-            error: event.email.value.isEmpty ? 'Ingresa el email' : null
+            error: event.email.value.isEmpty 
+              ? 'Ingresa el email' 
+              : !event.email.value.contains('.edu')
+                ? 'Debe ser un correo institucional (.edu)'
+                : null
           ),
           formKey: formKey
         )
@@ -63,6 +67,30 @@ class RegisterBloc extends Bloc<RegisterEvent, RegisterState> {
           phone: BlocFormItem(
             value: event.phone.value,
             error: event.phone.value.isEmpty ? 'Ingresa el telefono' : null
+          ),
+          formKey: formKey
+        )
+      );
+    });
+
+    on<CareerChanged>((event, emit) {
+      emit(
+        state.copyWith(
+          career: BlocFormItem(
+            value: event.career.value,
+            error: event.career.value.isEmpty ? 'Ingresa tu carrera (ej. Software)' : null
+          ),
+          formKey: formKey
+        )
+      );
+    });
+
+    on<ReferenceZoneChanged>((event, emit) {
+      emit(
+        state.copyWith(
+          referenceZone: BlocFormItem(
+            value: event.referenceZone.value,
+            error: event.referenceZone.value.isEmpty ? 'Ingresa tu zona (ej. Conocoto)' : null
           ),
           formKey: formKey
         )
@@ -108,6 +136,8 @@ class RegisterBloc extends Bloc<RegisterEvent, RegisterState> {
       print('LastName: ${state.lastname.value}');
       print('email: ${state.email.value}');
       print('phone: ${state.phone.value}');
+      print('career: ${state.career.value}');
+      print('referenceZone: ${state.referenceZone.value}');
       print('password: ${state.password.value}');
       print('confirmPassword: ${state.confirmPassword.value}');
       emit(
