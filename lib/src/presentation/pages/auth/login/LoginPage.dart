@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:indriver_clone_flutter/src/utils/flutter_toast.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:indriver_clone_flutter/blocSocketIO/BlocSocketIO.dart';
 import 'package:indriver_clone_flutter/blocSocketIO/BlocSocketIOEvent.dart';
 import 'package:indriver_clone_flutter/src/domain/models/AuthResponse.dart';
