@@ -8,6 +8,7 @@ import 'package:indriver_clone_flutter/src/domain/utils/FirebasePushNotification
 import 'package:indriver_clone_flutter/src/presentation/pages/auth/login/LoginPage.dart';
 import 'package:indriver_clone_flutter/src/presentation/pages/auth/register/RegisterPage.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:indriver_clone_flutter/src/presentation/pages/auth/forgotPassword/ForgotPasswordPage.dart';
 import 'package:indriver_clone_flutter/src/presentation/pages/client/driverOffers/ClientDriverOffersPage.dart';
 import 'package:indriver_clone_flutter/src/presentation/pages/client/home/ClientHomePage.dart';
 import 'package:indriver_clone_flutter/src/presentation/pages/client/mapBookingInfo/ClientMapBookingInfoPage.dart';
@@ -73,6 +74,7 @@ class _MyAppState extends State<MyApp> {
         routes: {
           'login': (BuildContext context) => LoginPage(),
           'register': (BuildContext context) => RegisterPage(),
+          'forgot_password': (BuildContext context) => ForgotPasswordPage(),
           'roles': (BuildContext context) => RolesPage(),
           'client/home': (BuildContext context) => ClientHomePage(),
           'driver/home': (BuildContext context) => DriverHomePage(),

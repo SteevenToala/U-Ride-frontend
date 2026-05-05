@@ -104,6 +104,9 @@ class LoginContent extends StatelessWidget {
                         
                       },
                     ),
+                    SizedBox(height: 15),
+                    _textForgotPassword(context),
+                    SizedBox(height: 20),
                     _separatorOr(),
                     SizedBox(height: 10),
                     _textDontHaveAccount(context),
@@ -144,6 +147,25 @@ class LoginContent extends StatelessWidget {
           ),
         ),
       ],
+    );
+  }
+
+  Widget _textForgotPassword(BuildContext context) {
+    return Container(
+      alignment: Alignment.center,
+      child: GestureDetector(
+        onTap: () {
+          Navigator.pushNamed(context, 'forgot_password');
+        },
+        child: Text(
+          '¿Olvidaste tu contraseña?',
+          style: TextStyle(
+            color: Colors.white,
+            fontWeight: FontWeight.bold,
+            fontSize: 15
+          ),
+        ),
+      ),
     );
   }
 

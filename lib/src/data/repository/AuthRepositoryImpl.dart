@@ -42,4 +42,9 @@ class AuthRepositoryImpl implements AuthRepository {
     return await sharefPref.remove('user');
   }
 
+  @override
+  Future<Resource<bool>> forgotPassword(String email) {
+    return authService.forgotPassword(email);
+  }
+
 }
