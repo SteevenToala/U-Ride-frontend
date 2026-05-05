@@ -22,21 +22,19 @@ class _ProfileUpdatePageState extends State<ProfileUpdatePage> {
 
   @override
   void initState() {
-    // PRIMER EVENTO EN DISPARARSE - UNA SOLA VEZ
-    // TODO: implement initState
     super.initState();
     print('METODO INIT STATE');
-    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      print('METODO INIT STATE BINDING');
-      context.read<ProfileUpdateBloc>().add(ProfileUpdateInitEvent(user: user));
-    });
   }
 
   @override
   Widget build(BuildContext context) {
-    // SEGUNDO - CTRL + S
     print('METODO BUILD');
-    user = ModalRoute.of(context)?.settings.arguments as User;
+    if (user == null) {
+      user = ModalRoute.of(context)?.settings.arguments as User;
+      WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+        context.read<ProfileUpdateBloc>().add(ProfileUpdateInitEvent(user: user));
+      });
+    }
     return Scaffold(
       body: BlocListener<ProfileUpdateBloc, ProfileUpdateState>(
         listener: (context, state) {

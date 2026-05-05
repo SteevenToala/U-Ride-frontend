@@ -116,11 +116,7 @@ class _ClientHomePageState extends State<ClientHomePage> {
                   onTap: () {
                     context.read<ClientHomeBloc>().add(Logout());
                     context.read<BlocSocketIO>().add(DisconnectSocketIO());
-                    Navigator.pushAndRemoveUntil(
-                      context, 
-                      MaterialPageRoute(builder: (context) => MyApp()), 
-                      (route) => false
-                    );
+                    Navigator.pushNamedAndRemoveUntil(context, 'login', (route) => false);
                   },
                 )
               ],

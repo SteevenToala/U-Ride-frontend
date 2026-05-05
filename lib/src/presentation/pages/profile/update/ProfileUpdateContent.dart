@@ -84,14 +84,14 @@ class ProfileUpdateContent extends StatelessWidget {
     return Container(
       margin: EdgeInsets.only(left: 35, right: 35, top: 150),
       width: MediaQuery.of(context).size.width,
-      height: MediaQuery.of(context).size.height * 0.5,
       child: Card(
         color: Colors.white,
         surfaceTintColor: Colors.white,
-        child: Column(
-          children: [
-            _imageUser(context),
-            DefaultTextField(
+        child: SingleChildScrollView(
+          child: Column(
+            children: [
+              _imageUser(context),
+              DefaultTextField(
               text: 'Nombre', 
               icon: Icons.person, 
               margin: EdgeInsets.only(left: 30, right: 30, top: 15),
@@ -131,6 +131,7 @@ class ProfileUpdateContent extends StatelessWidget {
               },
             ),
           ],
+        ),
         ),
       ),
     );
