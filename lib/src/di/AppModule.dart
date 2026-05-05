@@ -30,8 +30,8 @@ import 'package:indriver_clone_flutter/src/domain/useCases/auth/LoginUseCase.dar
 import 'package:indriver_clone_flutter/src/domain/useCases/auth/LogoutUseCase.dart';
 import 'package:indriver_clone_flutter/src/domain/useCases/auth/RegisterUseCase.dart';
 import 'package:indriver_clone_flutter/src/domain/useCases/auth/SaveUserSessionUseCase.dart';
-import 'package:indriver_clone_flutter/src/domain/useCases/auth/ForgotPasswordUseCase.dart';
-import 'package:indriver_clone_flutter/src/domain/useCases/client-requests/ClientRequestsUseCases.dart';
+import 'package:indriver_clone_flutter/src/domain/useCases/auth/ForgotPasswordUseCase.dart';import 'package:indriver_clone_flutter/src/domain/useCases/auth/ValidateResetCodeUseCase.dart';
+import 'package:indriver_clone_flutter/src/domain/useCases/auth/ResetPasswordUseCase.dart';import 'package:indriver_clone_flutter/src/domain/useCases/client-requests/ClientRequestsUseCases.dart';
 import 'package:indriver_clone_flutter/src/domain/useCases/client-requests/CreateClientRequestUseCase.dart';
 import 'package:indriver_clone_flutter/src/domain/useCases/client-requests/GetByClientAssignedUseCase%20copy.dart';
 import 'package:indriver_clone_flutter/src/domain/useCases/client-requests/GetByClientRequestUseCase.dart';
@@ -142,7 +142,9 @@ abstract class AppModule {
     saveUserSession: SaveUserSessionUseCase(authRepository),
     getUserSession: GetUserSessionUseCase(authRepository),
     logout: LogoutUseCase(authRepository),
-    forgotPassword: ForgotPasswordUseCase(authRepository)
+    forgotPassword: ForgotPasswordUseCase(authRepository),
+    validateResetCode: ValidateResetCodeUseCase(authRepository),
+    resetPassword: ResetPasswordUseCase(authRepository)
   );
 
    @injectable

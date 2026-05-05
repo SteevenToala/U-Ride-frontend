@@ -5,22 +5,49 @@ import 'package:indriver_clone_flutter/src/domain/utils/Resource.dart';
 import 'package:indriver_clone_flutter/src/presentation/widgets/DefaultButton.dart';
 import 'package:indriver_clone_flutter/src/presentation/widgets/DefaultTextField.dart';
 
-class ForgotPasswordPage extends StatefulWidget {
-  const ForgotPasswordPage({Key? key}) : super(key: key);
+class ResetPasswordPage extends StatefulWidget {
+  const ResetPasswordPage({Key? key}) : super(key: key);
 
   @override
-  State<ForgotPasswordPage> createState() => _ForgotPasswordPageState();
+  State<ResetPasswordPage> createState() => _ResetPasswordPageState();
 }
 
-class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
-  String email = "";
+class _ResetPasswordPageState extends State<ResetPasswordPage> {
+  String code = "";
+  String newPassword = "";
+  String confirmPassword = "";
   bool isLoading = false;
   final AuthUseCases authUseCases = locator<AuthUseCases>();
+  String email = "";
 
-  void _sendEmail() async {
-    if (email.isEmpty) {
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    // Recuperamos el email que le mandamos desde la pantalla anterior
+    final arguments = ModalRoute.of(context)?.settings.arguments;
+    if (arguments != null && arguments is String) {
+      email = arguments;
+    }
+  }
+
+  void _resetPassword() async {
+    if (code.isEmpty || newPassword.isEmpty || confirmPassword.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Por favor, ingresa un correo electrónico'))
+        const SnackBar(content: Text('Por favor, llena todos los campos'))
+      );
+      return;
+    }
+
+    if (newPassword != confirmPassword) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Las contraseñas no coinciden'))
+      );
+      return;
+    }
+    
+    if (code.length != 6) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('El código debe tener 6 dígitos'))
       );
       return;
     }
@@ -30,8 +57,8 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
     });
 
     try {
-      // Método de nuestro propio Backend (NestJS + Nodemailer)
-      final response = await authUseCases.forgotPassword.run(email.trim().toLowerCase());
+      // Método de nuestro propio Backend (NestJS -> resetPassword)
+      final response = await authUseCases.resetPassword.run(email, code.trim(), newPassword);
       
       if (!mounted) return;
 
@@ -41,10 +68,12 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
 
       if (response is Success) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Se te ha enviado un código de recuperación. Revisa tu correo.'))
+          const SnackBar(content: Text('¡Contraseña actualizada correctamente!'))
         );
-        // Navegar a la página de validación de código
-        Navigator.pushNamed(context, 'reset_password', arguments: email.trim().toLowerCase());
+        
+        // Volvemos al Login eliminando todo el historial hasta usar pushNamedAndRemoveUntil
+        Navigator.pushNamedAndRemoveUntil(context, 'login', (route) => false);
+
       } else if (response is ErrorData) {
          ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('Error: ${(response as ErrorData).message}'))
@@ -64,7 +93,7 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Recuperar contraseña', style: TextStyle(color: Colors.white)),
+        title: const Text('Restablecer contraseña', style: TextStyle(color: Colors.white)),
         backgroundColor: const Color.fromARGB(255, 12, 38, 145),
         iconTheme: const IconThemeData(color: Colors.white),
       ),
@@ -87,11 +116,11 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
             children: [
               Container(
                 margin: const EdgeInsets.only(top: 40, left: 30, right: 30),
-                child: const Text(
-                  'Ingresa tu correo para recuperar tu contraseña',
-                  style: TextStyle(
+                child: Text(
+                  'Ingresa el código que enviamos a $email y tu nueva contraseña.',
+                  style: const TextStyle(
                     color: Colors.white,
-                    fontSize: 22,
+                    fontSize: 18,
                     fontWeight: FontWeight.bold
                   ),
                 ),
@@ -106,11 +135,33 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                 child: Column(
                   children: [
                     DefaultTextField(
-                      text: 'Correo electrónico',
-                      icon: Icons.email_outlined,
+                      text: 'Código de 6 dígitos',
+                      icon: Icons.numbers,
                       onChanged: (text) {
                         setState(() {
-                          email = text;
+                          code = text;
+                        });
+                      },
+                    ),
+                    const SizedBox(height: 20),
+                    DefaultTextField(
+                      text: 'Nueva contraseña',
+                      icon: Icons.lock_outline,
+                      obscureText: true,
+                      onChanged: (text) {
+                        setState(() {
+                          newPassword = text;
+                        });
+                      },
+                    ),
+                    const SizedBox(height: 20),
+                    DefaultTextField(
+                      text: 'Confirmar nueva contraseña',
+                      icon: Icons.lock_outline,
+                      obscureText: true,
+                      onChanged: (text) {
+                        setState(() {
+                          confirmPassword = text;
                         });
                       },
                     ),
@@ -118,9 +169,9 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                     isLoading 
                       ? const CircularProgressIndicator() 
                       : DefaultButton(
-                          text: 'ENVIAR ENLACE',
+                          text: 'CAMBIAR CONTRASEÑA',
                           onPressed: () {
-                            _sendEmail();
+                            _resetPassword();
                           },
                         )
                   ],

@@ -9,6 +9,7 @@ import 'package:indriver_clone_flutter/src/presentation/pages/auth/login/LoginPa
 import 'package:indriver_clone_flutter/src/presentation/pages/auth/register/RegisterPage.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:indriver_clone_flutter/src/presentation/pages/auth/forgotPassword/ForgotPasswordPage.dart';
+import 'package:indriver_clone_flutter/src/presentation/pages/auth/forgotPassword/ResetPasswordPage.dart';
 import 'package:indriver_clone_flutter/src/presentation/pages/client/driverOffers/ClientDriverOffersPage.dart';
 import 'package:indriver_clone_flutter/src/presentation/pages/client/home/ClientHomePage.dart';
 import 'package:indriver_clone_flutter/src/presentation/pages/client/mapBookingInfo/ClientMapBookingInfoPage.dart';
@@ -75,6 +76,7 @@ class _MyAppState extends State<MyApp> {
           'login': (BuildContext context) => LoginPage(),
           'register': (BuildContext context) => RegisterPage(),
           'forgot_password': (BuildContext context) => ForgotPasswordPage(),
+          'reset_password': (BuildContext context) => ResetPasswordPage(),
           'roles': (BuildContext context) => RolesPage(),
           'client/home': (BuildContext context) => ClientHomePage(),
           'driver/home': (BuildContext context) => DriverHomePage(),

@@ -79,4 +79,49 @@ class AuthService {
     }
   }
 
+  Future<Resource<bool>> validateResetCode(String email, String code) async {
+    try {
+      Uri url = Uri.http(ApiConfig.API_PROJECT, '/auth/validate-reset-code');
+      Map<String, String> headers = { 'Content-Type': 'application/json' };
+      String body = json.encode({
+        'email': email,
+        'code': code,
+      });
+      final response = await http.post(url, headers: headers, body: body);
+      final data = json.decode(response.body);
+      
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        return Success(true);
+      } else {
+        return ErrorData(listToString(data['message']));
+      }
+    } catch (e) {
+      print('Error: $e');
+      return ErrorData(e.toString());
+    }
+  }
+
+  Future<Resource<bool>> resetPassword(String email, String code, String newPassword) async {
+    try {
+      Uri url = Uri.http(ApiConfig.API_PROJECT, '/auth/reset-password');
+      Map<String, String> headers = { 'Content-Type': 'application/json' };
+      String body = json.encode({
+        'email': email,
+        'code': code,
+        'newPassword': newPassword,
+      });
+      final response = await http.post(url, headers: headers, body: body);
+      final data = json.decode(response.body);
+      
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        return Success(true);
+      } else {
+        return ErrorData(listToString(data['message']));
+      }
+    } catch (e) {
+      print('Error: $e');
+      return ErrorData(e.toString());
+    }
+  }
+
 }

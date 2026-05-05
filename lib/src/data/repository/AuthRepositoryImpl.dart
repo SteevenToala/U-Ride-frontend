@@ -47,4 +47,14 @@ class AuthRepositoryImpl implements AuthRepository {
     return authService.forgotPassword(email);
   }
 
+  @override
+  Future<Resource<bool>> validateResetCode(String email, String code) {
+    return authService.validateResetCode(email, code);
+  }
+
+  @override
+  Future<Resource<bool>> resetPassword(String email, String code, String newPassword) {
+    return authService.resetPassword(email, code, newPassword);
+  }
+
 }

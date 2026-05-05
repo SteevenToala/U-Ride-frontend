@@ -10,4 +10,6 @@ abstract class AuthRepository {
   Future<AuthResponse?> getUserSession();
   Future<bool> logout();
   Future<Resource<bool>> forgotPassword(String email);
+  Future<Resource<bool>> validateResetCode(String email, String code);
+  Future<Resource<bool>> resetPassword(String email, String code, String newPassword);
 }
