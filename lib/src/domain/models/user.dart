@@ -1,3 +1,4 @@
+import 'package:indriver_clone_flutter/src/data/api/ApiConfig.dart';
 import 'package:indriver_clone_flutter/src/domain/models/Role.dart';
 
 class User {
@@ -31,19 +32,26 @@ class User {
         this.roles,
     });
 
-    factory User.fromJson(Map<String, dynamic> json) => User(
-        id: json["id"],
-        name: json["name"],
-        lastname: json["lastname"],
-        email: json["email"],
-        phone: json["phone"],
-        career: json["career"],
-        referenceZone: json["reference_zone"],
-        image: json["image"],
-        password: json['password'],
-        notificationToken: json["notification_token"],
-        roles: json["roles"] != null ? List<Role>.from(json["roles"].map((x) => Role.fromJson(x))) : [],
-    );
+    factory User.fromJson(Map<String, dynamic> json) {
+        String? imagePath = json["image"];
+        if (imagePath != null && imagePath.startsWith('/uploads/')) {
+            imagePath = 'http://${ApiConfig.API_PROJECT}$imagePath';
+        }
+        
+        return User(
+            id: json["id"],
+            name: json["name"],
+            lastname: json["lastname"],
+            email: json["email"],
+            phone: json["phone"],
+            career: json["career"],
+            referenceZone: json["reference_zone"],
+            image: imagePath,
+            password: json['password'],
+            notificationToken: json["notification_token"],
+            roles: json["roles"] != null ? List<Role>.from(json["roles"].map((x) => Role.fromJson(x))) : [],
+        );
+    }
 
     Map<String, dynamic> toJson() => {
         "id": id,

@@ -1,4 +1,4 @@
-import 'dart:io';
+import 'package:image_picker/image_picker.dart';
 
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
@@ -12,8 +12,11 @@ class ProfileUpdateState extends Equatable {
   final BlocFormItem name;
   final BlocFormItem lastname;
   final BlocFormItem phone;
+  final BlocFormItem career;
+  final BlocFormItem referenceZone;
+  final String? selectedFacultad;
   final Resource? response;
-  final File? image;
+  final XFile? image;
   final GlobalKey<FormState>? formKey;
 
   ProfileUpdateState({
@@ -21,6 +24,9 @@ class ProfileUpdateState extends Equatable {
     this.name = const BlocFormItem(error: 'Ingresa el nombre'),
     this.lastname = const BlocFormItem(error: 'Ingresa el apellido'),
     this.phone = const BlocFormItem(error: 'Ingresa el telefono'),
+    this.career = const BlocFormItem(),
+    this.referenceZone = const BlocFormItem(),
+    this.selectedFacultad,
     this.formKey,
     this.response,
     this.image
@@ -29,7 +35,9 @@ class ProfileUpdateState extends Equatable {
   toUser() => User(
     name: name.value, 
     lastname: lastname.value, 
-    phone: phone.value
+    phone: phone.value,
+    career: career.value,
+    referenceZone: referenceZone.value
   );
 
   ProfileUpdateState copyWith({
@@ -37,7 +45,10 @@ class ProfileUpdateState extends Equatable {
     BlocFormItem? name,
     BlocFormItem? lastname,
     BlocFormItem? phone,
-    File? image,
+    BlocFormItem? career,
+    BlocFormItem? referenceZone,
+    String? selectedFacultad,
+    XFile? image,
     GlobalKey<FormState>? formKey,
     Resource? response
   }) {
@@ -46,6 +57,9 @@ class ProfileUpdateState extends Equatable {
       name: name ?? this.name,
       lastname: lastname ?? this.lastname,
       phone: phone ?? this.phone,
+      career: career ?? this.career,
+      referenceZone: referenceZone ?? this.referenceZone,
+      selectedFacultad: selectedFacultad ?? this.selectedFacultad,
       image: image ?? this.image,
       formKey: formKey,
       response: response
@@ -54,6 +68,6 @@ class ProfileUpdateState extends Equatable {
 
   @override
   // TODO: implement props
-  List<Object?> get props => [id, name, lastname, phone, response, image];
+  List<Object?> get props => [id, name, lastname, phone, career, referenceZone, selectedFacultad, response, image];
 
 }

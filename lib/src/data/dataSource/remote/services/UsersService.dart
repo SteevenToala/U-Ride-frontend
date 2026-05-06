@@ -1,11 +1,11 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:http_parser/http_parser.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:indriver_clone_flutter/src/data/api/ApiConfig.dart';
 import 'package:indriver_clone_flutter/src/domain/models/user.dart';
 import 'package:indriver_clone_flutter/src/domain/utils/ListToString.dart';
 import 'package:indriver_clone_flutter/src/domain/utils/Resource.dart';
-import 'dart:io';
 import 'package:path/path.dart';
 
 class UsersService {
@@ -25,6 +25,8 @@ class UsersService {
         'name': user.name,
         'lastname': user.lastname,
         'phone': user.phone,
+        'career': user.career,
+        'reference_zone': user.referenceZone,
       });
       final response = await http.put(url, headers: headers, body: body);
       final data = json.decode(response.body);
@@ -66,21 +68,25 @@ class UsersService {
     }
   }
 
-  Future<Resource<User>> updateImage(int id, User user, File file) async { 
+  Future<Resource<User>> updateImage(int id, User user, XFile file) async { 
     try {
       Uri url = Uri.http(ApiConfig.API_PROJECT, '/users/upload/$id');
       final request = http.MultipartRequest('PUT', url);
       request.headers['Authorization'] = await token;
-      request.files.add(http.MultipartFile(
+      
+      final bytes = await file.readAsBytes();
+      request.files.add(http.MultipartFile.fromBytes(
         'file',
-        http.ByteStream(file.openRead().cast()),
-        await file.length(),
+        bytes,
         filename: basename(file.path),
         contentType: MediaType('image', 'jpg')
       ));
+      
       request.fields['name'] = user.name;
       request.fields['lastname'] = user.lastname;
       request.fields['phone'] = user.phone ?? '';
+      request.fields['career'] = user.career ?? '';
+      request.fields['reference_zone'] = user.referenceZone ?? '';
       final response = await request.send();
       final data = json.decode(await response.stream.transform(utf8.decoder).first);
       if (response.statusCode == 200 || response.statusCode == 201) {

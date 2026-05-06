@@ -1,3 +1,5 @@
+import 'dart:io' as io;
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:indriver_clone_flutter/src/domain/models/user.dart';
@@ -10,6 +12,67 @@ import 'package:indriver_clone_flutter/src/presentation/widgets/DefaultIconBack.
 import 'package:indriver_clone_flutter/src/presentation/widgets/DefaultTextField.dart';
 
 class ProfileUpdateContent extends StatelessWidget {
+  static const Map<String, List<String>> _facultadCarreras = {
+    'Facultad de Ingenieria en Sistemas, Electronica e Industrial': [
+      'Software',
+      'Tecnologias de la Informacion',
+      'Telecomunicaciones',
+      'Ingenieria Industrial',
+      'Automatizacion y Robotica'
+    ],
+    'Facultad de Ingenieria Civil y Mecanica': [
+      'Ingenieria Civil',
+      'Mecanica'
+    ],
+    'Facultad de Ciencias Administrativas': [
+      'Administracion de Empresas',
+      'Mercadotecnia',
+      'Marketing Digital'
+    ],
+    'Facultad de Contabilidad y Auditoria': [
+      'Contabilidad y Auditoria',
+      'Economia',
+      'Auditoria y Gestion Financiera'
+    ],
+    'Facultad de Ciencias de la Salud': [
+      'Medicina',
+      'Enfermeria',
+      'Fisioterapia',
+      'Laboratorio Clinico',
+      'Nutricion y Dietetica',
+      'Psicologia Clinica'
+    ],
+    'Facultad de Diseno y Arquitectura': [
+      'Arquitectura',
+      'Diseno Grafico',
+      'Diseno Industrial',
+      'Diseno Textil e Indumentaria'
+    ],
+    'Facultad de Ciencia e Ingenieria en Alimentos y Biotecnologia': [
+      'Alimentos',
+      'Biotecnologia'
+    ],
+    'Facultad de Ciencias Agropecuarias': [
+      'Agronomia',
+      'Medicina Veterinaria'
+    ],
+    'Facultad de Jurisprudencia y Ciencias Sociales': [
+      'Derecho',
+      'Trabajo Social',
+      'Comunicacion'
+    ],
+    'Facultad de Ciencias Humanas y de la Educacion': [
+      'Educacion Basica',
+      'Educacion Inicial',
+      'Psicopedagogia',
+      'Turismo',
+      'Hospitalidad y Hosteria',
+      'Pedagogia de los Idiomas Nacionales y Extranjeros',
+      'Pedagogia de la Actividad Fisica y el Deporte',
+      'Pedagogia de la Lengua y Literatura',
+      'Pedagogia de la Historia y Ciencias Sociales'
+    ]
+  };
 
   User? user;
   ProfileUpdateState state;
@@ -22,15 +85,16 @@ class ProfileUpdateContent extends StatelessWidget {
       key: state.formKey,
       child: Stack(
         children: [
-          Column(
-            children: [
-              _headerProfile(context),
-              Spacer(),
-              _actionProfile(context, 'ACTUALIZAR USUARIO', Icons.check),
-              SizedBox(height: 35,)
-            ],
+          _headerProfile(context),
+          SingleChildScrollView(
+            child: Column(
+              children: [
+                _cardUserInfo(context),
+                _actionProfile(context, 'ACTUALIZAR USUARIO', Icons.check),
+                SizedBox(height: 35,)
+              ],
+            ),
           ),
-          _cardUserInfo(context),
           DefaultIconBack(
             margin: EdgeInsets.only(top: 60, left: 30),
           )
@@ -55,20 +119,24 @@ class ProfileUpdateContent extends StatelessWidget {
           aspectRatio: 1,
           child: ClipOval(
             child: state.image != null 
-            ? Image.file(
-              state.image!,
-              fit: BoxFit.cover,
-            )
+            ? kIsWeb 
+              ? Image.network(
+                state.image!.path,
+                fit: BoxFit.cover,
+              )
+              : Image.file(
+                io.File(state.image!.path),
+                fit: BoxFit.cover,
+              )
             : user != null 
-              ? user!.image != null 
+              ? (user!.image != null && user!.image!.isNotEmpty) 
                 ? FadeInImage.assetNetwork(
                   placeholder: 'assets/img/user_image.png', 
                   image: user!.image!,
                   fit: BoxFit.cover,
                   fadeInDuration: Duration(seconds: 1),
                 )
-                : 
-                Image.asset(
+                : Image.asset(
                   'assets/img/user_image.png',
                 )
               : Image.asset(
@@ -87,10 +155,9 @@ class ProfileUpdateContent extends StatelessWidget {
       child: Card(
         color: Colors.white,
         surfaceTintColor: Colors.white,
-        child: SingleChildScrollView(
-          child: Column(
-            children: [
-              _imageUser(context),
+        child: Column(
+          children: [
+            _imageUser(context),
               DefaultTextField(
               text: 'Nombre', 
               icon: Icons.person, 
@@ -130,8 +197,71 @@ class ProfileUpdateContent extends StatelessWidget {
                 return state.phone.error;
               },
             ),
+            if (user?.roles?.any((role) => role.id == 'STUDENT') ?? false)
+              Container(
+                margin: EdgeInsets.only(left: 30, right: 30, top: 15),
+                padding: EdgeInsets.symmetric(horizontal: 12),
+                decoration: BoxDecoration(
+                  color: Colors.grey[200],
+                  borderRadius: BorderRadius.circular(10)
+                ),
+                child: DropdownButtonHideUnderline(
+                  child: DropdownButton<String>(
+                    value: state.selectedFacultad,
+                    hint: Text('Selecciona tu facultad', style: TextStyle(color: Colors.grey[600], fontSize: 14)),
+                    isExpanded: true,
+                    items: _facultadCarreras.keys.map((String value) {
+                      return DropdownMenuItem<String>(
+                        value: value,
+                        child: Text(value, style: TextStyle(fontSize: 13),),
+                      );
+                    }).toList(),
+                    onChanged: (value) {
+                      context.read<ProfileUpdateBloc>().add(FacultadChanged(facultad: value));
+                    },
+                  ),
+                ),
+              ),
+            if (user?.roles?.any((role) => role.id == 'STUDENT') ?? false)
+              Container(
+                margin: EdgeInsets.only(left: 30, right: 30, top: 15),
+                padding: EdgeInsets.symmetric(horizontal: 12),
+                decoration: BoxDecoration(
+                  color: Colors.grey[200],
+                  borderRadius: BorderRadius.circular(10)
+                ),
+                child: DropdownButtonHideUnderline(
+                  child: DropdownButton<String>(
+                    value: (state.selectedFacultad != null && _facultadCarreras[state.selectedFacultad]!.contains(state.career.value)) ? state.career.value : null,
+                    hint: Text('Selecciona tu carrera', style: TextStyle(color: Colors.grey[600], fontSize: 14)),
+                    isExpanded: true,
+                    items: state.selectedFacultad != null
+                        ? _facultadCarreras[state.selectedFacultad]!.map((String value) {
+                            return DropdownMenuItem<String>(
+                              value: value,
+                              child: Text(value, style: TextStyle(fontSize: 13)),
+                            );
+                          }).toList()
+                        : [],
+                    onChanged: (value) {
+                      context.read<ProfileUpdateBloc>().add(CareerChanged(career: BlocFormItem(value: value ?? '')));
+                    },
+                  ),
+                ),
+              ),
+            if (user?.roles?.any((role) => role.id == 'STUDENT') ?? false)
+              DefaultTextField(
+                text: 'Zona de residencia', 
+                icon: Icons.map_outlined,
+                initialValue: user?.referenceZone,
+                margin: EdgeInsets.only(left: 30, right: 30, top: 15),
+                backgroundColor: Colors.grey[200]!, 
+                onChanged: (text) {
+                  context.read<ProfileUpdateBloc>().add(ReferenceZoneChanged(referenceZone: BlocFormItem(value: text)));
+                },
+              ),
+            SizedBox(height: 20),
           ],
-        ),
         ),
       ),
     );

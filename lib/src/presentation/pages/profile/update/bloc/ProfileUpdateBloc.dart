@@ -1,4 +1,4 @@
-import 'dart:io';
+// Removed dart:io import to support Web
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -12,6 +12,67 @@ import 'package:indriver_clone_flutter/src/presentation/pages/profile/update/blo
 import 'package:indriver_clone_flutter/src/presentation/utils/BlocFormItem.dart';
 
 class ProfileUpdateBloc extends Bloc<ProfileUpdateEvent, ProfileUpdateState> {
+  static const Map<String, List<String>> _facultadCarreras = {
+    'Facultad de Ingenieria en Sistemas, Electronica e Industrial': [
+      'Software',
+      'Tecnologias de la Informacion',
+      'Telecomunicaciones',
+      'Ingenieria Industrial',
+      'Automatizacion y Robotica'
+    ],
+    'Facultad de Ingenieria Civil y Mecanica': [
+      'Ingenieria Civil',
+      'Mecanica'
+    ],
+    'Facultad de Ciencias Administrativas': [
+      'Administracion de Empresas',
+      'Mercadotecnia',
+      'Marketing Digital'
+    ],
+    'Facultad de Contabilidad y Auditoria': [
+      'Contabilidad y Auditoria',
+      'Economia',
+      'Auditoria y Gestion Financiera'
+    ],
+    'Facultad de Ciencias de la Salud': [
+      'Medicina',
+      'Enfermeria',
+      'Fisioterapia',
+      'Laboratorio Clinico',
+      'Nutricion y Dietetica',
+      'Psicologia Clinica'
+    ],
+    'Facultad de Diseno y Arquitectura': [
+      'Arquitectura',
+      'Diseno Grafico',
+      'Diseno Industrial',
+      'Diseno Textil e Indumentaria'
+    ],
+    'Facultad de Ciencia e Ingenieria en Alimentos y Biotecnologia': [
+      'Alimentos',
+      'Biotecnologia'
+    ],
+    'Facultad de Ciencias Agropecuarias': [
+      'Agronomia',
+      'Medicina Veterinaria'
+    ],
+    'Facultad de Jurisprudencia y Ciencias Sociales': [
+      'Derecho',
+      'Trabajo Social',
+      'Comunicacion'
+    ],
+    'Facultad de Ciencias Humanas y de la Educacion': [
+      'Educacion Basica',
+      'Educacion Inicial',
+      'Psicopedagogia',
+      'Turismo',
+      'Hospitalidad y Hosteria',
+      'Pedagogia de los Idiomas Nacionales y Extranjeros',
+      'Pedagogia de la Actividad Fisica y el Deporte',
+      'Pedagogia de la Lengua y Literatura',
+      'Pedagogia de la Historia y Ciencias Sociales'
+    ]
+  };
 
   AuthUseCases authUseCases;
   UsersUseCases usersUseCases;
@@ -19,13 +80,28 @@ class ProfileUpdateBloc extends Bloc<ProfileUpdateEvent, ProfileUpdateState> {
 
   ProfileUpdateBloc(this.usersUseCases, this.authUseCases): super(ProfileUpdateState()) {
     on<ProfileUpdateInitEvent>((event, emit) {
+      String? initialFacultad;
+      if (event.user?.career != null) {
+        for (var entry in _facultadCarreras.entries) {
+          if (entry.value.contains(event.user!.career)) {
+            initialFacultad = entry.key;
+            break;
+          }
+        }
+      }
+
       emit(
-        state.copyWith(
-          id: event.user?.id,
+        ProfileUpdateState(
+          id: event.user?.id ?? 0,
           name: BlocFormItem(value: event.user?.name ?? ''),
           lastname: BlocFormItem(value: event.user?.lastname ?? ''),
           phone: BlocFormItem(value: event.user?.phone ?? ''),
-          formKey: formKey
+          career: BlocFormItem(value: event.user?.career ?? ''),
+          referenceZone: BlocFormItem(value: event.user?.referenceZone ?? ''),
+          selectedFacultad: initialFacultad,
+          formKey: formKey,
+          image: null,
+          response: null,
         )
       );
     });
@@ -62,13 +138,44 @@ class ProfileUpdateBloc extends Bloc<ProfileUpdateEvent, ProfileUpdateState> {
         )
       );
     });
+    on<CareerChanged>((event, emit) {
+      emit(
+        state.copyWith(
+          career: BlocFormItem(
+            value: event.career.value,
+            error: null
+          ),
+          formKey: formKey
+        )
+      );
+    });
+    on<FacultadChanged>((event, emit) {
+      emit(
+        state.copyWith(
+          selectedFacultad: event.facultad,
+          career: BlocFormItem(value: ''), // Reset career when faculty changes
+          formKey: formKey
+        )
+      );
+    });
+    on<ReferenceZoneChanged>((event, emit) {
+      emit(
+        state.copyWith(
+          referenceZone: BlocFormItem(
+            value: event.referenceZone.value,
+            error: null
+          ),
+          formKey: formKey
+        )
+      );
+    });
     on<PickImage>((event, emit) async {
       final ImagePicker picker = ImagePicker();
       final XFile? image = await picker.pickImage(source: ImageSource.gallery);
       if (image != null) { // SI EL USUARIO SELECCIONO UNA IMAGEN
         emit(
            state.copyWith(
-            image: File(image.path),
+            image: image,
             formKey: formKey
           )
         );
@@ -80,7 +187,7 @@ class ProfileUpdateBloc extends Bloc<ProfileUpdateEvent, ProfileUpdateState> {
       if (image != null) { // SI EL USUARIO SELECCIONO UNA IMAGEN
         emit(
            state.copyWith(
-            image: File(image.path),
+            image: image,
             formKey: formKey
           )
         );
@@ -92,6 +199,8 @@ class ProfileUpdateBloc extends Bloc<ProfileUpdateEvent, ProfileUpdateState> {
       authResponse.user.lastname = event.user.lastname;
       authResponse.user.phone = event.user.phone;
       authResponse.user.image = event.user.image;
+      authResponse.user.career = event.user.career;
+      authResponse.user.referenceZone = event.user.referenceZone;
       await authUseCases.saveUserSession.run(authResponse);
     });
     on<FormSubmit>((event, emit) async {

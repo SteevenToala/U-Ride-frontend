@@ -43,13 +43,15 @@ class DriverMapLocationBloc extends Bloc<DriverMapLocationEvent, DriverMapLocati
       Stream<Position> positionStream = geolocatorUseCases.getPositionStream.run();
       positionSubscription = positionStream.listen((Position position) {
         add(UpdateLocation(position: position));
-        add(SaveLocationData(
-          driverPosition: DriverPosition(
-            idDriver: state.idDriver!, 
-            lat: position.latitude, 
-            lng: position.longitude)
-          )
-        );
+        if (state.idDriver != null) {
+          add(SaveLocationData(
+            driverPosition: DriverPosition(
+              idDriver: state.idDriver!, 
+              lat: position.latitude, 
+              lng: position.longitude)
+            )
+          );
+        }
       });
       emit(
         state.copyWith(

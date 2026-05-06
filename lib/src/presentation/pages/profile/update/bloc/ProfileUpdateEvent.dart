@@ -23,6 +23,21 @@ class PhoneChanged extends ProfileUpdateEvent {
   PhoneChanged({ required this.phone });
 }
 
+class CareerChanged extends ProfileUpdateEvent {
+  final BlocFormItem career;
+  CareerChanged({ required this.career });
+}
+
+class FacultadChanged extends ProfileUpdateEvent {
+  final String? facultad;
+  FacultadChanged({ required this.facultad });
+}
+
+class ReferenceZoneChanged extends ProfileUpdateEvent {
+  final BlocFormItem referenceZone;
+  ReferenceZoneChanged({ required this.referenceZone });
+}
+
 class UpdateUserSession extends ProfileUpdateEvent {
   final User user;
   UpdateUserSession({ required this.user });
