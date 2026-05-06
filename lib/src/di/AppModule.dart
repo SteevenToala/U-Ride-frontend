@@ -33,6 +33,7 @@ import 'package:indriver_clone_flutter/src/domain/useCases/auth/SaveUserSessionU
 import 'package:indriver_clone_flutter/src/domain/useCases/auth/ForgotPasswordUseCase.dart';
 import 'package:indriver_clone_flutter/src/domain/useCases/auth/ValidateResetCodeUseCase.dart';
 import 'package:indriver_clone_flutter/src/domain/useCases/auth/ResetPasswordUseCase.dart';
+import 'package:indriver_clone_flutter/src/domain/useCases/auth/VerifyAccountUseCase.dart';
 import 'package:indriver_clone_flutter/src/domain/useCases/client-requests/ClientRequestsUseCases.dart';
 import 'package:indriver_clone_flutter/src/domain/useCases/client-requests/CreateClientRequestUseCase.dart';
 import 'package:indriver_clone_flutter/src/domain/useCases/client-requests/GetByClientAssignedUseCase%20copy.dart';
@@ -151,7 +152,8 @@ abstract class AppModule {
     logout: LogoutUseCase(authRepository),
     forgotPassword: ForgotPasswordUseCase(authRepository),
     validateResetCode: ValidateResetCodeUseCase(authRepository),
-    resetPassword: ResetPasswordUseCase(authRepository)
+    resetPassword: ResetPasswordUseCase(authRepository),
+    verifyAccount: VerifyAccountUseCase(authRepository)
   );
 
    @injectable

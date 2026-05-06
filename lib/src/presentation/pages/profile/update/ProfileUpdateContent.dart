@@ -145,7 +145,9 @@ class ProfileUpdateContent extends StatelessWidget {
             ),
             child: ClipOval(
               child: state.image != null 
-                ? Image.file(io.File(state.image!.path), fit: BoxFit.cover)
+                ? kIsWeb
+                  ? Image.network(state.image!.path, fit: BoxFit.cover)
+                  : Image.file(io.File(state.image!.path), fit: BoxFit.cover)
                 : user?.image != null && user!.image!.isNotEmpty
                   ? FadeInImage.assetNetwork(
                       placeholder: 'assets/img/user_image.png', 

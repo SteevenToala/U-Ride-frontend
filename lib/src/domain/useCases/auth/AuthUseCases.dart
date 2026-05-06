@@ -6,6 +6,7 @@ import 'package:indriver_clone_flutter/src/domain/useCases/auth/SaveUserSessionU
 import 'package:indriver_clone_flutter/src/domain/useCases/auth/ForgotPasswordUseCase.dart';
 import 'package:indriver_clone_flutter/src/domain/useCases/auth/ValidateResetCodeUseCase.dart';
 import 'package:indriver_clone_flutter/src/domain/useCases/auth/ResetPasswordUseCase.dart';
+import 'package:indriver_clone_flutter/src/domain/useCases/auth/VerifyAccountUseCase.dart';
 
 class AuthUseCases {
 
@@ -17,6 +18,7 @@ class AuthUseCases {
   ForgotPasswordUseCase forgotPassword;
   ValidateResetCodeUseCase validateResetCode;
   ResetPasswordUseCase resetPassword;
+  VerifyAccountUseCase verifyAccount;
 
   AuthUseCases({
     required this.login,
@@ -27,6 +29,7 @@ class AuthUseCases {
     required this.forgotPassword,
     required this.validateResetCode,
     required this.resetPassword,
+    required this.verifyAccount,
   });
 
 }

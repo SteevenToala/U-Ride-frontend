@@ -31,7 +31,9 @@ class _LoginPageState extends State<LoginPage> {
           final response = state.response;
           if (response is ErrorData) {
             Fluttertoast.showToast(msg: '${response.message}', toastLength: Toast.LENGTH_SHORT);
-            print('Error Data: ${response.message}');
+            if (response.message.toLowerCase().contains('verificacion institucional')) {
+              Navigator.pushNamed(context, 'verify_account', arguments: state.email.value);
+            }
           }
           else if (response is Success) {
             print('Success Dta: ${response.data}');

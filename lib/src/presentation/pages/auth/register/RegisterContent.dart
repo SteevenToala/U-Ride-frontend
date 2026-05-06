@@ -382,7 +382,9 @@ class _RegisterContentState extends State<RegisterContent> {
             ),
             child: ClipOval(
               child: widget.state.image != null 
-                ? Image.file(io.File(widget.state.image!.path), fit: BoxFit.cover)
+                ? kIsWeb 
+                  ? Image.network(widget.state.image!.path, fit: BoxFit.cover)
+                  : Image.file(io.File(widget.state.image!.path), fit: BoxFit.cover)
                 : Container(color: Colors.white10, child: Icon(Icons.person, size: 60, color: Colors.white24)),
             ),
           ),

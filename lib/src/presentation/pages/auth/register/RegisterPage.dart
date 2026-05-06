@@ -38,13 +38,8 @@ class _RegisterPageState extends State<RegisterPage> {
             final authResponse = response.data as AuthResponse;
             context.read<RegisterBloc>().add(FormReset());
             
-            if (authResponse.user.isApproved == false) {
-              Fluttertoast.showToast(msg: 'Registro exitoso. Tu cuenta de conductor está pendiente de aprobación.', toastLength: Toast.LENGTH_LONG);
-              Navigator.pushNamedAndRemoveUntil(context, 'login', (route) => false);
-            } else {
-              context.read<RegisterBloc>().add(SaveUserSession(authResponse: authResponse));
-              Navigator.pushNamedAndRemoveUntil(context, 'client/home', (route) => false);
-            }
+            Fluttertoast.showToast(msg: 'Registro exitoso. Se ha enviado un código de verificación a tu correo.', toastLength: Toast.LENGTH_LONG);
+            Navigator.pushNamed(context, 'verify_account', arguments: authResponse.user.email);
           }
         },
         child: BlocBuilder<RegisterBloc, RegisterState>(
