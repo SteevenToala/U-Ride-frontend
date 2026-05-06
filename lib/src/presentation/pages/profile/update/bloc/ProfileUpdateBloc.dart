@@ -132,7 +132,11 @@ class ProfileUpdateBloc extends Bloc<ProfileUpdateEvent, ProfileUpdateState> {
         state.copyWith(
           phone: BlocFormItem(
             value: event.phone.value,
-            error: event.phone.value.isEmpty ? 'Ingresa el telefono' : null
+            error: event.phone.value.isEmpty 
+              ? 'Ingresa el telefono' 
+              : !RegExp(r'^[0-9]+$').hasMatch(event.phone.value) 
+                ? 'El numero debe ser solo digitos' 
+                : null
           ),
           formKey: formKey
         )
