@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:indriver_clone_flutter/src/domain/models/Role.dart';
 import 'package:indriver_clone_flutter/src/presentation/pages/roles/RolesItem.dart';
 import 'package:indriver_clone_flutter/src/presentation/pages/roles/bloc/RolesBloc.dart';
+import 'package:indriver_clone_flutter/src/presentation/pages/roles/bloc/RolesEvent.dart';
 import 'package:indriver_clone_flutter/src/presentation/pages/roles/bloc/RolesState.dart';
 
 class RolesPage extends StatefulWidget {
@@ -13,6 +14,15 @@ class RolesPage extends StatefulWidget {
 }
 
 class _RolesPageState extends State<RolesPage> {
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      context.read<RolesBloc>().add(GetRolesList());
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(

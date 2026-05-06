@@ -26,3 +26,5 @@ class UpdateNotificationToken extends LoginEvent {
 }
 
 class FormSubmit extends LoginEvent {}
+
+class TogglePasswordVisibility extends LoginEvent {}

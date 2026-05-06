@@ -11,6 +11,7 @@ class DefaultTextField extends StatelessWidget {
   Color backgroundColor;
   TextInputType keyboardType;
   bool obscureText;
+  Widget? suffixIcon;
 
   DefaultTextField({
     required this.text,
@@ -21,7 +22,8 @@ class DefaultTextField extends StatelessWidget {
     this.backgroundColor = Colors.white,
     this.initialValue,
     this.keyboardType = TextInputType.text,
-    this.obscureText = false
+    this.obscureText = false,
+    this.suffixIcon
   });
 
   @override
@@ -55,6 +57,7 @@ class DefaultTextField extends StatelessWidget {
             ),
           ),
           border: InputBorder.none,
+          suffixIcon: suffixIcon,
           prefixIcon: Container(
             margin: EdgeInsets.only(top: 10),
             child: Wrap(

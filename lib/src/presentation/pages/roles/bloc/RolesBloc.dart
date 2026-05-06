@@ -11,11 +11,15 @@ class RolesBloc extends Bloc<RolesEvent, RolesState> {
   RolesBloc(this.authUseCases): super(RolesState()) {
     on<GetRolesList>((event, emit) async {
       AuthResponse? authResponse = await authUseCases.getUserSession.run();
-      emit(
-        state.copyWith(
-          roles: authResponse?.user.roles
-        )
-      );
+      if (authResponse != null) {
+        emit(
+          state.copyWith(
+            roles: authResponse.user.roles
+          )
+        );
+      } else {
+        emit(state.copyWith(roles: []));
+      }
     });
   }
 

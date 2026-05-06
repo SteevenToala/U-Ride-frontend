@@ -7,13 +7,17 @@ class DefaultTextFieldOutlined extends StatelessWidget {
   IconData icon;
   EdgeInsetsGeometry margin;
   String? Function(String?)? validator;
+  bool obscureText;
+  Widget? suffixIcon;
 
   DefaultTextFieldOutlined({
     required this.text,
     required this.icon,
     required this.onChanged,
     this.margin = const EdgeInsets.only(top: 50, left: 20, right: 20),
-    this.validator
+    this.validator,
+    this.obscureText = false,
+    this.suffixIcon
   });
 
   @override
@@ -33,6 +37,8 @@ class DefaultTextFieldOutlined extends StatelessWidget {
           onChanged(text);
         },
         validator: validator,
+        obscureText: obscureText,
+        style: const TextStyle(color: Colors.white),
         decoration: InputDecoration(
           label: Text(
             text,
@@ -54,6 +60,7 @@ class DefaultTextFieldOutlined extends StatelessWidget {
               width: 2
             )
           ),
+          suffixIcon: suffixIcon,
           prefixIcon: Container(
             margin: EdgeInsets.only(top: 10),
             child: Wrap(

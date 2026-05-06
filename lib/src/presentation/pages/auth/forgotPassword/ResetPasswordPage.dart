@@ -17,6 +17,8 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
   String newPassword = "";
   String confirmPassword = "";
   bool isLoading = false;
+  bool isPasswordVisible = true;
+  bool isConfirmPasswordVisible = true;
   final AuthUseCases authUseCases = locator<AuthUseCases>();
   String email = "";
 
@@ -147,7 +149,18 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
                     DefaultTextField(
                       text: 'Nueva contraseña',
                       icon: Icons.lock_outline,
-                      obscureText: true,
+                      obscureText: isPasswordVisible,
+                      suffixIcon: IconButton(
+                        onPressed: () {
+                          setState(() {
+                            isPasswordVisible = !isPasswordVisible;
+                          });
+                        },
+                        icon: Icon(
+                          isPasswordVisible ? Icons.visibility : Icons.visibility_off,
+                          color: const Color.fromARGB(255, 30, 112, 227),
+                        ),
+                      ),
                       onChanged: (text) {
                         setState(() {
                           newPassword = text;
@@ -158,7 +171,18 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
                     DefaultTextField(
                       text: 'Confirmar nueva contraseña',
                       icon: Icons.lock_outline,
-                      obscureText: true,
+                      obscureText: isConfirmPasswordVisible,
+                      suffixIcon: IconButton(
+                        onPressed: () {
+                          setState(() {
+                            isConfirmPasswordVisible = !isConfirmPasswordVisible;
+                          });
+                        },
+                        icon: Icon(
+                          isConfirmPasswordVisible ? Icons.visibility : Icons.visibility_off,
+                          color: const Color.fromARGB(255, 30, 112, 227),
+                        ),
+                      ),
                       onChanged: (text) {
                         setState(() {
                           confirmPassword = text;

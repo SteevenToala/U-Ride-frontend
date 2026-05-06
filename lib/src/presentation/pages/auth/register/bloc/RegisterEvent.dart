@@ -30,6 +30,11 @@ class CareerChanged extends RegisterInitEvent {
   CareerChanged({ required this.career });
 }
 
+class FacultadChanged extends RegisterInitEvent {
+  final String? facultad;
+  FacultadChanged({ required this.facultad });
+}
+
 class ReferenceZoneChanged extends RegisterInitEvent {
   final BlocFormItem referenceZone;
   ReferenceZoneChanged({ required this.referenceZone });
@@ -52,3 +57,6 @@ class SaveUserSession extends RegisterInitEvent {
 
 class FormSubmit extends RegisterInitEvent {}
 class FormReset extends RegisterInitEvent{}
+
+class TogglePasswordVisibility extends RegisterInitEvent {}
+class ToggleConfirmPasswordVisibility extends RegisterInitEvent {}

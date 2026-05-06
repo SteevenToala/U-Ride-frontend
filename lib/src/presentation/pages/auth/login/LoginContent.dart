@@ -86,7 +86,16 @@ class LoginContent extends StatelessWidget {
                       validator: (value) {
                         return state.password.error;
                       },
-                      obscureText: true,
+                      obscureText: state.isPasswordVisible,
+                      suffixIcon: IconButton(
+                        onPressed: () {
+                          context.read<LoginBloc>().add(TogglePasswordVisibility());
+                        },
+                        icon: Icon(
+                          state.isPasswordVisible ? Icons.visibility : Icons.visibility_off,
+                          color: const Color.fromARGB(255, 30, 112, 227),
+                        ),
+                      ),
                       text: 'Password', 
                       icon: Icons.lock_outlined,
                       margin: EdgeInsets.only(top: 15, left: 20, right: 20),

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:indriver_clone_flutter/src/presentation/pages/profile/info/ProfileInfoContent.dart';
 import 'package:indriver_clone_flutter/src/presentation/pages/profile/info/bloc/ProfileInfoBloc.dart';
+import 'package:indriver_clone_flutter/src/presentation/pages/profile/info/bloc/ProfileInfoEvent.dart';
 import 'package:indriver_clone_flutter/src/presentation/pages/profile/info/bloc/ProfileInfoState.dart';
 
 class ProfileInfoPage extends StatefulWidget {
@@ -12,6 +13,15 @@ class ProfileInfoPage extends StatefulWidget {
 }
 
 class _ProfileInfoPageState extends State<ProfileInfoPage> {
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+       context.read<ProfileInfoBloc>().add(GetUserInfo());
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(body: BlocBuilder<ProfileInfoBloc, ProfileInfoState>(

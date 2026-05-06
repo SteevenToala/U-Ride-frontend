@@ -10,12 +10,16 @@ class ProfileInfoBloc extends Bloc<ProfileInfoEvent, ProfileInfoState> {
 
   ProfileInfoBloc(this.authUseCases): super(ProfileInfoState()) {
     on<GetUserInfo>((event, emit) async {
-      AuthResponse authResponse = await authUseCases.getUserSession.run();
-      emit(
-        state.copyWith(
-          user: authResponse.user
-        )
-      );
+      AuthResponse? authResponse = await authUseCases.getUserSession.run();
+      if (authResponse != null) {
+        emit(
+          state.copyWith(
+            user: authResponse.user
+          )
+        );
+      } else {
+        emit(state.copyWith(user: null));
+      }
     });
   }
 }

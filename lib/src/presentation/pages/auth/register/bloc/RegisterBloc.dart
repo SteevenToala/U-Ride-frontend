@@ -78,8 +78,18 @@ class RegisterBloc extends Bloc<RegisterEvent, RegisterState> {
         state.copyWith(
           career: BlocFormItem(
             value: event.career.value,
-            error: event.career.value.isEmpty ? 'Ingresa tu carrera (ej. Software)' : null
+            error: event.career.value.isEmpty ? 'Selecciona tu carrera' : null
           ),
+          formKey: formKey
+        )
+      );
+    });
+
+    on<FacultadChanged>((event, emit) {
+      emit(
+        state.copyWith(
+          selectedFacultad: event.facultad,
+          career: const BlocFormItem(value: ''),
           formKey: formKey
         )
       );
@@ -157,6 +167,14 @@ class RegisterBloc extends Bloc<RegisterEvent, RegisterState> {
 
     on<FormReset>((event, emit) {
       state.formKey?.currentState?.reset();
+    });
+
+    on<TogglePasswordVisibility>((event, emit) {
+      emit(state.copyWith(isPasswordVisible: !state.isPasswordVisible, formKey: formKey));
+    });
+
+    on<ToggleConfirmPasswordVisibility>((event, emit) {
+      emit(state.copyWith(isConfirmPasswordVisible: !state.isConfirmPasswordVisible, formKey: formKey));
     });
   }
 }

@@ -14,8 +14,11 @@ class RegisterState extends Equatable {
   final BlocFormItem referenceZone;
   final BlocFormItem password;
   final BlocFormItem confirmPassword;
+  final String? selectedFacultad;
   final GlobalKey<FormState>? formKey;
   final Resource? response;
+  final bool isPasswordVisible;
+  final bool isConfirmPasswordVisible;
 
   const RegisterState({
     this.name = const BlocFormItem(error: 'Ingresa el nombre'),
@@ -26,8 +29,11 @@ class RegisterState extends Equatable {
     this.referenceZone = const BlocFormItem(error: 'Ingresa tu zona (ej. Conocoto)'),
     this.password = const BlocFormItem(error: 'Ingresa el password'),
     this.confirmPassword = const BlocFormItem(error: 'Confirma la contraseña'),
+    this.selectedFacultad,
     this.formKey,
-    this.response
+    this.response,
+    this.isPasswordVisible = true,
+    this.isConfirmPasswordVisible = true
   });
 
   toUser() => User(
@@ -49,8 +55,11 @@ class RegisterState extends Equatable {
     BlocFormItem? referenceZone,
     BlocFormItem? password,
     BlocFormItem? confirmPassword,
+    String? selectedFacultad,
     GlobalKey<FormState>? formKey,
-    Resource? response
+    Resource? response,
+    bool? isPasswordVisible,
+    bool? isConfirmPasswordVisible
   }) {
     return RegisterState(
       name: name ?? this.name,
@@ -61,12 +70,15 @@ class RegisterState extends Equatable {
       referenceZone: referenceZone ?? this.referenceZone,
       password: password ?? this.password,
       confirmPassword: confirmPassword ?? this.confirmPassword,
+      selectedFacultad: selectedFacultad ?? this.selectedFacultad,
       formKey: formKey,
-      response: response
+      response: response,
+      isPasswordVisible: isPasswordVisible ?? this.isPasswordVisible,
+      isConfirmPasswordVisible: isConfirmPasswordVisible ?? this.isConfirmPasswordVisible
     );
   } 
 
   @override
-  List<Object?> get props => [name, lastname, email, phone, career, referenceZone, password, confirmPassword, response];
+  List<Object?> get props => [name, lastname, email, phone, career, referenceZone, password, confirmPassword, selectedFacultad, response, isPasswordVisible, isConfirmPasswordVisible];
 
 }
