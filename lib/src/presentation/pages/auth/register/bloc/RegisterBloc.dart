@@ -62,8 +62,8 @@ class RegisterBloc extends Bloc<RegisterEvent, RegisterState> {
       String? error;
       if (emailValue.isEmpty) {
         error = 'Ingresa el email';
-      } else if (!emailValue.contains('.edu.ec')) {
-        error = 'Debe ser institucional (.edu.ec)';
+      } else if (!emailValue.contains('@uta.edu.ec')) {
+        error = 'Debe ser institucional (@uta.edu.ec)';
       }
       
       emit(state.copyWith(

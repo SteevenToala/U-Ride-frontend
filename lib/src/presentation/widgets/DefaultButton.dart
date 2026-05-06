@@ -17,7 +17,7 @@ class DefaultButton extends StatelessWidget {
     required this.onPressed,
     this.color = Colors.white,
     this.textColor = Colors.black,
-    this.margin = const EdgeInsets.only(bottom: 20, left: 40, right: 40),
+    this.margin = const EdgeInsets.symmetric(vertical: 15),
     this.height = 45,
     this.width,
     this.iconData,

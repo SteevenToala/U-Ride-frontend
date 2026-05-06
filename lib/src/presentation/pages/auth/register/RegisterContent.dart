@@ -170,7 +170,7 @@ class _RegisterContentState extends State<RegisterContent> {
 
   Widget _header(BuildContext context) {
     return Container(
-      padding: EdgeInsets.only(top: 60, bottom: 30),
+      padding: EdgeInsets.only(top: MediaQuery.of(context).size.height * 0.04, bottom: 15),
       child: Column(
         children: [
           _imageUser(context),
@@ -193,7 +193,7 @@ class _RegisterContentState extends State<RegisterContent> {
     return Center(
       child: Container(
         constraints: BoxConstraints(maxWidth: 600),
-        margin: EdgeInsets.only(left: 25, right: 25, bottom: 40),
+        margin: EdgeInsets.only(left: 25, right: 25, bottom: 20),
         padding: EdgeInsets.all(MediaQuery.of(context).size.width > 600 ? 40 : 25),
         decoration: BoxDecoration(
           color: Colors.white.withOpacity(0.08),
@@ -204,42 +204,104 @@ class _RegisterContentState extends State<RegisterContent> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             _loginRegisterToggle(context),
-            SizedBox(height: 25),
+            SizedBox(height: 15),
             _textLabel('Información Personal'),
-            DefaultTextFieldOutlined(
-              controller: _nameController,
-              text: 'Nombre', 
-              icon: Icons.person_outline,
-              onChanged: (text) => context.read<RegisterBloc>().add(NameChanged(name: BlocFormItem(value: text))),
-              margin: EdgeInsets.only(bottom: 15),
-            ),
-            DefaultTextFieldOutlined(
-              controller: _lastnameController,
-              text: 'Apellido', 
-              icon: Icons.person_2_outlined,
-              onChanged: (text) => context.read<RegisterBloc>().add(LastnameChanged(lastname: BlocFormItem(value: text))),
-              margin: EdgeInsets.only(bottom: 15),
-            ),
-            DefaultTextFieldOutlined(
-              controller: _emailController,
-              text: 'Correo Institucional', 
-              icon: Icons.alternate_email_rounded,
-              onChanged: (text) => context.read<RegisterBloc>().add(EmailChanged(email: BlocFormItem(value: text))),
-              margin: EdgeInsets.only(bottom: 15),
-            ),
-            DefaultTextFieldOutlined(
-              controller: _phoneController,
-              text: 'Número de Teléfono', 
-              icon: Icons.phone_android_rounded,
-              onChanged: (text) => context.read<RegisterBloc>().add(PhoneChanged(phone: BlocFormItem(value: text))),
-              margin: EdgeInsets.only(bottom: 15),
-            ),
+            if (MediaQuery.of(context).size.width > 600) ...[
+              Row(
+                children: [
+                  Expanded(
+                    child: DefaultTextFieldOutlined(
+                      controller: _nameController,
+                      text: 'Nombre', 
+                      icon: Icons.person_outline,
+                      onChanged: (text) => context.read<RegisterBloc>().add(NameChanged(name: BlocFormItem(value: text))),
+                      margin: EdgeInsets.only(bottom: 15, right: 10),
+                    ),
+                  ),
+                  Expanded(
+                    child: DefaultTextFieldOutlined(
+                      controller: _lastnameController,
+                      text: 'Apellido', 
+                      icon: Icons.person_2_outlined,
+                      onChanged: (text) => context.read<RegisterBloc>().add(LastnameChanged(lastname: BlocFormItem(value: text))),
+                      margin: EdgeInsets.only(bottom: 15, left: 10),
+                    ),
+                  ),
+                ],
+              ),
+              Row(
+                children: [
+                  Expanded(
+                    child: DefaultTextFieldOutlined(
+                      controller: _emailController,
+                      text: 'Correo Institucional', 
+                      icon: Icons.alternate_email_rounded,
+                      onChanged: (text) => context.read<RegisterBloc>().add(EmailChanged(email: BlocFormItem(value: text))),
+                      margin: EdgeInsets.only(bottom: 15, right: 10),
+                    ),
+                  ),
+                  Expanded(
+                    child: DefaultTextFieldOutlined(
+                      controller: _phoneController,
+                      text: 'Número de Teléfono', 
+                      icon: Icons.phone_android_rounded,
+                      keyboardType: TextInputType.phone,
+                      maxLength: 10,
+                      onChanged: (text) => context.read<RegisterBloc>().add(PhoneChanged(phone: BlocFormItem(value: text))),
+                      margin: EdgeInsets.only(bottom: 15, left: 10),
+                    ),
+                  ),
+                ],
+              ),
+            ] else ...[
+              DefaultTextFieldOutlined(
+                controller: _nameController,
+                text: 'Nombre', 
+                icon: Icons.person_outline,
+                onChanged: (text) => context.read<RegisterBloc>().add(NameChanged(name: BlocFormItem(value: text))),
+                margin: EdgeInsets.only(bottom: 15),
+              ),
+              DefaultTextFieldOutlined(
+                controller: _lastnameController,
+                text: 'Apellido', 
+                icon: Icons.person_2_outlined,
+                onChanged: (text) => context.read<RegisterBloc>().add(LastnameChanged(lastname: BlocFormItem(value: text))),
+                margin: EdgeInsets.only(bottom: 15),
+              ),
+              DefaultTextFieldOutlined(
+                controller: _emailController,
+                text: 'Correo Institucional', 
+                icon: Icons.alternate_email_rounded,
+                onChanged: (text) => context.read<RegisterBloc>().add(EmailChanged(email: BlocFormItem(value: text))),
+                margin: EdgeInsets.only(bottom: 15),
+              ),
+              DefaultTextFieldOutlined(
+                controller: _phoneController,
+                text: 'Número de Teléfono', 
+                icon: Icons.phone_android_rounded,
+                keyboardType: TextInputType.phone,
+                maxLength: 10,
+                onChanged: (text) => context.read<RegisterBloc>().add(PhoneChanged(phone: BlocFormItem(value: text))),
+                margin: EdgeInsets.only(bottom: 15),
+              ),
+            ],
             
             _textLabel('Información Académica'),
-            _dropdownFacultad(facultades),
-            SizedBox(height: 15),
-            _dropdownCarrera(carreras),
-            SizedBox(height: 15),
+            if (MediaQuery.of(context).size.width > 600) ...[
+              Row(
+                children: [
+                  Expanded(child: _dropdownFacultad(facultades)),
+                  SizedBox(width: 20),
+                  Expanded(child: _dropdownCarrera(carreras)),
+                ],
+              ),
+              SizedBox(height: 15),
+            ] else ...[
+              _dropdownFacultad(facultades),
+              SizedBox(height: 15),
+              _dropdownCarrera(carreras),
+              SizedBox(height: 15),
+            ],
             DefaultTextFieldOutlined(
               controller: _zoneController,
               text: 'Zona de Residencia', 
@@ -249,50 +311,91 @@ class _RegisterContentState extends State<RegisterContent> {
             ),
 
             _textLabel('Seguridad'),
-            DefaultTextFieldOutlined(
-              controller: _passwordController,
-              text: 'Contraseña', 
-              icon: Icons.lock_outline_rounded,
-              obscureText: widget.state.isPasswordVisible,
-              onChanged: (text) => context.read<RegisterBloc>().add(PasswordChanged(password: BlocFormItem(value: text))),
-              suffixIcon: IconButton(
-                onPressed: () => context.read<RegisterBloc>().add(TogglePasswordVisibility()),
-                icon: Icon(widget.state.isPasswordVisible ? Icons.visibility : Icons.visibility_off, color: Colors.white60),
+            if (MediaQuery.of(context).size.width > 600) ...[
+              Row(
+                children: [
+                  Expanded(
+                    child: DefaultTextFieldOutlined(
+                      controller: _passwordController,
+                      text: 'Contraseña', 
+                      icon: Icons.lock_outline_rounded,
+                      obscureText: widget.state.isPasswordVisible,
+                      onChanged: (text) => context.read<RegisterBloc>().add(PasswordChanged(password: BlocFormItem(value: text))),
+                      suffixIcon: IconButton(
+                        onPressed: () => context.read<RegisterBloc>().add(TogglePasswordVisibility()),
+                        icon: Icon(widget.state.isPasswordVisible ? Icons.visibility : Icons.visibility_off, color: Colors.white60),
+                      ),
+                      margin: EdgeInsets.only(bottom: 15, right: 10),
+                    ),
+                  ),
+                  Expanded(
+                    child: DefaultTextFieldOutlined(
+                      controller: _confirmPasswordController,
+                      text: 'Confirmar Contraseña', 
+                      icon: Icons.lock_reset_rounded,
+                      obscureText: widget.state.isConfirmPasswordVisible,
+                      onChanged: (text) => context.read<RegisterBloc>().add(ConfirmPasswordChanged(confirmPassword: BlocFormItem(value: text))),
+                      suffixIcon: IconButton(
+                        onPressed: () => context.read<RegisterBloc>().add(ToggleConfirmPasswordVisibility()),
+                        icon: Icon(widget.state.isConfirmPasswordVisible ? Icons.visibility : Icons.visibility_off, color: Colors.white60),
+                      ),
+                      margin: EdgeInsets.only(bottom: 15, left: 10),
+                    ),
+                  ),
+                ],
               ),
-              margin: EdgeInsets.only(bottom: 15),
-            ),
-            DefaultTextFieldOutlined(
-              controller: _confirmPasswordController,
-              text: 'Confirmar Contraseña', 
-              icon: Icons.lock_reset_rounded,
-              obscureText: widget.state.isConfirmPasswordVisible,
-              onChanged: (text) => context.read<RegisterBloc>().add(ConfirmPasswordChanged(confirmPassword: BlocFormItem(value: text))),
-              suffixIcon: IconButton(
-                onPressed: () => context.read<RegisterBloc>().add(ToggleConfirmPasswordVisibility()),
-                icon: Icon(widget.state.isConfirmPasswordVisible ? Icons.visibility : Icons.visibility_off, color: Colors.white60),
+            ] else ...[
+              DefaultTextFieldOutlined(
+                controller: _passwordController,
+                text: 'Contraseña', 
+                icon: Icons.lock_outline_rounded,
+                obscureText: widget.state.isPasswordVisible,
+                onChanged: (text) => context.read<RegisterBloc>().add(PasswordChanged(password: BlocFormItem(value: text))),
+                suffixIcon: IconButton(
+                  onPressed: () => context.read<RegisterBloc>().add(TogglePasswordVisibility()),
+                  icon: Icon(widget.state.isPasswordVisible ? Icons.visibility : Icons.visibility_off, color: Colors.white60),
+                ),
+                margin: EdgeInsets.only(bottom: 15),
               ),
-              margin: EdgeInsets.only(bottom: 30),
-            ),
+              DefaultTextFieldOutlined(
+                controller: _confirmPasswordController,
+                text: 'Confirmar Contraseña', 
+                icon: Icons.lock_reset_rounded,
+                obscureText: widget.state.isConfirmPasswordVisible,
+                onChanged: (text) => context.read<RegisterBloc>().add(ConfirmPasswordChanged(confirmPassword: BlocFormItem(value: text))),
+                suffixIcon: IconButton(
+                  onPressed: () => context.read<RegisterBloc>().add(ToggleConfirmPasswordVisibility()),
+                  icon: Icon(widget.state.isConfirmPasswordVisible ? Icons.visibility : Icons.visibility_off, color: Colors.white60),
+                ),
+                margin: EdgeInsets.only(bottom: 30),
+              ),
+            ],
 
-            DefaultButton(
-              text: 'CREAR CUENTA',
-              color: Color(0xFF00B4D8),
-              onPressed: () {
-                if (widget.state.formKey!.currentState!.validate()) {
-                  User userToRegister = User(
-                    name: _nameController.text,
-                    lastname: _lastnameController.text,
-                    email: _emailController.text,
-                    phone: _phoneController.text,
-                    career: _selectedCarrera ?? '',
-                    referenceZone: _zoneController.text,
-                    password: _passwordController.text,
-                    rolesIds: ['STUDENT']
-                  );
-                  _syncToBloc();
-                  context.read<RegisterBloc>().add(FormSubmit(user: userToRegister));
-                }
-              },
+            Center(
+              child: Container(
+                constraints: BoxConstraints(maxWidth: 400),
+                width: double.infinity,
+                child: DefaultButton(
+                  text: 'CREAR CUENTA',
+                  color: Color(0xFF00B4D8),
+                  onPressed: () {
+                    if (widget.state.formKey!.currentState!.validate()) {
+                      User userToRegister = User(
+                        name: _nameController.text,
+                        lastname: _lastnameController.text,
+                        email: _emailController.text,
+                        phone: _phoneController.text,
+                        career: _selectedCarrera ?? '',
+                        referenceZone: _zoneController.text,
+                        password: _passwordController.text,
+                        rolesIds: ['STUDENT']
+                      );
+                      _syncToBloc();
+                      context.read<RegisterBloc>().add(FormSubmit(user: userToRegister));
+                    }
+                  },
+                ),
+              ),
             ),
             SizedBox(height: 20),
             _textIAlreadyHaveAccount(context),
@@ -331,6 +434,7 @@ class _RegisterContentState extends State<RegisterContent> {
   Widget _dropdownFacultad(List<String> facultades) {
     return DropdownButtonFormField<String>(
       value: _selectedFacultad,
+      isExpanded: true, // Prevent horizontal overflow
       decoration: InputDecoration(
         prefixIcon: Icon(Icons.account_balance_outlined, color: Colors.white70),
         labelText: 'Facultad',
@@ -340,7 +444,10 @@ class _RegisterContentState extends State<RegisterContent> {
       ),
       dropdownColor: Color(0xFF1B263B),
       style: TextStyle(color: Colors.white),
-      items: facultades.map((f) => DropdownMenuItem(value: f, child: Text(f, style: TextStyle(fontSize: 12), overflow: TextOverflow.ellipsis))).toList(),
+      items: facultades.map((f) => DropdownMenuItem(
+        value: f, 
+        child: Text(f, style: TextStyle(fontSize: 12), overflow: TextOverflow.ellipsis, maxLines: 1)
+      )).toList(),
       onChanged: (val) {
         setState(() { _selectedFacultad = val; _selectedCarrera = null; });
         context.read<RegisterBloc>().add(FacultadChanged(facultad: val));
@@ -352,6 +459,7 @@ class _RegisterContentState extends State<RegisterContent> {
     return DropdownButtonFormField<String>(
       key: ValueKey(_selectedFacultad),
       value: _selectedCarrera,
+      isExpanded: true, // Prevent horizontal overflow
       decoration: InputDecoration(
         prefixIcon: Icon(Icons.school_outlined, color: Colors.white70),
         labelText: 'Carrera',
@@ -361,7 +469,10 @@ class _RegisterContentState extends State<RegisterContent> {
       ),
       dropdownColor: Color(0xFF1B263B),
       style: TextStyle(color: Colors.white),
-      items: carreras.map((c) => DropdownMenuItem(value: c, child: Text(c, style: TextStyle(fontSize: 12), overflow: TextOverflow.ellipsis))).toList(),
+      items: carreras.map((c) => DropdownMenuItem(
+        value: c, 
+        child: Text(c, style: TextStyle(fontSize: 12), overflow: TextOverflow.ellipsis, maxLines: 1)
+      )).toList(),
       onChanged: (val) {
         setState(() { _selectedCarrera = val; });
         context.read<RegisterBloc>().add(CareerChanged(career: BlocFormItem(value: val ?? '')));

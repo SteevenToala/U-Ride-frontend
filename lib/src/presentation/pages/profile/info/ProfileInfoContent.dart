@@ -155,6 +155,11 @@ class ProfileInfoContent extends StatelessWidget {
       spacing: 10,
       runSpacing: 10,
       children: user?.roles?.map((rol) {
+        String roleName = rol.id;
+        if (rol.id == 'STUDENT') roleName = 'ESTUDIANTE';
+        if (rol.id == 'DRIVER') roleName = 'CONDUCTOR';
+        if (rol.id == 'ADMIN') roleName = 'ADMINISTRADOR';
+
         return Container(
           padding: EdgeInsets.symmetric(horizontal: 12, vertical: 6),
           decoration: BoxDecoration(
@@ -163,7 +168,7 @@ class ProfileInfoContent extends StatelessWidget {
             border: Border.all(color: (rol.id == 'ADMIN' ? Colors.redAccent : Color(0xFF00B4D8)).withOpacity(0.5)),
           ),
           child: Text(
-            rol.id, 
+            roleName, 
             style: TextStyle(fontSize: 10, color: Colors.white, fontWeight: FontWeight.bold, letterSpacing: 1),
           ),
         );

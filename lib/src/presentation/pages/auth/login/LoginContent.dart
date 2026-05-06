@@ -43,7 +43,7 @@ class LoginContent extends StatelessWidget {
 
   Widget _header(BuildContext context) {
     return Container(
-      padding: EdgeInsets.only(top: 80, bottom: 40),
+      padding: EdgeInsets.only(top: MediaQuery.of(context).size.height * 0.05, bottom: 20),
       child: Column(
         children: [
           Icon(Icons.directions_car_filled_rounded, size: 80, color: Color(0xFF00B4D8)),
@@ -74,7 +74,7 @@ class LoginContent extends StatelessWidget {
     return Center(
       child: Container(
         constraints: BoxConstraints(maxWidth: 500),
-        margin: EdgeInsets.symmetric(horizontal: 25, vertical: 20),
+        margin: EdgeInsets.symmetric(horizontal: 25, vertical: 10),
         padding: EdgeInsets.all(MediaQuery.of(context).size.width > 600 ? 40 : 25),
         decoration: BoxDecoration(
           color: Colors.white.withOpacity(0.08),

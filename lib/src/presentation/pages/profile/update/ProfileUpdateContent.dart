@@ -175,7 +175,7 @@ class ProfileUpdateContent extends StatelessWidget {
     return Center(
       child: Container(
         constraints: BoxConstraints(maxWidth: 600),
-        margin: EdgeInsets.symmetric(horizontal: 25),
+        margin: EdgeInsets.symmetric(horizontal: 25, vertical: 15),
         padding: EdgeInsets.all(MediaQuery.of(context).size.width > 600 ? 40 : 25),
         decoration: BoxDecoration(
           color: Colors.white.withOpacity(0.08),
@@ -277,23 +277,26 @@ class ProfileUpdateContent extends StatelessWidget {
   }
 
   Widget _actionProfile(BuildContext context, String option, IconData icon) {
-    return Container(
-      margin: EdgeInsets.symmetric(horizontal: 25),
-      child: DefaultButton(
-        text: option,
-        color: Color(0xFF00B4D8),
-        onPressed: () {
-          if (state.formKey!.currentState?.validate() ?? true) {
-            context.read<ProfileUpdateBloc>().add(FormSubmit());
-          }
-        },
+    return Center(
+      child: Container(
+        constraints: BoxConstraints(maxWidth: 400),
+        margin: EdgeInsets.symmetric(horizontal: 25, vertical: 20),
+        child: DefaultButton(
+          text: option,
+          color: Color(0xFF00B4D8),
+          onPressed: () {
+            if (state.formKey!.currentState?.validate() ?? true) {
+              context.read<ProfileUpdateBloc>().add(FormSubmit());
+            }
+          },
+        ),
       ),
     );
   }
 
   Widget _headerProfile(BuildContext context) {
     return Container(
-      padding: EdgeInsets.only(top: 80, bottom: 30),
+      padding: EdgeInsets.only(top: MediaQuery.of(context).size.height * 0.05, bottom: 20),
       child: Column(
         children: [
           Text(

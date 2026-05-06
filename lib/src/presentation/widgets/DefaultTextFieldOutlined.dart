@@ -9,7 +9,9 @@ class DefaultTextFieldOutlined extends StatelessWidget {
   String? Function(String?)? validator;
   bool obscureText;
   Widget? suffixIcon;
-  TextEditingController? controller; // Added controller support
+  TextEditingController? controller;
+  TextInputType keyboardType;
+  int? maxLength;
 
   DefaultTextFieldOutlined({
     required this.text,
@@ -19,7 +21,9 @@ class DefaultTextFieldOutlined extends StatelessWidget {
     this.validator,
     this.obscureText = false,
     this.suffixIcon,
-    this.controller
+    this.controller,
+    this.keyboardType = TextInputType.text,
+    this.maxLength
   });
 
   @override
@@ -33,6 +37,8 @@ class DefaultTextFieldOutlined extends StatelessWidget {
         },
         validator: validator,
         obscureText: obscureText,
+        keyboardType: keyboardType,
+        maxLength: maxLength,
         style: const TextStyle(color: Colors.white, fontSize: 15),
         decoration: InputDecoration(
           contentPadding: EdgeInsets.symmetric(horizontal: 15, vertical: 15),
@@ -59,6 +65,7 @@ class DefaultTextFieldOutlined extends StatelessWidget {
           errorStyle: TextStyle(color: Colors.redAccent, fontSize: 11),
           filled: true,
           fillColor: Colors.white.withOpacity(0.05),
+          counterText: "", // Hide character counter
         ),
       ),
     );
