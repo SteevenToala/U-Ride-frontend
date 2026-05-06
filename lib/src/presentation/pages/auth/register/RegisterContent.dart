@@ -190,104 +190,107 @@ class _RegisterContentState extends State<RegisterContent> {
   }
 
   Widget _card(BuildContext context, List<String> facultades, List<String> carreras) {
-    return Container(
-      margin: EdgeInsets.only(left: 25, right: 25, bottom: 40),
-      padding: EdgeInsets.all(25),
-      decoration: BoxDecoration(
-        color: Colors.white.withOpacity(0.08),
-        borderRadius: BorderRadius.circular(30),
-        border: Border.all(color: Colors.white.withOpacity(0.1)),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          _loginRegisterToggle(context),
-          SizedBox(height: 25),
-          _textLabel('Información Personal'),
-          DefaultTextFieldOutlined(
-            controller: _nameController,
-            text: 'Nombre', 
-            icon: Icons.person_outline,
-            margin: EdgeInsets.only(bottom: 15),
-          ),
-          DefaultTextFieldOutlined(
-            controller: _lastnameController,
-            text: 'Apellido', 
-            icon: Icons.person_2_outlined,
-            margin: EdgeInsets.only(bottom: 15),
-          ),
-          DefaultTextFieldOutlined(
-            controller: _emailController,
-            text: 'Correo Institucional', 
-            icon: Icons.alternate_email_rounded,
-            margin: EdgeInsets.only(bottom: 15),
-          ),
-          DefaultTextFieldOutlined(
-            controller: _phoneController,
-            text: 'Número de Teléfono', 
-            icon: Icons.phone_android_rounded,
-            margin: EdgeInsets.only(bottom: 15),
-          ),
-          
-          _textLabel('Información Académica'),
-          _dropdownFacultad(facultades),
-          SizedBox(height: 15),
-          _dropdownCarrera(carreras),
-          SizedBox(height: 15),
-          DefaultTextFieldOutlined(
-            controller: _zoneController,
-            text: 'Zona de Residencia', 
-            icon: Icons.location_on_outlined,
-            margin: EdgeInsets.only(bottom: 15),
-          ),
-
-          _textLabel('Seguridad'),
-          DefaultTextFieldOutlined(
-            controller: _passwordController,
-            text: 'Contraseña', 
-            icon: Icons.lock_outline_rounded,
-            obscureText: widget.state.isPasswordVisible,
-            suffixIcon: IconButton(
-              onPressed: () => context.read<RegisterBloc>().add(TogglePasswordVisibility()),
-              icon: Icon(widget.state.isPasswordVisible ? Icons.visibility : Icons.visibility_off, color: Colors.white60),
+    return Center(
+      child: Container(
+        constraints: BoxConstraints(maxWidth: 600),
+        margin: EdgeInsets.only(left: 25, right: 25, bottom: 40),
+        padding: EdgeInsets.all(MediaQuery.of(context).size.width > 600 ? 40 : 25),
+        decoration: BoxDecoration(
+          color: Colors.white.withOpacity(0.08),
+          borderRadius: BorderRadius.circular(30),
+          border: Border.all(color: Colors.white.withOpacity(0.1)),
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            _loginRegisterToggle(context),
+            SizedBox(height: 25),
+            _textLabel('Información Personal'),
+            DefaultTextFieldOutlined(
+              controller: _nameController,
+              text: 'Nombre', 
+              icon: Icons.person_outline,
+              margin: EdgeInsets.only(bottom: 15),
             ),
-            margin: EdgeInsets.only(bottom: 15),
-          ),
-          DefaultTextFieldOutlined(
-            controller: _confirmPasswordController,
-            text: 'Confirmar Contraseña', 
-            icon: Icons.lock_reset_rounded,
-            obscureText: widget.state.isConfirmPasswordVisible,
-            suffixIcon: IconButton(
-              onPressed: () => context.read<RegisterBloc>().add(ToggleConfirmPasswordVisibility()),
-              icon: Icon(widget.state.isConfirmPasswordVisible ? Icons.visibility : Icons.visibility_off, color: Colors.white60),
+            DefaultTextFieldOutlined(
+              controller: _lastnameController,
+              text: 'Apellido', 
+              icon: Icons.person_2_outlined,
+              margin: EdgeInsets.only(bottom: 15),
             ),
-            margin: EdgeInsets.only(bottom: 30),
-          ),
+            DefaultTextFieldOutlined(
+              controller: _emailController,
+              text: 'Correo Institucional', 
+              icon: Icons.alternate_email_rounded,
+              margin: EdgeInsets.only(bottom: 15),
+            ),
+            DefaultTextFieldOutlined(
+              controller: _phoneController,
+              text: 'Número de Teléfono', 
+              icon: Icons.phone_android_rounded,
+              margin: EdgeInsets.only(bottom: 15),
+            ),
+            
+            _textLabel('Información Académica'),
+            _dropdownFacultad(facultades),
+            SizedBox(height: 15),
+            _dropdownCarrera(carreras),
+            SizedBox(height: 15),
+            DefaultTextFieldOutlined(
+              controller: _zoneController,
+              text: 'Zona de Residencia', 
+              icon: Icons.location_on_outlined,
+              margin: EdgeInsets.only(bottom: 15),
+            ),
 
-          DefaultButton(
-            text: 'CREAR CUENTA',
-            color: Color(0xFF00B4D8),
-            onPressed: () {
-              if (widget.state.formKey!.currentState!.validate()) {
-                User userToRegister = User(
-                  name: _nameController.text,
-                  lastname: _lastnameController.text,
-                  email: _emailController.text,
-                  phone: _phoneController.text,
-                  career: _selectedCarrera ?? '',
-                  referenceZone: _zoneController.text,
-                  password: _passwordController.text,
-                  rolesIds: ['STUDENT']
-                );
-                _syncToBloc();
-                context.read<RegisterBloc>().add(FormSubmit(user: userToRegister));
-              }
-            },
-          ),
-          SizedBox(height: 20),
-          _textIAlreadyHaveAccount(context),
-        ],
+            _textLabel('Seguridad'),
+            DefaultTextFieldOutlined(
+              controller: _passwordController,
+              text: 'Contraseña', 
+              icon: Icons.lock_outline_rounded,
+              obscureText: widget.state.isPasswordVisible,
+              suffixIcon: IconButton(
+                onPressed: () => context.read<RegisterBloc>().add(TogglePasswordVisibility()),
+                icon: Icon(widget.state.isPasswordVisible ? Icons.visibility : Icons.visibility_off, color: Colors.white60),
+              ),
+              margin: EdgeInsets.only(bottom: 15),
+            ),
+            DefaultTextFieldOutlined(
+              controller: _confirmPasswordController,
+              text: 'Confirmar Contraseña', 
+              icon: Icons.lock_reset_rounded,
+              obscureText: widget.state.isConfirmPasswordVisible,
+              suffixIcon: IconButton(
+                onPressed: () => context.read<RegisterBloc>().add(ToggleConfirmPasswordVisibility()),
+                icon: Icon(widget.state.isConfirmPasswordVisible ? Icons.visibility : Icons.visibility_off, color: Colors.white60),
+              ),
+              margin: EdgeInsets.only(bottom: 30),
+            ),
+
+            DefaultButton(
+              text: 'CREAR CUENTA',
+              color: Color(0xFF00B4D8),
+              onPressed: () {
+                if (widget.state.formKey!.currentState!.validate()) {
+                  User userToRegister = User(
+                    name: _nameController.text,
+                    lastname: _lastnameController.text,
+                    email: _emailController.text,
+                    phone: _phoneController.text,
+                    career: _selectedCarrera ?? '',
+                    referenceZone: _zoneController.text,
+                    password: _passwordController.text,
+                    rolesIds: ['STUDENT']
+                  );
+                  _syncToBloc();
+                  context.read<RegisterBloc>().add(FormSubmit(user: userToRegister));
+                }
+              },
+            ),
+            SizedBox(height: 20),
+            _textIAlreadyHaveAccount(context),
+          ],
+        ),
       ),
     );
   }

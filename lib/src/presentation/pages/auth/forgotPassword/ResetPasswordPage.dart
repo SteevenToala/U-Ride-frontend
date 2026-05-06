@@ -94,117 +94,133 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Restablecer contraseña', style: TextStyle(color: Colors.white)),
-        backgroundColor: const Color.fromARGB(255, 12, 38, 145),
-        iconTheme: const IconThemeData(color: Colors.white),
-      ),
       body: Container(
         height: MediaQuery.of(context).size.height,
         width: MediaQuery.of(context).size.width,
-        decoration: const BoxDecoration(
+        decoration: BoxDecoration(
           gradient: LinearGradient(
-            begin: Alignment.topRight,
-            end: Alignment.bottomLeft,
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
             colors: [
-              Color.fromARGB(255, 12, 38, 145),
-              Color.fromARGB(255, 34, 156, 249),
-            ]
+              Color(0xFF0D1B2A),
+              Color(0xFF1B263B),
+              Color(0xFF415A77),
+            ],
           ),
         ),
         child: SingleChildScrollView(
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Container(
-                margin: const EdgeInsets.only(top: 40, left: 30, right: 30),
-                child: Text(
-                  'Ingresa el código que enviamos a $email y tu nueva contraseña.',
-                  style: const TextStyle(
-                    color: Colors.white,
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold
-                  ),
-                ),
-              ),
-              Container(
-                margin: const EdgeInsets.only(top: 40, left: 25, right: 25),
-                decoration: BoxDecoration(
-                  color: Colors.white.withOpacity(0.1),
-                  borderRadius: BorderRadius.circular(15)
-                ),
-                padding: const EdgeInsets.symmetric(vertical: 30, horizontal: 20),
-                child: Column(
-                  children: [
-                    DefaultTextField(
-                      text: 'Código de 6 dígitos',
-                      icon: Icons.numbers,
-                      onChanged: (text) {
-                        setState(() {
-                          code = text;
-                        });
-                      },
-                    ),
-                    const SizedBox(height: 20),
-                    DefaultTextField(
-                      text: 'Nueva contraseña',
-                      icon: Icons.lock_outline,
-                      obscureText: isPasswordVisible,
-                      suffixIcon: IconButton(
-                        onPressed: () {
-                          setState(() {
-                            isPasswordVisible = !isPasswordVisible;
-                          });
-                        },
-                        icon: Icon(
-                          isPasswordVisible ? Icons.visibility : Icons.visibility_off,
-                          color: const Color.fromARGB(255, 30, 112, 227),
-                        ),
-                      ),
-                      onChanged: (text) {
-                        setState(() {
-                          newPassword = text;
-                        });
-                      },
-                    ),
-                    const SizedBox(height: 20),
-                    DefaultTextField(
-                      text: 'Confirmar nueva contraseña',
-                      icon: Icons.lock_outline,
-                      obscureText: isConfirmPasswordVisible,
-                      suffixIcon: IconButton(
-                        onPressed: () {
-                          setState(() {
-                            isConfirmPasswordVisible = !isConfirmPasswordVisible;
-                          });
-                        },
-                        icon: Icon(
-                          isConfirmPasswordVisible ? Icons.visibility : Icons.visibility_off,
-                          color: const Color.fromARGB(255, 30, 112, 227),
-                        ),
-                      ),
-                      onChanged: (text) {
-                        setState(() {
-                          confirmPassword = text;
-                        });
-                      },
-                    ),
-                    const SizedBox(height: 40),
-                    isLoading 
-                      ? const CircularProgressIndicator() 
-                      : DefaultButton(
-                          text: 'CAMBIAR CONTRASEÑA',
-                          onPressed: () {
-                            _resetPassword();
-                          },
-                        )
-                  ],
-                ),
-              )
+              _header(context),
+              _card(context),
             ],
           ),
         ),
       ),
+    );
+  }
+
+  Widget _header(BuildContext context) {
+    return Container(
+      padding: EdgeInsets.only(top: 60, bottom: 20),
+      child: Column(
+        children: [
+          Align(
+            alignment: Alignment.topLeft,
+            child: IconButton(
+              icon: Icon(Icons.arrow_back_ios_new_rounded, color: Colors.white),
+              onPressed: () => Navigator.pop(context),
+            ),
+          ),
+          Icon(Icons.mark_email_read_rounded, size: 70, color: Color(0xFF00B4D8)),
+          SizedBox(height: 15),
+          Text(
+            'RESTABLECER',
+            style: TextStyle(
+              fontSize: 26,
+              fontWeight: FontWeight.w900,
+              letterSpacing: 2,
+              color: Colors.white,
+            ),
+          ),
+          Padding(
+            padding: EdgeInsets.symmetric(horizontal: 40, vertical: 10),
+            child: Text(
+              'Ingresa el código enviado a $email y tu nueva contraseña.',
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                fontSize: 14,
+                color: Colors.white70,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _card(BuildContext context) {
+    return Center(
+      child: Container(
+        constraints: BoxConstraints(maxWidth: 500),
+        margin: EdgeInsets.only(left: 25, right: 25, bottom: 40),
+        padding: EdgeInsets.all(MediaQuery.of(context).size.width > 600 ? 40 : 25),
+        decoration: BoxDecoration(
+          color: Colors.white.withOpacity(0.08),
+          borderRadius: BorderRadius.circular(30),
+          border: Border.all(color: Colors.white.withOpacity(0.1)),
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            _textLabel('Código de 6 dígitos'),
+            DefaultTextField(
+              onChanged: (text) { setState(() { code = text; }); },
+              text: '123456', 
+              icon: Icons.numbers_rounded,
+            ),
+            SizedBox(height: 20),
+            _textLabel('Nueva Contraseña'),
+            DefaultTextField(
+              onChanged: (text) { setState(() { newPassword = text; }); },
+              obscureText: isPasswordVisible,
+              suffixIcon: IconButton(
+                onPressed: () => setState(() { isPasswordVisible = !isPasswordVisible; }),
+                icon: Icon(isPasswordVisible ? Icons.visibility : Icons.visibility_off, color: Color(0xFF00B4D8)),
+              ),
+              text: 'Mínimo 6 caracteres', 
+              icon: Icons.lock_outline_rounded,
+            ),
+            SizedBox(height: 20),
+            _textLabel('Confirmar Contraseña'),
+            DefaultTextField(
+              onChanged: (text) { setState(() { confirmPassword = text; }); },
+              obscureText: isConfirmPasswordVisible,
+              suffixIcon: IconButton(
+                onPressed: () => setState(() { isConfirmPasswordVisible = !isConfirmPasswordVisible; }),
+                icon: Icon(isConfirmPasswordVisible ? Icons.visibility : Icons.visibility_off, color: Color(0xFF00B4D8)),
+              ),
+              text: 'Repite tu contraseña', 
+              icon: Icons.lock_reset_rounded,
+            ),
+            SizedBox(height: 40),
+            isLoading 
+              ? Center(child: CircularProgressIndicator(color: Color(0xFF00B4D8))) 
+              : DefaultButton(
+                  text: 'CAMBIAR CONTRASEÑA',
+                  color: Color(0xFF00B4D8),
+                  onPressed: () => _resetPassword(),
+                ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _textLabel(String text) {
+    return Padding(
+      padding: EdgeInsets.only(left: 5, bottom: 8),
+      child: Text(text, style: TextStyle(color: Colors.white70, fontSize: 14)),
     );
   }
 }

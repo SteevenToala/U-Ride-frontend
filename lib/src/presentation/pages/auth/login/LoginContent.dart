@@ -71,62 +71,64 @@ class LoginContent extends StatelessWidget {
   }
 
   Widget _card(BuildContext context) {
-    return Container(
-      margin: EdgeInsets.symmetric(horizontal: 30),
-      padding: EdgeInsets.all(30),
-      decoration: BoxDecoration(
-        color: Colors.white.withOpacity(0.08),
-        borderRadius: BorderRadius.circular(30),
-        border: Border.all(color: Colors.white.withOpacity(0.1)),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          _loginRegisterToggle(context),
-          SizedBox(height: 30),
-          _textLabel('Correo Electrónico'),
-          DefaultTextField(
-            onChanged: (text) {
-              context.read<LoginBloc>().add(EmailChanged(email: BlocFormItem(value: text)));
-            },
-            validator: (value) => state.email.error,
-            text: 'ejemplo@uta.edu.ec', 
-            icon: Icons.alternate_email_rounded,
-          ),
-          SizedBox(height: 20),
-          _textLabel('Contraseña'),
-          DefaultTextField(
-            onChanged: (text) {
-              context.read<LoginBloc>().add(PasswordChanged(password: BlocFormItem(value: text)));
-            },
-            validator: (value) => state.password.error,
-            obscureText: state.isPasswordVisible,
-            suffixIcon: IconButton(
-              onPressed: () {
-                context.read<LoginBloc>().add(TogglePasswordVisibility());
+    return Center(
+      child: Container(
+        constraints: BoxConstraints(maxWidth: 500),
+        margin: EdgeInsets.symmetric(horizontal: 25, vertical: 20),
+        padding: EdgeInsets.all(MediaQuery.of(context).size.width > 600 ? 40 : 25),
+        decoration: BoxDecoration(
+          color: Colors.white.withOpacity(0.08),
+          borderRadius: BorderRadius.circular(30),
+          border: Border.all(color: Colors.white.withOpacity(0.1)),
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            _loginRegisterToggle(context),
+            SizedBox(height: 30),
+            _textLabel('Correo Electrónico'),
+            DefaultTextField(
+              onChanged: (text) {
+                context.read<LoginBloc>().add(EmailChanged(email: BlocFormItem(value: text)));
               },
-              icon: Icon(
-                state.isPasswordVisible ? Icons.visibility_rounded : Icons.visibility_off_rounded,
-                color: Color(0xFF00B4D8),
-              ),
+              validator: (value) => state.email.error,
+              text: 'ejemplo@uta.edu.ec', 
+              icon: Icons.alternate_email_rounded,
             ),
-            text: 'Tu contraseña', 
-            icon: Icons.lock_open_rounded,
-          ),
-          SizedBox(height: 10),
-          _textForgotPassword(context),
-          SizedBox(height: 40),
-          DefaultButton(
-            text: 'ENTRAR',
-            onPressed: () {
-              if (state.formKey!.currentState!.validate()) {
-                context.read<LoginBloc>().add(FormSubmit());
-              }
-            },
-          ),
-          SizedBox(height: 20),
-          _socialLogins(),
-        ],
+            SizedBox(height: 20),
+            _textLabel('Contraseña'),
+            DefaultTextField(
+              onChanged: (text) {
+                context.read<LoginBloc>().add(PasswordChanged(password: BlocFormItem(value: text)));
+              },
+              validator: (value) => state.password.error,
+              obscureText: state.isPasswordVisible,
+              suffixIcon: IconButton(
+                onPressed: () {
+                  context.read<LoginBloc>().add(TogglePasswordVisibility());
+                },
+                icon: Icon(
+                  state.isPasswordVisible ? Icons.visibility_rounded : Icons.visibility_off_rounded,
+                  color: Color(0xFF00B4D8),
+                ),
+              ),
+              text: 'Tu contraseña', 
+              icon: Icons.lock_open_rounded,
+            ),
+            SizedBox(height: 10),
+            _textForgotPassword(context),
+            SizedBox(height: 40),
+            DefaultButton(
+              text: 'ENTRAR',
+              onPressed: () {
+                if (state.formKey!.currentState!.validate()) {
+                  context.read<LoginBloc>().add(FormSubmit());
+                }
+              },
+            ),
+            SizedBox(height: 10),
+          ],
+        ),
       ),
     );
   }
@@ -157,39 +159,7 @@ class LoginContent extends StatelessWidget {
     );
   }
 
-  Widget _socialLogins() {
-    return Column(
-      children: [
-        Row(
-          children: [
-            Expanded(child: Divider(color: Colors.white24)),
-            Padding(padding: EdgeInsets.symmetric(horizontal: 10), child: Text('O', style: TextStyle(color: Colors.white24))),
-            Expanded(child: Divider(color: Colors.white24)),
-          ],
-        ),
-        SizedBox(height: 20),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            _socialIcon(Icons.g_mobiledata),
-            SizedBox(width: 20),
-            _socialIcon(Icons.apple),
-          ],
-        )
-      ],
-    );
-  }
 
-  Widget _socialIcon(IconData icon) {
-    return Container(
-      padding: EdgeInsets.all(10),
-      decoration: BoxDecoration(
-        shape: BoxShape.circle,
-        border: Border.all(color: Colors.white24),
-      ),
-      child: Icon(icon, color: Colors.white, size: 30),
-    );
-  }
 
   Widget _textForgotPassword(BuildContext context) {
     return Align(

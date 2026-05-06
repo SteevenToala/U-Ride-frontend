@@ -13,59 +13,55 @@ class RolesItem extends StatelessWidget {
       onTap: () {
         Navigator.pushNamedAndRemoveUntil(context, role.route, (route) => false);
       },
-      child: Column(
-        children: [
-          Container(
-            margin: EdgeInsets.only(bottom: 10, top: 25),
-            height: 140,
-            width: 140,
-            decoration: BoxDecoration(
-              color: Colors.white.withOpacity(0.1),
-              borderRadius: BorderRadius.circular(20),
-              border: Border.all(color: Colors.white24, width: 2),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black26,
-                  blurRadius: 10,
-                  offset: Offset(0, 5)
-                )
-              ]
+      child: Container(
+        margin: EdgeInsets.only(bottom: 25),
+        padding: EdgeInsets.symmetric(vertical: 20, horizontal: 30),
+        decoration: BoxDecoration(
+          color: Colors.white.withOpacity(0.08),
+          borderRadius: BorderRadius.circular(25),
+          border: Border.all(color: Colors.white.withOpacity(0.1)),
+        ),
+        child: Row(
+          children: [
+            Container(
+              height: 70,
+              width: 70,
+              decoration: BoxDecoration(
+                color: Color(0xFF00B4D8).withOpacity(0.2),
+                shape: BoxShape.circle,
+                border: Border.all(color: Color(0xFF00B4D8), width: 2),
+              ),
+              child: Icon(
+                role.id == 'STUDENT' ? Icons.school_rounded : Icons.directions_car_rounded,
+                size: 35,
+                color: Colors.white,
+              ),
             ),
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(20),
-              child: Stack(
-                alignment: Alignment.center,
+            SizedBox(width: 25),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                   // Usamos un Icono como fallback elegante por si la imagen falla
-                  Icon(
-                    role.id == 'STUDENT' ? Icons.person : Icons.directions_car,
-                    size: 80,
-                    color: Colors.white,
+                  Text(
+                    role.name.toUpperCase(),
+                    style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.w900,
+                      color: Colors.white,
+                      letterSpacing: 1.5
+                    ),
                   ),
-                  // Intentamos cargar la imagen, pero si falla no mostrará la X roja
-                  FadeInImage(
-                    image: NetworkImage(role.image),
-                    fit: BoxFit.cover,
-                    fadeInDuration: Duration(milliseconds: 500),
-                    placeholder: AssetImage('assets/img/no-image.png'),
-                    imageErrorBuilder: (context, error, stackTrace) {
-                      return Container(); // No mostramos nada si hay error, se queda el icono de fondo
-                    },
+                  SizedBox(height: 5),
+                  Text(
+                    role.id == 'STUDENT' ? 'Viaja con tus compañeros' : 'Genera ingresos conduciendo',
+                    style: TextStyle(color: Colors.white60, fontSize: 13),
                   ),
                 ],
               ),
             ),
-          ),
-          Text(
-            role.name,
-            style: TextStyle(
-              fontSize: 20,
-              fontWeight: FontWeight.bold,
-              color: Colors.white,
-              letterSpacing: 1
-            ),
-          )
-        ],
+            Icon(Icons.arrow_forward_ios_rounded, color: Color(0xFF00B4D8), size: 20),
+          ],
+        ),
       ),
     );
   }

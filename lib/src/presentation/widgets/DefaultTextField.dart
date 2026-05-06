@@ -29,53 +29,27 @@ class DefaultTextField extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 50,
       margin: margin,
       decoration: BoxDecoration(
-        color: backgroundColor,
-        borderRadius: BorderRadius.only(
-          topLeft: Radius.circular(15),
-          bottomRight: Radius.circular(15),
-        )
+        color: Colors.white.withOpacity(0.05),
+        borderRadius: BorderRadius.circular(15),
+        border: Border.all(color: Colors.white.withOpacity(0.1)),
       ),
       child: TextFormField(
-        onChanged: (text) {
-          onChanged(text);
-        },
+        onChanged: onChanged,
         obscureText: obscureText,
-        style: TextStyle(
-          fontSize: 17
-        ),
+        style: TextStyle(fontSize: 15, color: Colors.white),
         initialValue: initialValue,
         validator: validator,
         keyboardType: keyboardType,
         decoration: InputDecoration(
-          label: Text(
-            text,
-            style: TextStyle(
-              fontSize: 13
-            ),
-          ),
+          contentPadding: EdgeInsets.symmetric(horizontal: 15, vertical: 15),
+          labelText: text,
+          labelStyle: TextStyle(color: Colors.white60, fontSize: 14),
           border: InputBorder.none,
           suffixIcon: suffixIcon,
-          prefixIcon: Container(
-            margin: EdgeInsets.only(top: 10),
-            child: Wrap(
-              alignment: WrapAlignment.spaceEvenly,
-              children: [
-                Icon(
-                  icon
-                ),
-                Container(
-                  height: 20,
-                  width: 1,
-                  color: Colors.grey,
-                )
-              ],
-            ),
-          )
+          prefixIcon: Icon(icon, color: Color(0xFF00B4D8), size: 22),
         ),
-        
       ),
     );
   }

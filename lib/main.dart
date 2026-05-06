@@ -66,7 +66,7 @@ class _MyAppState extends State<MyApp> {
       providers: blocProviders,
       child: MaterialApp(
         builder: FToastBuilder(),
-        title: 'Flutter Demo',
+        title: 'U-RIDE',
         navigatorKey: navigatorKey,
         debugShowCheckedModeBanner: false,
         theme: ThemeData(

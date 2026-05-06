@@ -29,29 +29,52 @@ class _RolesPageState extends State<RolesPage> {
       body: BlocBuilder<RolesBloc, RolesState>(
         builder: (context, state) {
           return Container(
-              width: MediaQuery.of(context).size.width,
-              height: MediaQuery.of(context).size.height,
-              alignment: Alignment.center,
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  begin: Alignment.topRight,
-                  end: Alignment.bottomLeft,
-                  colors: [
-                    Color.fromARGB(255, 12, 38, 145),
-                    Color.fromARGB(255, 34, 156, 249),
-                  ]
-                )
+            width: MediaQuery.of(context).size.width,
+            height: MediaQuery.of(context).size.height,
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+                colors: [
+                  Color(0xFF0D1B2A),
+                  Color(0xFF1B263B),
+                  Color(0xFF415A77),
+                ],
               ),
-              child: ListView(
-                shrinkWrap: true,
-                children: state.roles != null 
-                ? (state.roles?.map((Role role) {
-                    return RolesItem(role);
-                  }).toList()
-                ) as List<Widget>
-                : [],
+            ),
+            child: SingleChildScrollView(
+              child: Center(
+                child: Container(
+                  constraints: BoxConstraints(maxWidth: 600),
+                  padding: EdgeInsets.symmetric(horizontal: 30, vertical: 80),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(Icons.supervised_user_circle_rounded, size: 80, color: Color(0xFF00B4D8)),
+                      SizedBox(height: 20),
+                      Text(
+                        'SELECCIONA UN ROL',
+                        style: TextStyle(
+                          fontSize: 24,
+                          fontWeight: FontWeight.w900,
+                          letterSpacing: 2,
+                          color: Colors.white,
+                        ),
+                      ),
+                      SizedBox(height: 10),
+                      Text(
+                        'Elige cómo deseas utilizar U-RIDE hoy',
+                        style: TextStyle(color: Colors.white60, fontSize: 14),
+                      ),
+                      SizedBox(height: 50),
+                      if (state.roles != null)
+                        ...state.roles!.map((Role role) => RolesItem(role)).toList(),
+                    ],
+                  ),
+                ),
               ),
-            );
+            ),
+          );
         },
       ),
     );

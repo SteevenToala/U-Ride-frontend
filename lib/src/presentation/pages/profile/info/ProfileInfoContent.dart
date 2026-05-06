@@ -16,99 +16,117 @@ class ProfileInfoContent extends StatelessWidget {
     bool isAdmin = user?.roles?.any((rol) => rol.id == 'ADMIN') ?? false;
     bool isDriverApproved = user?.isDriverApproved ?? false;
 
-    return Stack(
-      children: [
-        Column(
+    return Container(
+      height: MediaQuery.of(context).size.height,
+      width: MediaQuery.of(context).size.width,
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [
+            Color(0xFF0D1B2A),
+            Color(0xFF1B263B),
+            Color(0xFF415A77),
+          ],
+        ),
+      ),
+      child: SingleChildScrollView(
+        child: Column(
           children: [
             _headerProfile(context),
-            Spacer(),
-            // Solo mostrar si NO es admin y NO tiene el rol de conductor aún
+            _cardUserInfo(context),
+            SizedBox(height: 30),
+            
             if (!hasDriverRole && !isAdmin)
-              _actionProfile('QUIERO SER CONDUCTOR', Icons.drive_eta, () {
+              _actionProfile('QUIERO SER CONDUCTOR', Icons.drive_eta_rounded, () {
                 if (user?.id != null) {
                   context.read<ProfileInfoBloc>().add(RequestDriverRole(id: user!.id!));
                 }
-              }),
+              }, isPrimary: true),
+            
             if (hasDriverRole && !isDriverApproved)
               Container(
-                margin: EdgeInsets.only(top: 15),
+                margin: EdgeInsets.symmetric(vertical: 15),
+                padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                decoration: BoxDecoration(
+                  color: Colors.orange.withOpacity(0.1),
+                  borderRadius: BorderRadius.circular(10),
+                  border: Border.all(color: Colors.orange.withOpacity(0.3))
+                ),
                 child: Text(
                   'SOLICITUD DE CONDUCTOR PENDIENTE',
-                  style: TextStyle(color: Colors.orange, fontWeight: FontWeight.bold),
+                  style: TextStyle(color: Colors.orange, fontWeight: FontWeight.bold, fontSize: 12),
                 ),
               ),
-            _actionProfile('EDITAR PERFIL', Icons.edit, () { 
+
+            _actionProfile('EDITAR PERFIL', Icons.edit_rounded, () { 
               Navigator.pushNamed(context, 'profile/update', arguments: user);
-             }),
-            _actionProfile('CERRAR SESION', Icons.settings_power, () {
-              // TODO: Implementar logout si es necesario aquí o en el widget padre
             }),
-            SizedBox(height: 35,)
+            
+            _actionProfile('CERRAR SESIÓN', Icons.logout_rounded, () {
+              // Implementar logout logic
+            }, isLogout: true),
+            
+            SizedBox(height: 40),
           ],
         ),
-        _cardUserInfo(context)
-      ],
+      ),
     );
   }
 
   Widget _cardUserInfo(BuildContext context) {
-    return Container(
-      margin: EdgeInsets.only(left: 35, right: 35, top: 100),
-      width: MediaQuery.of(context).size.width,
-      child: Card(
-        color: Colors.white,
-        elevation: 10,
-        surfaceTintColor: Colors.white,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-        child: Padding(
-          padding: const EdgeInsets.only(bottom: 20),
-          child: Column(
-            mainAxisSize: MainAxisSize.min, // Ajustar al contenido
-            children: [
-              Container(
-                width: 115,
-                margin: EdgeInsets.only(top: 25, bottom: 15),
-                child: AspectRatio(
-                  aspectRatio: 1,
-                  child: ClipOval(
-                    child: user != null 
-                    ? (user!.image != null && user!.image!.isNotEmpty) 
-                      ? FadeInImage.assetNetwork(
-                        placeholder: 'assets/img/user_image.png', 
-                        image: user!.image!,
-                        fit: BoxFit.cover,
-                        fadeInDuration: Duration(seconds: 1),
-                      )
-                      : Image.asset(
-                        'assets/img/user_image.png',
-                      )
-                    : Image.asset(
-                      'assets/img/user_image.png',
-                    ),
-                  ),
-                ),
+    return Center(
+      child: Container(
+        constraints: BoxConstraints(maxWidth: 500),
+        margin: EdgeInsets.symmetric(horizontal: 25),
+        padding: EdgeInsets.all(30),
+        decoration: BoxDecoration(
+          color: Colors.white.withOpacity(0.08),
+          borderRadius: BorderRadius.circular(30),
+          border: Border.all(color: Colors.white.withOpacity(0.1)),
+        ),
+        child: Column(
+          children: [
+            Container(
+              width: 120,
+              height: 120,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                border: Border.all(color: Color(0xFF00B4D8), width: 3),
               ),
-              Text(
-                '${user?.name} ${user?.lastname}' ?? '',
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 18
-                ),
+              child: ClipOval(
+                child: user?.image != null && user!.image!.isNotEmpty
+                  ? FadeInImage.assetNetwork(
+                      placeholder: 'assets/img/user_image.png', 
+                      image: user!.image!,
+                      fit: BoxFit.cover,
+                    )
+                  : Icon(Icons.person, size: 60, color: Colors.white24),
               ),
-              const SizedBox(height: 10),
-              _infoRow(Icons.email_outlined, user?.email ?? ''),
-              _infoRow(Icons.phone_android_outlined, user?.phone ?? 'Sin teléfono'),
-              
-              if (user?.career != null && user!.career!.isNotEmpty)
-                _infoRow(Icons.school_outlined, user!.career!),
-                
-              if (user?.referenceZone != null && user!.referenceZone!.isNotEmpty)
-                _infoRow(Icons.location_on_outlined, user!.referenceZone!),
-                
-              const SizedBox(height: 5),
-              _buildRoleBadges(),
-            ],
-          ),
+            ),
+            SizedBox(height: 20),
+            Text(
+              '${user?.name} ${user?.lastname}'.toUpperCase(),
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                fontWeight: FontWeight.w900,
+                fontSize: 22,
+                color: Colors.white,
+                letterSpacing: 1
+              ),
+            ),
+            SizedBox(height: 20),
+            Divider(color: Colors.white10),
+            SizedBox(height: 10),
+            _infoRow(Icons.alternate_email_rounded, user?.email ?? ''),
+            _infoRow(Icons.phone_android_rounded, user?.phone ?? 'Sin teléfono'),
+            if (user?.career != null && user!.career!.isNotEmpty)
+              _infoRow(Icons.school_rounded, user!.career!),
+            if (user?.referenceZone != null && user!.referenceZone!.isNotEmpty)
+              _infoRow(Icons.location_on_rounded, user!.referenceZone!),
+            SizedBox(height: 20),
+            _buildRoleBadges(),
+          ],
         ),
       ),
     );
@@ -116,15 +134,15 @@ class ProfileInfoContent extends StatelessWidget {
 
   Widget _infoRow(IconData icon, String text) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 4),
+      padding: const EdgeInsets.symmetric(vertical: 8),
       child: Row(
         children: [
-          Icon(icon, size: 18, color: Colors.blue.shade700),
-          const SizedBox(width: 12),
+          Icon(icon, size: 20, color: Color(0xFF00B4D8)),
+          const SizedBox(width: 15),
           Expanded(
             child: Text(
               text,
-              style: TextStyle(color: Colors.grey[800], fontSize: 14),
+              style: TextStyle(color: Colors.white70, fontSize: 14),
             ),
           ),
         ],
@@ -134,51 +152,57 @@ class ProfileInfoContent extends StatelessWidget {
 
   Widget _buildRoleBadges() {
     return Wrap(
-      spacing: 8,
+      spacing: 10,
+      runSpacing: 10,
       children: user?.roles?.map((rol) {
-        return Chip(
-          label: Text(
-            rol.id, 
-            style: TextStyle(fontSize: 10, color: Colors.white, fontWeight: FontWeight.bold),
+        return Container(
+          padding: EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+          decoration: BoxDecoration(
+            color: (rol.id == 'ADMIN' ? Colors.redAccent : Color(0xFF00B4D8)).withOpacity(0.2),
+            borderRadius: BorderRadius.circular(20),
+            border: Border.all(color: (rol.id == 'ADMIN' ? Colors.redAccent : Color(0xFF00B4D8)).withOpacity(0.5)),
           ),
-          backgroundColor: rol.id == 'ADMIN' ? Colors.redAccent : Colors.blueAccent,
-          padding: EdgeInsets.zero,
-          visualDensity: VisualDensity.compact,
+          child: Text(
+            rol.id, 
+            style: TextStyle(fontSize: 10, color: Colors.white, fontWeight: FontWeight.bold, letterSpacing: 1),
+          ),
         );
       }).toList() ?? [],
     );
   }
 
-  Widget _actionProfile(String option, IconData icon, Function() function) {
-    return GestureDetector(
-      onTap: () {
-        function();
-      },
-      child: Container(
-        margin: EdgeInsets.only(left: 20, right: 20, top: 15),
-        child: ListTile(
-          title: Text(
-            option,
-            style: TextStyle(
-              fontWeight: FontWeight.bold
-            ),
-          ),
-          leading: Container(
-            padding: EdgeInsets.all(10),
+  Widget _actionProfile(String option, IconData icon, Function() function, {bool isPrimary = false, bool isLogout = false}) {
+    return Container(
+      constraints: BoxConstraints(maxWidth: 500),
+      margin: EdgeInsets.only(left: 25, right: 25, top: 15),
+      child: Material(
+        color: isPrimary ? Color(0xFF00B4D8) : Colors.white.withOpacity(0.05),
+        borderRadius: BorderRadius.circular(20),
+        child: InkWell(
+          borderRadius: BorderRadius.circular(20),
+          onTap: function,
+          child: Container(
+            padding: EdgeInsets.symmetric(vertical: 15, horizontal: 20),
             decoration: BoxDecoration(
-              gradient: LinearGradient(
-                begin: Alignment.topRight,
-                end: Alignment.bottomLeft,
-                colors: [
-                  Color.fromARGB(255, 19, 58, 213),
-                  Color.fromARGB(255, 65, 173, 255),
-                ]
-              ),
-              borderRadius: BorderRadius.all(Radius.circular(50))
+              border: Border.all(color: isLogout ? Colors.redAccent.withOpacity(0.3) : Colors.white10),
+              borderRadius: BorderRadius.circular(20),
             ),
-            child: Icon(
-              icon,
-              color: Colors.white,
+            child: Row(
+              children: [
+                Icon(icon, color: isLogout ? Colors.redAccent : (isPrimary ? Colors.white : Color(0xFF00B4D8)), size: 24),
+                SizedBox(width: 20),
+                Text(
+                  option,
+                  style: TextStyle(
+                    color: isLogout ? Colors.redAccent : (isPrimary ? Colors.white : Colors.white),
+                    fontWeight: FontWeight.bold,
+                    fontSize: 14,
+                    letterSpacing: 1
+                  ),
+                ),
+                Spacer(),
+                Icon(Icons.chevron_right_rounded, color: Colors.white24),
+              ],
             ),
           ),
         ),
@@ -188,29 +212,25 @@ class ProfileInfoContent extends StatelessWidget {
 
   Widget _headerProfile(BuildContext context) {
     return Container(
-      alignment: Alignment.topCenter,
-      padding: EdgeInsets.only(top: 40),
-      height: MediaQuery.of(context).size.height * 0.33,
-      width: MediaQuery.of(context).size.width,
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-          begin: Alignment.topRight,
-          end: Alignment.bottomLeft,
-          colors: [
-            Color.fromARGB(255, 19, 58, 213),
-                Color.fromARGB(255, 65, 173, 255),
-          ]
-        ),
-      ),
-      child: Text(
-        'PERFIL DE USUARIO',
-        style: TextStyle(
-          color: Colors.white,
-          fontWeight: FontWeight.bold,
-          fontSize: 19
-        ),
+      padding: EdgeInsets.only(top: 80, bottom: 40),
+      child: Column(
+        children: [
+          Text(
+            'MI PERFIL',
+            style: TextStyle(
+              fontSize: 26,
+              fontWeight: FontWeight.w900,
+              letterSpacing: 4,
+              color: Colors.white,
+            ),
+          ),
+          SizedBox(height: 5),
+          Text(
+            'Información de tu cuenta U-RIDE',
+            style: TextStyle(fontSize: 13, color: Colors.white60),
+          ),
+        ],
       ),
     );
   }
-
 }

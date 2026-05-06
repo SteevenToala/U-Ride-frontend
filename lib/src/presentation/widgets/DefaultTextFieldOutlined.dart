@@ -25,7 +25,6 @@ class DefaultTextFieldOutlined extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      // height: 45, // Removed fixed height to avoid overflow with errors
       margin: margin,
       child: TextFormField(
         controller: controller,
@@ -34,57 +33,32 @@ class DefaultTextFieldOutlined extends StatelessWidget {
         },
         validator: validator,
         obscureText: obscureText,
-        style: const TextStyle(color: Colors.white),
+        style: const TextStyle(color: Colors.white, fontSize: 15),
         decoration: InputDecoration(
-          label: Text(
-            text,
-            style: TextStyle(
-              color: Colors.white
-            ),
-          ),
+          contentPadding: EdgeInsets.symmetric(horizontal: 15, vertical: 15),
+          labelText: text,
+          labelStyle: TextStyle(color: Colors.white60, fontSize: 14),
+          prefixIcon: Icon(icon, color: Color(0xFF00B4D8), size: 22),
+          suffixIcon: suffixIcon,
           focusedBorder: OutlineInputBorder(
-            borderSide: BorderSide(
-              color: Color.fromARGB(255, 35, 161, 183),
-              width: 2
-            )
+            borderRadius: BorderRadius.circular(15),
+            borderSide: BorderSide(color: Color(0xFF00B4D8), width: 2),
           ),
           enabledBorder: OutlineInputBorder(
-            borderSide: BorderSide(
-              color: Color.fromARGB(255, 34, 101, 202),
-              width: 2
-            )
+            borderRadius: BorderRadius.circular(15),
+            borderSide: BorderSide(color: Colors.white10, width: 1.5),
           ),
           errorBorder: OutlineInputBorder(
-            borderSide: BorderSide(
-              color: Colors.red,
-              width: 2
-            )
+            borderRadius: BorderRadius.circular(15),
+            borderSide: BorderSide(color: Colors.redAccent.withOpacity(0.5), width: 1.5),
           ),
           focusedErrorBorder: OutlineInputBorder(
-            borderSide: BorderSide(
-              color: Colors.redAccent,
-              width: 2
-            )
+            borderRadius: BorderRadius.circular(15),
+            borderSide: BorderSide(color: Colors.redAccent, width: 2),
           ),
-          errorStyle: TextStyle(color: Colors.orangeAccent),
-          suffixIcon: suffixIcon,
-          prefixIcon: Container(
-            margin: EdgeInsets.only(top: 10),
-            child: Wrap(
-              alignment: WrapAlignment.spaceEvenly,
-              children: [
-                Icon(
-                  icon,
-                  color: Colors.white,
-                ),
-                Container(
-                  height: 20,
-                  width: 1,
-                  color: Colors.white,
-                )
-              ],
-            ),
-          )
+          errorStyle: TextStyle(color: Colors.redAccent, fontSize: 11),
+          filled: true,
+          fillColor: Colors.white.withOpacity(0.05),
         ),
       ),
     );
