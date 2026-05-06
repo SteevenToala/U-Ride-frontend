@@ -33,8 +33,11 @@ import 'package:indriver_clone_flutter/src/presentation/pages/profile/info/bloc/
 import 'package:indriver_clone_flutter/src/presentation/pages/profile/update/bloc/ProfileUpdateBloc.dart';
 import 'package:indriver_clone_flutter/src/presentation/pages/roles/bloc/RolesBloc.dart';
 import 'package:indriver_clone_flutter/src/presentation/pages/roles/bloc/RolesEvent.dart';
+import 'package:indriver_clone_flutter/src/presentation/pages/admin/userManagement/bloc/UserManagementBloc.dart';
+import 'package:indriver_clone_flutter/src/presentation/pages/admin/userManagement/bloc/UserManagementEvent.dart';
 
 List<BlocProvider> blocProviders = [
+  BlocProvider<UserManagementBloc>(create: (context) => UserManagementBloc(locator<UsersUseCases>())),
   BlocProvider<LoginBloc>(create: (context) => LoginBloc(locator<AuthUseCases>(), locator<UsersUseCases>())..add(LoginInitEvent())),
   BlocProvider<RegisterBloc>(create: (context) => RegisterBloc(locator<AuthUseCases>())..add(RegisterInitEvent())),
   BlocProvider<BlocSocketIO>(create: (context) => BlocSocketIO(locator<SocketUseCases>(), locator<AuthUseCases>())),

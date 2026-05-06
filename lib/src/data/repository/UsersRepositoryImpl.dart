@@ -38,4 +38,14 @@ class UsersRepositoryImpl implements UsersRepository {
   Future<Resource<User>> approveDriverRole(int id) {
     return usersService.approveDriverRole(id);
   }
+
+  @override
+  Future<Resource<List<User>>> getUsers() {
+    return usersService.getUsers();
+  }
+
+  @override
+  Future<Resource<User>> suspendUser(int id) {
+    return usersService.suspendUser(id);
+  }
 }

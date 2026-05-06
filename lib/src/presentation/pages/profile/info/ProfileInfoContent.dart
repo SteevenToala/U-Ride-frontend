@@ -13,6 +13,7 @@ class ProfileInfoContent extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     bool hasDriverRole = user?.roles?.any((rol) => rol.id == 'DRIVER') ?? false;
+    bool isAdmin = user?.roles?.any((rol) => rol.id == 'ADMIN') ?? false;
     bool isDriverApproved = user?.isDriverApproved ?? false;
 
     return Stack(
@@ -21,7 +22,8 @@ class ProfileInfoContent extends StatelessWidget {
           children: [
             _headerProfile(context),
             Spacer(),
-            if (!hasDriverRole)
+            // Solo mostrar si NO es admin y NO tiene el rol de conductor aún
+            if (!hasDriverRole && !isAdmin)
               _actionProfile('QUIERO SER CONDUCTOR', Icons.drive_eta, () {
                 if (user?.id != null) {
                   context.read<ProfileInfoBloc>().add(RequestDriverRole(id: user!.id!));
@@ -38,7 +40,9 @@ class ProfileInfoContent extends StatelessWidget {
             _actionProfile('EDITAR PERFIL', Icons.edit, () { 
               Navigator.pushNamed(context, 'profile/update', arguments: user);
              }),
-            _actionProfile('CERRAR SESION', Icons.settings_power, () {}),
+            _actionProfile('CERRAR SESION', Icons.settings_power, () {
+              // TODO: Implementar logout si es necesario aquí o en el widget padre
+            }),
             SizedBox(height: 35,)
           ],
         ),
@@ -51,57 +55,97 @@ class ProfileInfoContent extends StatelessWidget {
     return Container(
       margin: EdgeInsets.only(left: 35, right: 35, top: 100),
       width: MediaQuery.of(context).size.width,
-      height: 250,
       child: Card(
         color: Colors.white,
+        elevation: 10,
         surfaceTintColor: Colors.white,
-        child: Column(
-          children: [
-            Container(
-              width: 115,
-              margin: EdgeInsets.only(top: 25, bottom: 15),
-              child: AspectRatio(
-                aspectRatio: 1,
-                child: ClipOval(
-                  child: user != null 
-                  ? (user!.image != null && user!.image!.isNotEmpty) 
-                    ? FadeInImage.assetNetwork(
-                      placeholder: 'assets/img/user_image.png', 
-                      image: user!.image!,
-                      fit: BoxFit.cover,
-                      fadeInDuration: Duration(seconds: 1),
-                    )
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+        child: Padding(
+          padding: const EdgeInsets.only(bottom: 20),
+          child: Column(
+            mainAxisSize: MainAxisSize.min, // Ajustar al contenido
+            children: [
+              Container(
+                width: 115,
+                margin: EdgeInsets.only(top: 25, bottom: 15),
+                child: AspectRatio(
+                  aspectRatio: 1,
+                  child: ClipOval(
+                    child: user != null 
+                    ? (user!.image != null && user!.image!.isNotEmpty) 
+                      ? FadeInImage.assetNetwork(
+                        placeholder: 'assets/img/user_image.png', 
+                        image: user!.image!,
+                        fit: BoxFit.cover,
+                        fadeInDuration: Duration(seconds: 1),
+                      )
+                      : Image.asset(
+                        'assets/img/user_image.png',
+                      )
                     : Image.asset(
                       'assets/img/user_image.png',
-                    )
-                  : Image.asset(
-                    'assets/img/user_image.png',
+                    ),
                   ),
                 ),
               ),
-            ),
-            Text(
-              '${user?.name} ${user?.lastname}' ?? '',
-              style: TextStyle(
-                fontWeight: FontWeight.bold,
-                fontSize: 16
+              Text(
+                '${user?.name} ${user?.lastname}' ?? '',
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 18
+                ),
               ),
-            ),
-            Text(
-              user?.email ?? '',
-              style: TextStyle(
-                color: Colors.grey[700]
-              ),
-            ),
-            Text(
-              user?.phone ?? '',
-              style: TextStyle(
-                color: Colors.grey[700]
-              ),
-            ),
-          ],
+              const SizedBox(height: 10),
+              _infoRow(Icons.email_outlined, user?.email ?? ''),
+              _infoRow(Icons.phone_android_outlined, user?.phone ?? 'Sin teléfono'),
+              
+              if (user?.career != null && user!.career!.isNotEmpty)
+                _infoRow(Icons.school_outlined, user!.career!),
+                
+              if (user?.referenceZone != null && user!.referenceZone!.isNotEmpty)
+                _infoRow(Icons.location_on_outlined, user!.referenceZone!),
+                
+              const SizedBox(height: 5),
+              _buildRoleBadges(),
+            ],
+          ),
         ),
       ),
+    );
+  }
+
+  Widget _infoRow(IconData icon, String text) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 4),
+      child: Row(
+        children: [
+          Icon(icon, size: 18, color: Colors.blue.shade700),
+          const SizedBox(width: 12),
+          Expanded(
+            child: Text(
+              text,
+              style: TextStyle(color: Colors.grey[800], fontSize: 14),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildRoleBadges() {
+    return Wrap(
+      spacing: 8,
+      children: user?.roles?.map((rol) {
+        return Chip(
+          label: Text(
+            rol.id, 
+            style: TextStyle(fontSize: 10, color: Colors.white, fontWeight: FontWeight.bold),
+          ),
+          backgroundColor: rol.id == 'ADMIN' ? Colors.redAccent : Colors.blueAccent,
+          padding: EdgeInsets.zero,
+          visualDensity: VisualDensity.compact,
+        );
+      }).toList() ?? [],
     );
   }
 

@@ -9,5 +9,7 @@ abstract class UsersRepository {
   Future<Resource<User>> requestDriverRole(int id);
   Future<Resource<List<User>>> getPendingDrivers();
   Future<Resource<User>> approveDriverRole(int id);
+  Future<Resource<List<User>>> getUsers();
+  Future<Resource<User>> suspendUser(int id);
 
 }

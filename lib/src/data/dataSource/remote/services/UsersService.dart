@@ -94,7 +94,7 @@ class UsersService {
         return Success(userResponse);
       }
       else {
-         return ErrorData(listToString(data['message']));
+        return ErrorData(listToString(data['message']));
       }
     } catch (e) {
       print('Error: $e');
@@ -149,6 +149,50 @@ class UsersService {
   Future<Resource<User>> approveDriverRole(int id) async {
     try {
       Uri url = Uri.http(ApiConfig.API_PROJECT, '/users/approve-driver/$id');
+      Map<String, String> headers = {
+        'Content-Type': 'application/json',
+        'Authorization': await token
+      };
+      final response = await http.put(url, headers: headers);
+      final data = json.decode(response.body);
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        User userResponse = User.fromJson(data);
+        return Success(userResponse);
+      }
+      else {
+        return ErrorData(listToString(data['message']));
+      }
+    } catch (e) {
+      print('Error: $e');
+      return ErrorData(e.toString());
+    }
+  }
+
+  Future<Resource<List<User>>> getUsers() async {
+    try {
+      Uri url = Uri.http(ApiConfig.API_PROJECT, '/users');
+      Map<String, String> headers = {
+        'Content-Type': 'application/json',
+        'Authorization': await token
+      };
+      final response = await http.get(url, headers: headers);
+      final data = json.decode(response.body);
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        List<User> users = List<User>.from(data.map((x) => User.fromJson(x)));
+        return Success(users);
+      }
+      else {
+        return ErrorData(listToString(data['message']));
+      }
+    } catch (e) {
+      print('Error: $e');
+      return ErrorData(e.toString());
+    }
+  }
+
+  Future<Resource<User>> suspendUser(int id) async {
+    try {
+      Uri url = Uri.http(ApiConfig.API_PROJECT, '/users/suspend/$id');
       Map<String, String> headers = {
         'Content-Type': 'application/json',
         'Authorization': await token

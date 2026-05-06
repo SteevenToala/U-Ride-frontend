@@ -6,6 +6,7 @@ import 'package:indriver_clone_flutter/src/presentation/pages/client/home/bloc/C
 import 'package:indriver_clone_flutter/src/presentation/pages/client/home/bloc/ClientHomeEvent.dart';
 import 'package:indriver_clone_flutter/src/presentation/pages/profile/info/ProfileInfoPage.dart';
 import 'package:indriver_clone_flutter/src/presentation/pages/roles/RolesPage.dart';
+import 'package:indriver_clone_flutter/src/presentation/pages/admin/userManagement/UserManagementPage.dart';
 
 class AdminHomePage extends StatefulWidget {
   const AdminHomePage({super.key});
@@ -18,7 +19,7 @@ class _AdminHomePageState extends State<AdminHomePage> {
   int _pageIndex = 0;
 
   List<Widget> pageList = <Widget>[
-    Center(child: Text('Gestión de Usuarios - Módulo Administrativo\n(En construcción)', textAlign: TextAlign.center,)),
+    UserManagementPage(),
     Center(child: Text('Gestión de Reportes - Módulo Administrativo\n(En construcción)', textAlign: TextAlign.center,)),
     ProfileInfoPage(),
     RolesPage(),

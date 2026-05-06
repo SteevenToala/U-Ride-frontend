@@ -1,6 +1,6 @@
 abstract class Resource<T> {}
 
-class Loading extends Resource {}
+class Loading<T> extends Resource<T> {}
 class Success<T> extends Resource<T> {
   final T data;
   Success(this.data);

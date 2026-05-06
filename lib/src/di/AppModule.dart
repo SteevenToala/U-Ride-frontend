@@ -30,8 +30,10 @@ import 'package:indriver_clone_flutter/src/domain/useCases/auth/LoginUseCase.dar
 import 'package:indriver_clone_flutter/src/domain/useCases/auth/LogoutUseCase.dart';
 import 'package:indriver_clone_flutter/src/domain/useCases/auth/RegisterUseCase.dart';
 import 'package:indriver_clone_flutter/src/domain/useCases/auth/SaveUserSessionUseCase.dart';
-import 'package:indriver_clone_flutter/src/domain/useCases/auth/ForgotPasswordUseCase.dart';import 'package:indriver_clone_flutter/src/domain/useCases/auth/ValidateResetCodeUseCase.dart';
-import 'package:indriver_clone_flutter/src/domain/useCases/auth/ResetPasswordUseCase.dart';import 'package:indriver_clone_flutter/src/domain/useCases/client-requests/ClientRequestsUseCases.dart';
+import 'package:indriver_clone_flutter/src/domain/useCases/auth/ForgotPasswordUseCase.dart';
+import 'package:indriver_clone_flutter/src/domain/useCases/auth/ValidateResetCodeUseCase.dart';
+import 'package:indriver_clone_flutter/src/domain/useCases/auth/ResetPasswordUseCase.dart';
+import 'package:indriver_clone_flutter/src/domain/useCases/client-requests/ClientRequestsUseCases.dart';
 import 'package:indriver_clone_flutter/src/domain/useCases/client-requests/CreateClientRequestUseCase.dart';
 import 'package:indriver_clone_flutter/src/domain/useCases/client-requests/GetByClientAssignedUseCase%20copy.dart';
 import 'package:indriver_clone_flutter/src/domain/useCases/client-requests/GetByClientRequestUseCase.dart';
@@ -64,6 +66,8 @@ import 'package:indriver_clone_flutter/src/domain/useCases/socket/DisconnectSock
 import 'package:indriver_clone_flutter/src/domain/useCases/socket/SocketUseCases.dart';
 import 'package:indriver_clone_flutter/src/domain/useCases/users/ApproveDriverRoleUseCase.dart';
 import 'package:indriver_clone_flutter/src/domain/useCases/users/GetPendingDriversUseCase.dart';
+import 'package:indriver_clone_flutter/src/domain/useCases/users/GetUsersUseCase.dart';
+import 'package:indriver_clone_flutter/src/domain/useCases/users/SuspendUserUseCase.dart';
 import 'package:indriver_clone_flutter/src/domain/useCases/users/RequestDriverRoleUseCase.dart';
 import 'package:indriver_clone_flutter/src/domain/useCases/users/UpdateNotificationTokenUseCase.dart';
 import 'package:indriver_clone_flutter/src/domain/useCases/users/UpdateUserUseCase.dart';
@@ -156,7 +160,9 @@ abstract class AppModule {
     updateNotificationToken: UpdateNotificationTokenUseCase(usersRepository),
     requestDriverRole: RequestDriverRoleUseCase(usersRepository),
     getPendingDrivers: GetPendingDriversUseCase(usersRepository),
-    approveDriverRole: ApproveDriverRoleUseCase(usersRepository)
+    approveDriverRole: ApproveDriverRoleUseCase(usersRepository),
+    getUsers: GetUsersUseCase(usersRepository),
+    suspendUser: SuspendUserUseCase(usersRepository)
   );
 
   @injectable
