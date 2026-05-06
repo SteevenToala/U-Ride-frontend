@@ -210,24 +210,28 @@ class _RegisterContentState extends State<RegisterContent> {
               controller: _nameController,
               text: 'Nombre', 
               icon: Icons.person_outline,
+              onChanged: (text) => context.read<RegisterBloc>().add(NameChanged(name: BlocFormItem(value: text))),
               margin: EdgeInsets.only(bottom: 15),
             ),
             DefaultTextFieldOutlined(
               controller: _lastnameController,
               text: 'Apellido', 
               icon: Icons.person_2_outlined,
+              onChanged: (text) => context.read<RegisterBloc>().add(LastnameChanged(lastname: BlocFormItem(value: text))),
               margin: EdgeInsets.only(bottom: 15),
             ),
             DefaultTextFieldOutlined(
               controller: _emailController,
               text: 'Correo Institucional', 
               icon: Icons.alternate_email_rounded,
+              onChanged: (text) => context.read<RegisterBloc>().add(EmailChanged(email: BlocFormItem(value: text))),
               margin: EdgeInsets.only(bottom: 15),
             ),
             DefaultTextFieldOutlined(
               controller: _phoneController,
               text: 'Número de Teléfono', 
               icon: Icons.phone_android_rounded,
+              onChanged: (text) => context.read<RegisterBloc>().add(PhoneChanged(phone: BlocFormItem(value: text))),
               margin: EdgeInsets.only(bottom: 15),
             ),
             
@@ -240,6 +244,7 @@ class _RegisterContentState extends State<RegisterContent> {
               controller: _zoneController,
               text: 'Zona de Residencia', 
               icon: Icons.location_on_outlined,
+              onChanged: (text) => context.read<RegisterBloc>().add(ReferenceZoneChanged(referenceZone: BlocFormItem(value: text))),
               margin: EdgeInsets.only(bottom: 15),
             ),
 
@@ -249,6 +254,7 @@ class _RegisterContentState extends State<RegisterContent> {
               text: 'Contraseña', 
               icon: Icons.lock_outline_rounded,
               obscureText: widget.state.isPasswordVisible,
+              onChanged: (text) => context.read<RegisterBloc>().add(PasswordChanged(password: BlocFormItem(value: text))),
               suffixIcon: IconButton(
                 onPressed: () => context.read<RegisterBloc>().add(TogglePasswordVisibility()),
                 icon: Icon(widget.state.isPasswordVisible ? Icons.visibility : Icons.visibility_off, color: Colors.white60),
@@ -260,6 +266,7 @@ class _RegisterContentState extends State<RegisterContent> {
               text: 'Confirmar Contraseña', 
               icon: Icons.lock_reset_rounded,
               obscureText: widget.state.isConfirmPasswordVisible,
+              onChanged: (text) => context.read<RegisterBloc>().add(ConfirmPasswordChanged(confirmPassword: BlocFormItem(value: text))),
               suffixIcon: IconButton(
                 onPressed: () => context.read<RegisterBloc>().add(ToggleConfirmPasswordVisibility()),
                 icon: Icon(widget.state.isConfirmPasswordVisible ? Icons.visibility : Icons.visibility_off, color: Colors.white60),

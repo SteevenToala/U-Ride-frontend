@@ -11,18 +11,17 @@ import 'package:indriver_clone_flutter/src/presentation/utils/BlocFormItem.dart'
 class RegisterBloc extends Bloc<RegisterEvent, RegisterState> {
 
   AuthUseCases authUseCases;
-  final formKey = GlobalKey<FormState>();
-
-  RegisterBloc(this.authUseCases) : super(RegisterState()) {
+  RegisterBloc(this.authUseCases) : super(RegisterState(formKey: GlobalKey<FormState>())) {
     on<RegisterInitEvent>((event, emit) {
-      emit(RegisterState(formKey: formKey));
+      // No longer resetting everything here to prevent image loss
+      emit(state.copyWith(formKey: state.formKey));
     });
 
     on<PickImage>((event, emit) async {
       final ImagePicker picker = ImagePicker();
       final XFile? image = await picker.pickImage(source: ImageSource.gallery);
       if (image != null) {
-        emit(state.copyWith(image: image, formKey: formKey));
+        emit(state.copyWith(image: image));
       }
     });
 
@@ -30,7 +29,7 @@ class RegisterBloc extends Bloc<RegisterEvent, RegisterState> {
       final ImagePicker picker = ImagePicker();
       final XFile? image = await picker.pickImage(source: ImageSource.camera);
       if (image != null) {
-        emit(state.copyWith(image: image, formKey: formKey));
+        emit(state.copyWith(image: image));
       }
     });
 
@@ -39,94 +38,87 @@ class RegisterBloc extends Bloc<RegisterEvent, RegisterState> {
     });
 
     on<NameChanged>((event, emit) {
-      emit(
-        state.copyWith(
+      emit(state.copyWith(
           name: BlocFormItem(
             value: event.name.value,
             error: event.name.value.isEmpty ? 'Ingresa el nombre' : null
           ),
-          selectedFacultad: state.selectedFacultad
-        )
-      );
+          response: null // Clear response on change to avoid toast loops
+      ));
     });
 
     on<LastnameChanged>((event, emit) {
-      emit(
-        state.copyWith(
+      emit(state.copyWith(
           lastname: BlocFormItem(
             value: event.lastname.value,
             error: event.lastname.value.isEmpty ? 'Ingresa el apellido' : null
           ),
-          selectedFacultad: state.selectedFacultad
-        )
-      );
+          response: null
+      ));
     });
 
     on<EmailChanged>((event, emit) {
-      emit(
-        state.copyWith(
-          email: BlocFormItem(
-            value: event.email.value,
-            error: event.email.value.isEmpty 
-              ? 'Ingresa el email' 
-              : !event.email.value.contains('.edu')
-                ? 'Debe ser un correo institucional (.edu)'
-                : null
-          ),
-          selectedFacultad: state.selectedFacultad
-        )
-      );
+      final emailValue = event.email.value;
+      String? error;
+      if (emailValue.isEmpty) {
+        error = 'Ingresa el email';
+      } else if (!emailValue.contains('.edu.ec')) {
+        error = 'Debe ser institucional (.edu.ec)';
+      }
+      
+      emit(state.copyWith(
+          email: BlocFormItem(value: emailValue, error: error),
+          response: null
+      ));
     });
 
     on<PhoneChanged>((event, emit) {
-      emit(
-        state.copyWith(
-          phone: BlocFormItem(
-            value: event.phone.value,
-            error: event.phone.value.isEmpty ? 'Ingresa el telefono' : null
-          ),
-          selectedFacultad: state.selectedFacultad
-        )
-      );
+      final phoneValue = event.phone.value;
+      String? error;
+      if (phoneValue.isEmpty) {
+        error = 'Ingresa el teléfono';
+      } else if (!RegExp(r'^[0-9]+$').hasMatch(phoneValue)) {
+        error = 'Solo números';
+      } else if (phoneValue.length < 10) {
+        error = 'Mínimo 10 dígitos';
+      }
+
+      emit(state.copyWith(
+          phone: BlocFormItem(value: phoneValue, error: error),
+          response: null
+      ));
     });
 
     on<CareerChanged>((event, emit) {
-      emit(
-        state.copyWith(
+      emit(state.copyWith(
           career: BlocFormItem(
             value: event.career.value,
             error: event.career.value.isEmpty ? 'Selecciona tu carrera' : null
           ),
-          selectedFacultad: state.selectedFacultad // Explicitly preserve
-        )
-      );
+          response: null
+      ));
     });
 
     on<FacultadChanged>((event, emit) {
-      emit(
-        state.copyWith(
+      emit(state.copyWith(
           selectedFacultad: event.facultad,
           career: const BlocFormItem(value: ''),
-        )
-      );
+          response: null
+      ));
     });
 
-
     on<ReferenceZoneChanged>((event, emit) {
-      emit(
-        state.copyWith(
+      emit(state.copyWith(
           referenceZone: BlocFormItem(
             value: event.referenceZone.value,
             error: event.referenceZone.value.isEmpty ? 'Ingresa tu zona (ej. Conocoto)' : null
           ),
-          selectedFacultad: state.selectedFacultad
-        )
-      );
+          response: null
+      ));
     });
 
     on<PasswordChanged>((event, emit) {
-      emit(
-        state.copyWith(
+      emit(state.copyWith(
           password: BlocFormItem(
             value: event.password.value,
             error: event.password.value.isEmpty 
@@ -135,14 +127,12 @@ class RegisterBloc extends Bloc<RegisterEvent, RegisterState> {
                 ? 'Mas de 6 caracteres' 
                 : null
           ),
-          selectedFacultad: state.selectedFacultad
-        )
-      );
+          response: null
+      ));
     });
 
     on<ConfirmPasswordChanged>((event, emit) {
-      emit(
-        state.copyWith(
+      emit(state.copyWith(
           confirmPassword: BlocFormItem(
             value: event.confirmPassword.value,
             error: event.confirmPassword.value.isEmpty 
@@ -153,16 +143,14 @@ class RegisterBloc extends Bloc<RegisterEvent, RegisterState> {
                   ? 'Los password no coinciden'
                   : null
           ),
-          selectedFacultad: state.selectedFacultad
-        )
-      );
+          response: null
+      ));
     });
 
     on<FormSubmit>((event, emit) async {
       emit(
         state.copyWith(
           response: Loading(),
-          formKey: formKey
         )
       );
       User userToRegister = event.user ?? state.toUser();
@@ -170,21 +158,25 @@ class RegisterBloc extends Bloc<RegisterEvent, RegisterState> {
       emit(
         state.copyWith(
           response: response,
-          formKey: formKey
         )
       );
     });
 
     on<FormReset>((event, emit) {
       state.formKey?.currentState?.reset();
+      emit(RegisterState(formKey: state.formKey)); // Emit fresh state but keep same formKey
+    });
+
+    on<ResetResponse>((event, emit) {
+      emit(state.copyWith(response: null));
     });
 
     on<TogglePasswordVisibility>((event, emit) {
-      emit(state.copyWith(isPasswordVisible: !state.isPasswordVisible, formKey: formKey));
+      emit(state.copyWith(isPasswordVisible: !state.isPasswordVisible));
     });
 
     on<ToggleConfirmPasswordVisibility>((event, emit) {
-      emit(state.copyWith(isConfirmPasswordVisible: !state.isConfirmPasswordVisible, formKey: formKey));
+      emit(state.copyWith(isConfirmPasswordVisible: !state.isConfirmPasswordVisible));
     });
   }
 }

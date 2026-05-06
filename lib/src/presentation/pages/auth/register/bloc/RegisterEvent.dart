@@ -62,6 +62,7 @@ class FormSubmit extends RegisterInitEvent {
 }
 
 class FormReset extends RegisterInitEvent{}
+class ResetResponse extends RegisterInitEvent {}
 
 class TogglePasswordVisibility extends RegisterInitEvent {}
 class ToggleConfirmPasswordVisibility extends RegisterInitEvent {}
