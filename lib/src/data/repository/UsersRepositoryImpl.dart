@@ -23,4 +23,19 @@ class UsersRepositoryImpl implements UsersRepository {
   Future<Resource<User>> updateNotificationToken(int id, String notificationToken) {
     return usersService.updateNotificationToken(id, notificationToken);
   }
+
+  @override
+  Future<Resource<User>> requestDriverRole(int id) {
+    return usersService.requestDriverRole(id);
+  }
+
+  @override
+  Future<Resource<List<User>>> getPendingDrivers() {
+    return usersService.getPendingDrivers();
+  }
+
+  @override
+  Future<Resource<User>> approveDriverRole(int id) {
+    return usersService.approveDriverRole(id);
+  }
 }

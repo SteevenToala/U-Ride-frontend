@@ -1,4 +1,5 @@
 import 'package:indriver_clone_flutter/src/domain/models/AuthResponse.dart';
+import 'package:indriver_clone_flutter/src/domain/models/user.dart';
 import 'package:indriver_clone_flutter/src/presentation/utils/BlocFormItem.dart';
 
 abstract class RegisterEvent {}
@@ -55,8 +56,15 @@ class SaveUserSession extends RegisterInitEvent {
   SaveUserSession({ required this.authResponse });
 }
 
-class FormSubmit extends RegisterInitEvent {}
+class FormSubmit extends RegisterInitEvent {
+  final User? user; // Optional user to bypass state sync issues
+  FormSubmit({this.user});
+}
+
 class FormReset extends RegisterInitEvent{}
 
 class TogglePasswordVisibility extends RegisterInitEvent {}
 class ToggleConfirmPasswordVisibility extends RegisterInitEvent {}
+
+class PickImage extends RegisterEvent {}
+class TakePhoto extends RegisterEvent {}

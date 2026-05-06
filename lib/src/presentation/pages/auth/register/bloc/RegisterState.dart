@@ -1,3 +1,4 @@
+import 'package:image_picker/image_picker.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:indriver_clone_flutter/src/domain/models/user.dart';
@@ -17,6 +18,7 @@ class RegisterState extends Equatable {
   final String? selectedFacultad;
   final GlobalKey<FormState>? formKey;
   final Resource? response;
+  final XFile? image;
   final bool isPasswordVisible;
   final bool isConfirmPasswordVisible;
 
@@ -32,6 +34,7 @@ class RegisterState extends Equatable {
     this.selectedFacultad,
     this.formKey,
     this.response,
+    this.image,
     this.isPasswordVisible = true,
     this.isConfirmPasswordVisible = true
   });
@@ -43,7 +46,8 @@ class RegisterState extends Equatable {
     phone: phone.value, 
     career: career.value,
     referenceZone: referenceZone.value,
-    password: password.value
+    password: password.value,
+    rolesIds: ['STUDENT']
   );
 
   RegisterState copyWith({
@@ -58,6 +62,7 @@ class RegisterState extends Equatable {
     String? selectedFacultad,
     GlobalKey<FormState>? formKey,
     Resource? response,
+    XFile? image,
     bool? isPasswordVisible,
     bool? isConfirmPasswordVisible
   }) {
@@ -71,14 +76,15 @@ class RegisterState extends Equatable {
       password: password ?? this.password,
       confirmPassword: confirmPassword ?? this.confirmPassword,
       selectedFacultad: selectedFacultad ?? this.selectedFacultad,
-      formKey: formKey,
-      response: response,
+      formKey: formKey ?? this.formKey,
+      response: response ?? this.response,
+      image: image ?? this.image,
       isPasswordVisible: isPasswordVisible ?? this.isPasswordVisible,
       isConfirmPasswordVisible: isConfirmPasswordVisible ?? this.isConfirmPasswordVisible
     );
   } 
 
   @override
-  List<Object?> get props => [name, lastname, email, phone, career, referenceZone, password, confirmPassword, selectedFacultad, response, isPasswordVisible, isConfirmPasswordVisible];
+  List<Object?> get props => [name, lastname, email, phone, career, referenceZone, password, confirmPassword, selectedFacultad, response, image, isPasswordVisible, isConfirmPasswordVisible];
 
 }

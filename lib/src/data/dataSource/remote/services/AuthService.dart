@@ -7,6 +7,10 @@ import 'package:indriver_clone_flutter/src/domain/models/user.dart';
 import 'package:indriver_clone_flutter/src/domain/utils/ListToString.dart';
 import 'package:indriver_clone_flutter/src/domain/utils/Resource.dart';
 
+import 'package:image_picker/image_picker.dart';
+import 'package:path/path.dart' as path;
+import 'package:http_parser/http_parser.dart';
+
 class AuthService {
 
   Future<Resource<AuthResponse>> login(String email, String password) async {
@@ -35,21 +39,52 @@ class AuthService {
     }
   }
 
-   Future<Resource<AuthResponse>> register(User user) async {
+   Future<Resource<AuthResponse>> register(User user, XFile? image) async {
     try {
       Uri url = Uri.http(ApiConfig.API_PROJECT, '/auth/register');
-      Map<String, String> headers = { 'Content-Type': 'application/json' };
-      String body = json.encode(user);
-      final response = await http.post(url, headers: headers, body: body);
-      final data = json.decode(response.body);
-      if (response.statusCode == 200 || response.statusCode == 201) {
-        AuthResponse authResponse = AuthResponse.fromJson(data);
-        print('Data Remote: ${authResponse.toJson()}');
-        print('Token: ${authResponse.token}');
-        return Success(authResponse);
+      
+      if (image == null) {
+        Map<String, String> headers = { 'Content-Type': 'application/json' };
+        String body = json.encode(user);
+        final response = await http.post(url, headers: headers, body: body);
+        final data = json.decode(response.body);
+        if (response.statusCode == 200 || response.statusCode == 201) {
+          AuthResponse authResponse = AuthResponse.fromJson(data);
+          return Success(authResponse);
+        }
+        else {
+          return ErrorData(listToString(data['message']));
+        }
       }
       else {
-        return ErrorData(listToString(data['message']));
+        final bytes = await image.readAsBytes();
+        final request = http.MultipartRequest('POST', url);
+        request.files.add(http.MultipartFile.fromBytes(
+          'file', 
+          bytes,
+          filename: path.basename(image.path),
+          contentType: MediaType('image', 'jpeg')
+        ));
+        request.fields['name'] = user.name;
+        request.fields['lastname'] = user.lastname;
+        request.fields['email'] = user.email ?? '';
+        request.fields['phone'] = user.phone ?? '';
+        request.fields['password'] = user.password ?? '';
+        request.fields['career'] = user.career ?? '';
+        request.fields['reference_zone'] = user.referenceZone ?? '';
+        request.fields['rolesIds'] = user.rolesIds?.join(',') ?? '';
+        
+        final response = await request.send();
+        final responseData = await response.stream.transform(utf8.decoder).join();
+        final data = json.decode(responseData);
+        
+        if (response.statusCode == 200 || response.statusCode == 201) {
+          AuthResponse authResponse = AuthResponse.fromJson(data);
+          return Success(authResponse);
+        }
+        else {
+          return ErrorData(listToString(data['message']));
+        }
       }
       
     } catch (e) {

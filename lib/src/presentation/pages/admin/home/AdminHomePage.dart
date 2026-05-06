@@ -62,6 +62,13 @@ class _AdminHomePageState extends State<AdminHomePage> {
               },
             ),
             ListTile(
+              title: Text('Solicitudes de Conductor'),
+              onTap: () {
+                Navigator.pop(context);
+                Navigator.pushNamed(context, 'admin/driver/approval');
+              },
+            ),
+            ListTile(
               title: Text('Gestión de Reportes'),
               selected: _pageIndex == 1,
               onTap: () {

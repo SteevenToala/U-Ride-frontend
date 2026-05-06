@@ -1,3 +1,4 @@
+import 'package:image_picker/image_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:indriver_clone_flutter/src/domain/models/user.dart';
@@ -14,7 +15,23 @@ class RegisterBloc extends Bloc<RegisterEvent, RegisterState> {
 
   RegisterBloc(this.authUseCases) : super(RegisterState()) {
     on<RegisterInitEvent>((event, emit) {
-      emit(state.copyWith( formKey: formKey ));
+      emit(RegisterState(formKey: formKey));
+    });
+
+    on<PickImage>((event, emit) async {
+      final ImagePicker picker = ImagePicker();
+      final XFile? image = await picker.pickImage(source: ImageSource.gallery);
+      if (image != null) {
+        emit(state.copyWith(image: image, formKey: formKey));
+      }
+    });
+
+    on<TakePhoto>((event, emit) async {
+      final ImagePicker picker = ImagePicker();
+      final XFile? image = await picker.pickImage(source: ImageSource.camera);
+      if (image != null) {
+        emit(state.copyWith(image: image, formKey: formKey));
+      }
     });
 
     on<SaveUserSession>((event, emit) async {
@@ -28,7 +45,7 @@ class RegisterBloc extends Bloc<RegisterEvent, RegisterState> {
             value: event.name.value,
             error: event.name.value.isEmpty ? 'Ingresa el nombre' : null
           ),
-          formKey: formKey
+          selectedFacultad: state.selectedFacultad
         )
       );
     });
@@ -40,7 +57,7 @@ class RegisterBloc extends Bloc<RegisterEvent, RegisterState> {
             value: event.lastname.value,
             error: event.lastname.value.isEmpty ? 'Ingresa el apellido' : null
           ),
-          formKey: formKey
+          selectedFacultad: state.selectedFacultad
         )
       );
     });
@@ -56,7 +73,7 @@ class RegisterBloc extends Bloc<RegisterEvent, RegisterState> {
                 ? 'Debe ser un correo institucional (.edu)'
                 : null
           ),
-          formKey: formKey
+          selectedFacultad: state.selectedFacultad
         )
       );
     });
@@ -68,7 +85,7 @@ class RegisterBloc extends Bloc<RegisterEvent, RegisterState> {
             value: event.phone.value,
             error: event.phone.value.isEmpty ? 'Ingresa el telefono' : null
           ),
-          formKey: formKey
+          selectedFacultad: state.selectedFacultad
         )
       );
     });
@@ -80,7 +97,7 @@ class RegisterBloc extends Bloc<RegisterEvent, RegisterState> {
             value: event.career.value,
             error: event.career.value.isEmpty ? 'Selecciona tu carrera' : null
           ),
-          formKey: formKey
+          selectedFacultad: state.selectedFacultad // Explicitly preserve
         )
       );
     });
@@ -90,10 +107,10 @@ class RegisterBloc extends Bloc<RegisterEvent, RegisterState> {
         state.copyWith(
           selectedFacultad: event.facultad,
           career: const BlocFormItem(value: ''),
-          formKey: formKey
         )
       );
     });
+
 
     on<ReferenceZoneChanged>((event, emit) {
       emit(
@@ -102,7 +119,7 @@ class RegisterBloc extends Bloc<RegisterEvent, RegisterState> {
             value: event.referenceZone.value,
             error: event.referenceZone.value.isEmpty ? 'Ingresa tu zona (ej. Conocoto)' : null
           ),
-          formKey: formKey
+          selectedFacultad: state.selectedFacultad
         )
       );
     });
@@ -118,7 +135,7 @@ class RegisterBloc extends Bloc<RegisterEvent, RegisterState> {
                 ? 'Mas de 6 caracteres' 
                 : null
           ),
-          formKey: formKey
+          selectedFacultad: state.selectedFacultad
         )
       );
     });
@@ -136,27 +153,20 @@ class RegisterBloc extends Bloc<RegisterEvent, RegisterState> {
                   ? 'Los password no coinciden'
                   : null
           ),
-          formKey: formKey
+          selectedFacultad: state.selectedFacultad
         )
       );
     });
 
     on<FormSubmit>((event, emit) async {
-      print('Name: ${state.name.value}');
-      print('LastName: ${state.lastname.value}');
-      print('email: ${state.email.value}');
-      print('phone: ${state.phone.value}');
-      print('career: ${state.career.value}');
-      print('referenceZone: ${state.referenceZone.value}');
-      print('password: ${state.password.value}');
-      print('confirmPassword: ${state.confirmPassword.value}');
       emit(
         state.copyWith(
           response: Loading(),
           formKey: formKey
         )
       );
-      Resource response = await authUseCases.register.run(state.toUser());
+      User userToRegister = event.user ?? state.toUser();
+      Resource response = await authUseCases.register.run(userToRegister, state.image);
       emit(
         state.copyWith(
           response: response,

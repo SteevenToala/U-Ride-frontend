@@ -16,6 +16,15 @@ class RegisterPage extends StatefulWidget {
 }
 
 class _RegisterPageState extends State<RegisterPage> {
+  
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      context.read<RegisterBloc>().add(RegisterInitEvent());
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -28,8 +37,14 @@ class _RegisterPageState extends State<RegisterPage> {
           else if (response is Success) {
             final authResponse = response.data as AuthResponse;
             context.read<RegisterBloc>().add(FormReset());
-            context.read<RegisterBloc>().add(SaveUserSession(authResponse: authResponse));
-            Navigator.pushNamedAndRemoveUntil(context, 'client/home', (route) => false);
+            
+            if (authResponse.user.isApproved == false) {
+              Fluttertoast.showToast(msg: 'Registro exitoso. Tu cuenta de conductor está pendiente de aprobación.', toastLength: Toast.LENGTH_LONG);
+              Navigator.pushNamedAndRemoveUntil(context, 'login', (route) => false);
+            } else {
+              context.read<RegisterBloc>().add(SaveUserSession(authResponse: authResponse));
+              Navigator.pushNamedAndRemoveUntil(context, 'client/home', (route) => false);
+            }
           }
         },
         child: BlocBuilder<RegisterBloc, RegisterState>(

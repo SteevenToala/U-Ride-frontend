@@ -15,6 +15,9 @@ class User {
     DateTime? createdAt;
     DateTime? updatedAt;
     List<Role>? roles;
+    bool? isApproved;
+    bool? isDriverApproved;
+    List<String>? rolesIds;
 
     User({
         this.id,
@@ -30,6 +33,9 @@ class User {
         this.createdAt,
         this.updatedAt,
         this.roles,
+        this.isApproved,
+        this.isDriverApproved,
+        this.rolesIds,
     });
 
     factory User.fromJson(Map<String, dynamic> json) {
@@ -49,6 +55,8 @@ class User {
             image: imagePath,
             password: json['password'],
             notificationToken: json["notification_token"],
+            isApproved: json["is_approved"],
+            isDriverApproved: json["is_driver_approved"],
             roles: json["roles"] != null ? List<Role>.from(json["roles"].map((x) => Role.fromJson(x))) : [],
         );
     }
@@ -64,6 +72,9 @@ class User {
         "image": image,
         'password': password,
         "notification_token": notificationToken,
+        "is_approved": isApproved,
+        "is_driver_approved": isDriverApproved,
+        "rolesIds": rolesIds,
         "roles": roles != null ? List<dynamic>.from(roles!.map((x) => x.toJson())) : [],
     };
 }

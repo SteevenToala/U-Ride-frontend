@@ -3,38 +3,34 @@ import 'package:flutter/material.dart';
 class DefaultTextFieldOutlined extends StatelessWidget {
 
   String text;
-  Function(String text) onChanged;
+  Function(String text)? onChanged; // Made optional since we use controller
   IconData icon;
   EdgeInsetsGeometry margin;
   String? Function(String?)? validator;
   bool obscureText;
   Widget? suffixIcon;
+  TextEditingController? controller; // Added controller support
 
   DefaultTextFieldOutlined({
     required this.text,
     required this.icon,
-    required this.onChanged,
+    this.onChanged,
     this.margin = const EdgeInsets.only(top: 50, left: 20, right: 20),
     this.validator,
     this.obscureText = false,
-    this.suffixIcon
+    this.suffixIcon,
+    this.controller
   });
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 45,
+      // height: 45, // Removed fixed height to avoid overflow with errors
       margin: margin,
-      decoration: BoxDecoration(
-        // color: Color.fromRGBO(255, 255, 255, 0.2),
-        // borderRadius: BorderRadius.only(
-        //   topLeft: Radius.circular(15),
-        //   bottomRight: Radius.circular(15),
-        // )
-      ),
       child: TextFormField(
+        controller: controller,
         onChanged: (text) {
-          onChanged(text);
+          if (onChanged != null) onChanged!(text);
         },
         validator: validator,
         obscureText: obscureText,
@@ -46,8 +42,6 @@ class DefaultTextFieldOutlined extends StatelessWidget {
               color: Colors.white
             ),
           ),
-          
-          // border: InputBorder.none,
           focusedBorder: OutlineInputBorder(
             borderSide: BorderSide(
               color: Color.fromARGB(255, 35, 161, 183),
@@ -60,6 +54,19 @@ class DefaultTextFieldOutlined extends StatelessWidget {
               width: 2
             )
           ),
+          errorBorder: OutlineInputBorder(
+            borderSide: BorderSide(
+              color: Colors.red,
+              width: 2
+            )
+          ),
+          focusedErrorBorder: OutlineInputBorder(
+            borderSide: BorderSide(
+              color: Colors.redAccent,
+              width: 2
+            )
+          ),
+          errorStyle: TextStyle(color: Colors.orangeAccent),
           suffixIcon: suffixIcon,
           prefixIcon: Container(
             margin: EdgeInsets.only(top: 10),
@@ -79,7 +86,6 @@ class DefaultTextFieldOutlined extends StatelessWidget {
             ),
           )
         ),
-        
       ),
     );
   }

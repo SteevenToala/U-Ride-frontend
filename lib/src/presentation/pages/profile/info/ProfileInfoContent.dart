@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:indriver_clone_flutter/src/domain/models/user.dart';
+import 'package:indriver_clone_flutter/src/presentation/pages/profile/info/bloc/ProfileInfoBloc.dart';
+import 'package:indriver_clone_flutter/src/presentation/pages/profile/info/bloc/ProfileInfoEvent.dart';
 
 class ProfileInfoContent extends StatelessWidget {
 
@@ -9,12 +12,29 @@ class ProfileInfoContent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    bool hasDriverRole = user?.roles?.any((rol) => rol.id == 'DRIVER') ?? false;
+    bool isDriverApproved = user?.isDriverApproved ?? false;
+
     return Stack(
       children: [
         Column(
           children: [
             _headerProfile(context),
             Spacer(),
+            if (!hasDriverRole)
+              _actionProfile('QUIERO SER CONDUCTOR', Icons.drive_eta, () {
+                if (user?.id != null) {
+                  context.read<ProfileInfoBloc>().add(RequestDriverRole(id: user!.id!));
+                }
+              }),
+            if (hasDriverRole && !isDriverApproved)
+              Container(
+                margin: EdgeInsets.only(top: 15),
+                child: Text(
+                  'SOLICITUD DE CONDUCTOR PENDIENTE',
+                  style: TextStyle(color: Colors.orange, fontWeight: FontWeight.bold),
+                ),
+              ),
             _actionProfile('EDITAR PERFIL', Icons.edit, () { 
               Navigator.pushNamed(context, 'profile/update', arguments: user);
              }),

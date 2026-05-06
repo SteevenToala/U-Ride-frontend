@@ -1,3 +1,4 @@
+import 'package:image_picker/image_picker.dart';
 import 'package:indriver_clone_flutter/src/data/dataSource/local/SharefPref.dart';
 import 'package:indriver_clone_flutter/src/data/dataSource/remote/services/AuthService.dart';
 import 'package:indriver_clone_flutter/src/domain/models/AuthResponse.dart';
@@ -18,8 +19,8 @@ class AuthRepositoryImpl implements AuthRepository {
   }
 
   @override
-  Future<Resource<AuthResponse>> register(User user) {
-    return authService.register(user);
+  Future<Resource<AuthResponse>> register(User user, XFile? image) {
+    return authService.register(user, image);
   }
   
   @override

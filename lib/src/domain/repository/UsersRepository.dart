@@ -6,5 +6,8 @@ abstract class UsersRepository {
 
   Future<Resource<User>> update(int id, User user, XFile? file);
   Future<Resource<User>> updateNotificationToken(int id, String notificationToken);
+  Future<Resource<User>> requestDriverRole(int id);
+  Future<Resource<List<User>>> getPendingDrivers();
+  Future<Resource<User>> approveDriverRole(int id);
 
 }

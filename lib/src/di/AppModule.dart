@@ -62,6 +62,9 @@ import 'package:indriver_clone_flutter/src/domain/useCases/geolocator/GetPositio
 import 'package:indriver_clone_flutter/src/domain/useCases/socket/ConnectSocketUseCase.dart';
 import 'package:indriver_clone_flutter/src/domain/useCases/socket/DisconnectSocketUseCase.dart';
 import 'package:indriver_clone_flutter/src/domain/useCases/socket/SocketUseCases.dart';
+import 'package:indriver_clone_flutter/src/domain/useCases/users/ApproveDriverRoleUseCase.dart';
+import 'package:indriver_clone_flutter/src/domain/useCases/users/GetPendingDriversUseCase.dart';
+import 'package:indriver_clone_flutter/src/domain/useCases/users/RequestDriverRoleUseCase.dart';
 import 'package:indriver_clone_flutter/src/domain/useCases/users/UpdateNotificationTokenUseCase.dart';
 import 'package:indriver_clone_flutter/src/domain/useCases/users/UpdateUserUseCase.dart';
 import 'package:indriver_clone_flutter/src/domain/useCases/users/UsersUseCases.dart';
@@ -150,7 +153,10 @@ abstract class AppModule {
    @injectable
    UsersUseCases get usersUseCases => UsersUseCases(
     update: UpdateUserUseCase(usersRepository),
-    updateNotificationToken: UpdateNotificationTokenUseCase(usersRepository)
+    updateNotificationToken: UpdateNotificationTokenUseCase(usersRepository),
+    requestDriverRole: RequestDriverRoleUseCase(usersRepository),
+    getPendingDrivers: GetPendingDriversUseCase(usersRepository),
+    approveDriverRole: ApproveDriverRoleUseCase(usersRepository)
   );
 
   @injectable

@@ -15,6 +15,7 @@ import 'package:indriver_clone_flutter/src/presentation/pages/client/home/Client
 import 'package:indriver_clone_flutter/src/presentation/pages/client/mapBookingInfo/ClientMapBookingInfoPage.dart';
 import 'package:indriver_clone_flutter/src/presentation/pages/client/mapTrip/ClientMapTripPage.dart';
 import 'package:indriver_clone_flutter/src/presentation/pages/client/ratingTrip/ClientRatingTripPage.dart';
+import 'package:indriver_clone_flutter/src/presentation/pages/admin/driverApproval/DriverApprovalPage.dart';
 import 'package:indriver_clone_flutter/src/presentation/pages/admin/home/AdminHomePage.dart';
 import 'package:indriver_clone_flutter/src/presentation/pages/driver/clientRequests/DriverClientRequestsPage.dart';
 import 'package:indriver_clone_flutter/src/presentation/pages/driver/home/DriverHomePage.dart';
@@ -80,6 +81,7 @@ class _MyAppState extends State<MyApp> {
           'reset_password': (BuildContext context) => ResetPasswordPage(),
           'roles': (BuildContext context) => RolesPage(),
           'admin/home': (BuildContext context) => AdminHomePage(),
+          'admin/driver/approval': (BuildContext context) => DriverApprovalPage(),
           'client/home': (BuildContext context) => ClientHomePage(),
           'driver/home': (BuildContext context) => DriverHomePage(),
           'client/map/booking': (BuildContext context) => ClientMapBookingInfoPage(),

@@ -61,8 +61,8 @@ class ProfileUpdateState extends Equatable {
       referenceZone: referenceZone ?? this.referenceZone,
       selectedFacultad: selectedFacultad ?? this.selectedFacultad,
       image: image ?? this.image,
-      formKey: formKey,
-      response: response
+      formKey: formKey ?? this.formKey,
+      response: response ?? this.response
     );
   }
 
