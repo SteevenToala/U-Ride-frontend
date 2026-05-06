@@ -142,374 +142,275 @@ class _RegisterContentState extends State<RegisterContent> {
 
     return Form(
       key: widget.state.formKey,
-      child: Stack(
+      child: Container(
+        height: MediaQuery.of(context).size.height,
+        width: MediaQuery.of(context).size.width,
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+            colors: [
+              Color(0xFF0D1B2A),
+              Color(0xFF1B263B),
+              Color(0xFF415A77),
+            ],
+          ),
+        ),
+        child: SingleChildScrollView(
+          child: Column(
+            children: [
+              _header(context),
+              _card(context, facultades, carreras),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _header(BuildContext context) {
+    return Container(
+      padding: EdgeInsets.only(top: 60, bottom: 30),
+      child: Column(
         children: [
-          Container(
-            height: MediaQuery.of(context).size.height,
-            width: MediaQuery.of(context).size.width,
-            padding: EdgeInsets.only(left: 12),
-            decoration: BoxDecoration(
-              gradient: LinearGradient(
-                begin: Alignment.topRight,
-                end: Alignment.bottomLeft,
-                colors: [
-                  Color.fromARGB(255, 12, 38, 145),
-                  Color.fromARGB(255, 34, 156, 249),
-                ]
-              )
-            ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start, 
-              mainAxisAlignment: MainAxisAlignment.center, 
-              children: [
-                _textLoginRotated(context),
-                SizedBox(height: 100),
-                _textRegisterRotated(),
-                SizedBox(height: MediaQuery.of(context).size.height * 0.25),
-              ],
+          _imageUser(context),
+          SizedBox(height: 15),
+          Text(
+            'ÚNETE A U-RIDE',
+            style: TextStyle(
+              fontSize: 24,
+              fontWeight: FontWeight.w900,
+              letterSpacing: 2,
+              color: Colors.white,
             ),
           ),
-          Container(
-            margin: EdgeInsets.only(left: 60, bottom: 35),
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.only(
-                topLeft: Radius.circular(35),
-                bottomLeft: Radius.circular(35)
-              ),
-              gradient: LinearGradient(
-                begin: Alignment.topRight,
-                end: Alignment.bottomLeft,
-                colors: const [
-                  Color.fromARGB(255, 14, 29, 106),
-                  Color.fromARGB(255, 30, 112, 227),
-                ]
-              )
-            ),
-            child: Stack(
-              children: [
-                _imageBackground(context),
-                SingleChildScrollView(
-                  child: Column(
-                    children: [
-                      _imageUser(context),
-                      DefaultTextFieldOutlined(
-                        controller: _nameController,
-                        text: 'Nombre', 
-                        icon: Icons.person_outline,
-                        margin: EdgeInsets.only(left: 50, right: 50, top: 50),
-                        validator: (value) {
-                          if (value == null || value.isEmpty) return 'Ingresa tu nombre';
-                          return null;
-                        },
-                      ),
-                      DefaultTextFieldOutlined(
-                        controller: _lastnameController,
-                        text: 'Apellido', 
-                        icon: Icons.person_2_outlined,
-                        margin: EdgeInsets.only(left: 50, right: 50, top: 15),
-                        validator: (value) {
-                          if (value == null || value.isEmpty) return 'Ingresa tu apellido';
-                          return null;
-                        },
-                      ),
-                      DefaultTextFieldOutlined(
-                        controller: _emailController,
-                        text: 'Email', 
-                        icon: Icons.email_outlined,
-                        margin: EdgeInsets.only(left: 50, right: 50, top: 15),
-                        validator: (value) {
-                          if (value == null || value.isEmpty) return 'Ingresa tu email';
-                          if (!value.contains('.edu')) return 'Debe ser correo institucional (.edu)';
-                          return null;
-                        },
-                      ),
-                      DefaultTextFieldOutlined(
-                        controller: _phoneController,
-                        text: 'Telefono', 
-                        icon: Icons.phone_outlined,
-                        margin: EdgeInsets.only(left: 50, right: 50, top: 15),
-                        validator: (value) {
-                          if (value == null || value.isEmpty) return 'Ingresa tu telefono';
-                          return null;
-                        },
-                      ),
-
-                      // FACULTAD DROPDOWN
-                      Padding(
-                        padding: EdgeInsets.only(left: 50, right: 50, top: 15),
-                        child: DropdownButtonFormField<String>(
-                          value: _selectedFacultad,
-                          validator: (value) => value == null ? 'Selecciona una facultad' : null,
-                          decoration: InputDecoration(
-                            prefixIcon: Icon(Icons.account_balance_outlined, color: Colors.white),
-                            labelText: 'Facultad',
-                            labelStyle: TextStyle(color: Colors.white),
-                            enabledBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.white70)),
-                            focusedBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.white)),
-                          ),
-                          dropdownColor: Color.fromARGB(255, 14, 29, 106),
-                          style: TextStyle(color: Colors.white),
-                          items: facultades.map((f) => DropdownMenuItem(value: f, child: Text(f, style: TextStyle(fontSize: 13), overflow: TextOverflow.ellipsis))).toList(),
-                          onChanged: (val) {
-                            setState(() {
-                              _selectedFacultad = val;
-                              _selectedCarrera = null;
-                            });
-                            context.read<RegisterBloc>().add(FacultadChanged(facultad: val));
-                          },
-                        ),
-                      ),
-
-                      // CARRERA DROPDOWN
-                      Padding(
-                        padding: EdgeInsets.only(left: 50, right: 50, top: 15),
-                        child: DropdownButtonFormField<String>(
-                          key: ValueKey(_selectedFacultad),
-                          value: _selectedCarrera,
-                          validator: (value) => value == null ? 'Selecciona una carrera' : null,
-                          decoration: InputDecoration(
-                            prefixIcon: Icon(Icons.school_outlined, color: Colors.white),
-                            labelText: 'Carrera',
-                            labelStyle: TextStyle(color: Colors.white),
-                            enabledBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.white70)),
-                            focusedBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.white)),
-                          ),
-                          dropdownColor: Color.fromARGB(255, 14, 29, 106),
-                          style: TextStyle(color: Colors.white),
-                          items: carreras.map((c) => DropdownMenuItem(value: c, child: Text(c, style: TextStyle(fontSize: 13), overflow: TextOverflow.ellipsis))).toList(),
-                          onChanged: (val) {
-                             setState(() {
-                               _selectedCarrera = val;
-                             });
-                             context.read<RegisterBloc>().add(CareerChanged(career: BlocFormItem(value: val ?? '')));
-                          },
-                        ),
-                      ),
-
-                      DefaultTextFieldOutlined(
-                        controller: _zoneController,
-                        text: 'Zona de residencia (ej. Conocoto)', 
-                        icon: Icons.map_outlined,
-                        margin: EdgeInsets.only(left: 50, right: 50, top: 15),
-                        validator: (value) {
-                          if (value == null || value.isEmpty) return 'Ingresa tu zona';
-                          return null;
-                        },
-                      ),
-                      DefaultTextFieldOutlined(
-                        controller: _passwordController,
-                        text: 'Password', 
-                        icon: Icons.lock_outlined,
-                        obscureText: widget.state.isPasswordVisible,
-                        suffixIcon: IconButton(
-                          onPressed: () {
-                            context.read<RegisterBloc>().add(TogglePasswordVisibility());
-                          },
-                          icon: Icon(
-                            widget.state.isPasswordVisible ? Icons.visibility : Icons.visibility_off,
-                            color: Colors.white,
-                          ),
-                        ),
-                        margin: EdgeInsets.only(left: 50, right: 50, top: 15),
-                        validator: (value) {
-                          if (value == null || value.length < 6) return 'Mínimo 6 caracteres';
-                          return null;
-                        },
-                      ),
-                      DefaultTextFieldOutlined(
-                        controller: _confirmPasswordController,
-                        text: 'Confirmar Password', 
-                        icon: Icons.lock_outlined,
-                        obscureText: widget.state.isConfirmPasswordVisible,
-                        suffixIcon: IconButton(
-                          onPressed: () {
-                            context.read<RegisterBloc>().add(ToggleConfirmPasswordVisibility());
-                          },
-                          icon: Icon(
-                            widget.state.isConfirmPasswordVisible ? Icons.visibility : Icons.visibility_off,
-                            color: Colors.white,
-                          ),
-                        ),
-                        margin: EdgeInsets.only(left: 50, right: 50, top: 15),
-                        validator: (value) {
-                          if (value != _passwordController.text) return 'Los passwords no coinciden';
-                          return null;
-                        },
-                      ),
-                      
-                      SizedBox(height: 15),
-
-                      DefaultButton(
-                        onPressed: () {
-                          if (widget.state.formKey!.currentState!.validate()) {
-                            // Build user object DIRECTLY from controllers
-                            User userToRegister = User(
-                              name: _nameController.text,
-                              lastname: _lastnameController.text,
-                              email: _emailController.text,
-                              phone: _phoneController.text,
-                              career: _selectedCarrera ?? '',
-                              referenceZone: _zoneController.text,
-                              password: _passwordController.text,
-                              rolesIds: ['STUDENT']
-                            );
-                            
-                            _syncToBloc(); // Still sync for consistency
-                            context.read<RegisterBloc>().add(FormSubmit(user: userToRegister));
-                          }
-                        },
-                        text: 'Crear usuario',
-                        margin: EdgeInsets.only(top: 30 ,left: 60 ,right: 60),
-                      ),
-                      SizedBox(height: 25),
-                      _separatorOr(),
-                       SizedBox(height: 10),
-                      _textIAlreadyHaveAccount(context)
-                    ],
-                  ),
-                ),
-              ],
-            ),
-          ),
-          
         ],
       ),
     );
   }
 
-  Widget _imageBackground(BuildContext context) {
+  Widget _card(BuildContext context, List<String> facultades, List<String> carreras) {
     return Container(
-      alignment: Alignment.bottomCenter,
-      margin: EdgeInsets.only(bottom: 50),
-      child: Image.asset(
-        'assets/img/destination.png',
-        width: MediaQuery.of(context).size.width * 0.6,
-        height: MediaQuery.of(context).size.height * 0.4,
-        opacity: AlwaysStoppedAnimation(0.3),
+      margin: EdgeInsets.only(left: 25, right: 25, bottom: 40),
+      padding: EdgeInsets.all(25),
+      decoration: BoxDecoration(
+        color: Colors.white.withOpacity(0.08),
+        borderRadius: BorderRadius.circular(30),
+        border: Border.all(color: Colors.white.withOpacity(0.1)),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          _loginRegisterToggle(context),
+          SizedBox(height: 25),
+          _textLabel('Información Personal'),
+          DefaultTextFieldOutlined(
+            controller: _nameController,
+            text: 'Nombre', 
+            icon: Icons.person_outline,
+            margin: EdgeInsets.only(bottom: 15),
+          ),
+          DefaultTextFieldOutlined(
+            controller: _lastnameController,
+            text: 'Apellido', 
+            icon: Icons.person_2_outlined,
+            margin: EdgeInsets.only(bottom: 15),
+          ),
+          DefaultTextFieldOutlined(
+            controller: _emailController,
+            text: 'Correo Institucional', 
+            icon: Icons.alternate_email_rounded,
+            margin: EdgeInsets.only(bottom: 15),
+          ),
+          DefaultTextFieldOutlined(
+            controller: _phoneController,
+            text: 'Número de Teléfono', 
+            icon: Icons.phone_android_rounded,
+            margin: EdgeInsets.only(bottom: 15),
+          ),
+          
+          _textLabel('Información Académica'),
+          _dropdownFacultad(facultades),
+          SizedBox(height: 15),
+          _dropdownCarrera(carreras),
+          SizedBox(height: 15),
+          DefaultTextFieldOutlined(
+            controller: _zoneController,
+            text: 'Zona de Residencia', 
+            icon: Icons.location_on_outlined,
+            margin: EdgeInsets.only(bottom: 15),
+          ),
+
+          _textLabel('Seguridad'),
+          DefaultTextFieldOutlined(
+            controller: _passwordController,
+            text: 'Contraseña', 
+            icon: Icons.lock_outline_rounded,
+            obscureText: widget.state.isPasswordVisible,
+            suffixIcon: IconButton(
+              onPressed: () => context.read<RegisterBloc>().add(TogglePasswordVisibility()),
+              icon: Icon(widget.state.isPasswordVisible ? Icons.visibility : Icons.visibility_off, color: Colors.white60),
+            ),
+            margin: EdgeInsets.only(bottom: 15),
+          ),
+          DefaultTextFieldOutlined(
+            controller: _confirmPasswordController,
+            text: 'Confirmar Contraseña', 
+            icon: Icons.lock_reset_rounded,
+            obscureText: widget.state.isConfirmPasswordVisible,
+            suffixIcon: IconButton(
+              onPressed: () => context.read<RegisterBloc>().add(ToggleConfirmPasswordVisibility()),
+              icon: Icon(widget.state.isConfirmPasswordVisible ? Icons.visibility : Icons.visibility_off, color: Colors.white60),
+            ),
+            margin: EdgeInsets.only(bottom: 30),
+          ),
+
+          DefaultButton(
+            text: 'CREAR CUENTA',
+            color: Color(0xFF00B4D8),
+            onPressed: () {
+              if (widget.state.formKey!.currentState!.validate()) {
+                User userToRegister = User(
+                  name: _nameController.text,
+                  lastname: _lastnameController.text,
+                  email: _emailController.text,
+                  phone: _phoneController.text,
+                  career: _selectedCarrera ?? '',
+                  referenceZone: _zoneController.text,
+                  password: _passwordController.text,
+                  rolesIds: ['STUDENT']
+                );
+                _syncToBloc();
+                context.read<RegisterBloc>().add(FormSubmit(user: userToRegister));
+              }
+            },
+          ),
+          SizedBox(height: 20),
+          _textIAlreadyHaveAccount(context),
+        ],
       ),
     );
   }
 
-  Widget _textIAlreadyHaveAccount(BuildContext context) {
+  Widget _loginRegisterToggle(BuildContext context) {
     return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        Text(
-          'Ya tienes cuenta?',
-          style: TextStyle(
-            color: Colors.grey[100],
-            fontSize: 16
-          ),
-        ),
-        SizedBox(width: 5),
         GestureDetector(
-          onTap: () {
-            Navigator.pop(context);
-          },
-          child: Text(
-            'Inicia sesion',
-            style: TextStyle(
-              color: Colors.white,
-              fontWeight: FontWeight.bold,
-              fontSize: 16
-            ),
-          ),
+          onTap: () => Navigator.pop(context),
+          child: Text('Ingreso', style: TextStyle(color: Colors.white54, fontSize: 24, fontWeight: FontWeight.bold)),
+        ),
+        SizedBox(width: 30),
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text('Registro', style: TextStyle(color: Colors.white, fontSize: 24, fontWeight: FontWeight.bold)),
+            Container(height: 4, width: 40, color: Color(0xFF00B4D8), margin: EdgeInsets.only(top: 4)),
+          ],
         ),
       ],
     );
   }
 
-  Widget _separatorOr() {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        Container(
-          width: 25,
-          height: 1,
-          color: Colors.white,
-          margin: EdgeInsets.only(right: 5),
-        ),
-        Text(
-          'O',
-          style: TextStyle(
-            color: Colors.white,
-            fontSize: 17
-          ),
-        ),
-         Container(
-          width: 25,
-          height: 1,
-          color: Colors.white,
-          margin: EdgeInsets.only(left: 5),
-        ),
-      ],
+  Widget _textLabel(String text) {
+    return Padding(
+      padding: EdgeInsets.only(left: 5, bottom: 12, top: 10),
+      child: Text(text, style: TextStyle(color: Color(0xFF00B4D8), fontSize: 13, fontWeight: FontWeight.bold, letterSpacing: 1)),
+    );
+  }
+
+  Widget _dropdownFacultad(List<String> facultades) {
+    return DropdownButtonFormField<String>(
+      value: _selectedFacultad,
+      decoration: InputDecoration(
+        prefixIcon: Icon(Icons.account_balance_outlined, color: Colors.white70),
+        labelText: 'Facultad',
+        labelStyle: TextStyle(color: Colors.white70),
+        border: OutlineInputBorder(borderRadius: BorderRadius.circular(15), borderSide: BorderSide(color: Colors.white24)),
+        enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(15), borderSide: BorderSide(color: Colors.white24)),
+      ),
+      dropdownColor: Color(0xFF1B263B),
+      style: TextStyle(color: Colors.white),
+      items: facultades.map((f) => DropdownMenuItem(value: f, child: Text(f, style: TextStyle(fontSize: 12), overflow: TextOverflow.ellipsis))).toList(),
+      onChanged: (val) {
+        setState(() { _selectedFacultad = val; _selectedCarrera = null; });
+        context.read<RegisterBloc>().add(FacultadChanged(facultad: val));
+      },
+    );
+  }
+
+  Widget _dropdownCarrera(List<String> carreras) {
+    return DropdownButtonFormField<String>(
+      key: ValueKey(_selectedFacultad),
+      value: _selectedCarrera,
+      decoration: InputDecoration(
+        prefixIcon: Icon(Icons.school_outlined, color: Colors.white70),
+        labelText: 'Carrera',
+        labelStyle: TextStyle(color: Colors.white70),
+        border: OutlineInputBorder(borderRadius: BorderRadius.circular(15), borderSide: BorderSide(color: Colors.white24)),
+        enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(15), borderSide: BorderSide(color: Colors.white24)),
+      ),
+      dropdownColor: Color(0xFF1B263B),
+      style: TextStyle(color: Colors.white),
+      items: carreras.map((c) => DropdownMenuItem(value: c, child: Text(c, style: TextStyle(fontSize: 12), overflow: TextOverflow.ellipsis))).toList(),
+      onChanged: (val) {
+        setState(() { _selectedCarrera = val; });
+        context.read<RegisterBloc>().add(CareerChanged(career: BlocFormItem(value: val ?? '')));
+      },
     );
   }
 
   Widget _imageUser(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        GalleryOrPhotoDialog(
-          context, 
-          () => { context.read<RegisterBloc>().add(PickImage()) }, 
-          () => { context.read<RegisterBloc>().add(TakePhoto()) }
+        GalleryOrPhotoDialog(context, 
+          () => context.read<RegisterBloc>().add(PickImage()), 
+          () => context.read<RegisterBloc>().add(TakePhoto())
         );
       },
-      child: Container(
-        width: 115,
-        margin: EdgeInsets.only(top: 60, bottom: 0),
-        child: AspectRatio(
-          aspectRatio: 1,
-          child: ClipOval(
-            child: widget.state.image != null 
-            ? kIsWeb 
-              ? Image.network(
-                widget.state.image!.path,
-                fit: BoxFit.cover,
-              )
-              : Image.file(
-                io.File(widget.state.image!.path),
-                fit: BoxFit.cover,
-              )
-            : Image.asset(
-              'assets/img/user_image.png',
+      child: Stack(
+        children: [
+          Container(
+            width: 110,
+            height: 110,
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              border: Border.all(color: Color(0xFF00B4D8), width: 3),
+              boxShadow: [BoxShadow(color: Colors.black26, blurRadius: 10, offset: Offset(0, 5))]
+            ),
+            child: ClipOval(
+              child: widget.state.image != null 
+                ? Image.file(io.File(widget.state.image!.path), fit: BoxFit.cover)
+                : Container(color: Colors.white10, child: Icon(Icons.person, size: 60, color: Colors.white24)),
             ),
           ),
-        ),
+          Positioned(
+            bottom: 0,
+            right: 0,
+            child: Container(
+              padding: EdgeInsets.all(8),
+              decoration: BoxDecoration(color: Color(0xFF00B4D8), shape: BoxShape.circle),
+              child: Icon(Icons.camera_alt_rounded, color: Colors.white, size: 20),
+            ),
+          )
+        ],
       ),
     );
   }
 
-  Widget _textRegisterRotated() {
-    return RotatedBox(
-      quarterTurns: 1,
-      child: Text(
-        'Registro',
-        style: TextStyle(
-          fontSize: 27,
-          color: Colors.white,
-          fontWeight: FontWeight.bold
-        ),
-      ),
-    );
-  }
-
-  Widget _textLoginRotated(BuildContext context) {
-    return GestureDetector(
-      onTap: () {
-        Navigator.pop(context);
-      },
-      child: RotatedBox(
-        quarterTurns: 1,
-        child: Text(
-          'Login',
-          style: TextStyle(
-            fontSize: 24,
-            color: Colors.white,
+  Widget _textIAlreadyHaveAccount(BuildContext context) {
+    return Center(
+      child: GestureDetector(
+        onTap: () => Navigator.pop(context),
+        child: RichText(
+          text: TextSpan(
+            text: '¿Ya tienes cuenta? ',
+            style: TextStyle(color: Colors.white60, fontSize: 14),
+            children: [
+              TextSpan(text: 'Inicia Sesión', style: TextStyle(color: Color(0xFF00B4D8), fontWeight: FontWeight.bold))
+            ]
           ),
         ),
       ),
     );
   }
-
 }
