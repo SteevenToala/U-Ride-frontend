@@ -44,7 +44,7 @@ class _LoginPageState extends State<LoginPage> {
               Navigator.pushNamedAndRemoveUntil(context, 'roles', (route) => false);
             }
             else {
-              Navigator.pushNamedAndRemoveUntil(context, 'client/home', (route) => false);
+              Navigator.pushNamedAndRemoveUntil(context, authResponse.user.roles![0].route, (route) => false);
             }
           }
         },

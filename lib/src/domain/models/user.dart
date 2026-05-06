@@ -5,7 +5,7 @@ class User {
     String name;
     String lastname;
     String? email;
-    String phone;
+    String? phone;
     String? password;
     String? image;
     String? career;
@@ -20,7 +20,7 @@ class User {
         required this.name,
         required this.lastname,
         this.email,
-        required this.phone,
+        this.phone,
         this.image,
         this.career,
         this.referenceZone,

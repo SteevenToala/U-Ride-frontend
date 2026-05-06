@@ -137,11 +137,7 @@ class _DriverHomePageState extends State<DriverHomePage> {
                   onTap: () {
                     context.read<DriverHomeBloc>().add(Logout());
                     context.read<BlocSocketIO>().add(DisconnectSocketIO());
-                    Navigator.pushAndRemoveUntil(
-                      context, 
-                      MaterialPageRoute(builder: (context) => MyApp()), 
-                      (route) => false
-                    );
+                    Navigator.pushNamedAndRemoveUntil(context, 'login', (route) => false);
                   },
                 )
               ],

@@ -80,7 +80,7 @@ class UsersService {
       ));
       request.fields['name'] = user.name;
       request.fields['lastname'] = user.lastname;
-      request.fields['phone'] = user.phone;
+      request.fields['phone'] = user.phone ?? '';
       final response = await request.send();
       final data = json.decode(await response.stream.transform(utf8.decoder).first);
       if (response.statusCode == 200 || response.statusCode == 201) {
