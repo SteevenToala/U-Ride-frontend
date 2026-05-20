@@ -132,7 +132,7 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
               onPressed: () => Navigator.pop(context),
             ),
           ),
-          Icon(Icons.mark_email_read_rounded, size: 70, color: Color(0xFF00B4D8)),
+          Icon(Icons.mark_email_read_rounded, size: 70, color: Color(0xFF00C896)),
           SizedBox(height: 15),
           Text(
             'RESTABLECER',
@@ -186,7 +186,7 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
               obscureText: isPasswordVisible,
               suffixIcon: IconButton(
                 onPressed: () => setState(() { isPasswordVisible = !isPasswordVisible; }),
-                icon: Icon(isPasswordVisible ? Icons.visibility : Icons.visibility_off, color: Color(0xFF00B4D8)),
+                icon: Icon(isPasswordVisible ? Icons.visibility : Icons.visibility_off, color: Color(0xFF00C896)),
               ),
               text: 'Mínimo 6 caracteres', 
               icon: Icons.lock_outline_rounded,
@@ -198,17 +198,17 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
               obscureText: isConfirmPasswordVisible,
               suffixIcon: IconButton(
                 onPressed: () => setState(() { isConfirmPasswordVisible = !isConfirmPasswordVisible; }),
-                icon: Icon(isConfirmPasswordVisible ? Icons.visibility : Icons.visibility_off, color: Color(0xFF00B4D8)),
+                icon: Icon(isConfirmPasswordVisible ? Icons.visibility : Icons.visibility_off, color: Color(0xFF00C896)),
               ),
               text: 'Repite tu contraseña', 
               icon: Icons.lock_reset_rounded,
             ),
             SizedBox(height: 40),
             isLoading 
-              ? Center(child: CircularProgressIndicator(color: Color(0xFF00B4D8))) 
+              ? Center(child: CircularProgressIndicator(color: Color(0xFF00C896))) 
               : DefaultButton(
                   text: 'CAMBIAR CONTRASEÑA',
-                  color: Color(0xFF00B4D8),
+                  color: Color(0xFF00C896),
                   onPressed: () => _resetPassword(),
                 ),
           ],

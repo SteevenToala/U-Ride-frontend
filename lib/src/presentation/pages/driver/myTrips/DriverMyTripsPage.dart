@@ -112,7 +112,11 @@ class _DriverMyTripsPageState extends State<DriverMyTripsPage> {
                       context,
                       'driver/shared-trips/reservations',
                       arguments: {'trip': currentTrip},
-                    ),
+                    ).then((_) {
+                      if (_driverId != null) {
+                        context.read<DriverMyTripsBloc>().add(LoadMyTrips(idDriver: _driverId!));
+                      }
+                    }),
                     onViewRoute: (currentTrip.originLat != null && currentTrip.originLat != 0.0)
                         ? () => Navigator.pushNamed(
                               context,
@@ -267,7 +271,9 @@ class _TripCard extends StatelessWidget {
                 _infoRow(
                   Icons.people,
                   'Cupos',
-                  '${trip.availableSeats}/${trip.totalSeats} disponibles',
+                  trip.isFinished || trip.isCancelled
+                      ? '${trip.totalSeats - trip.availableSeats}/${trip.totalSeats} ocupados'
+                      : '${trip.availableSeats}/${trip.totalSeats} disponibles',
                 ),
                 if (trip.notes != null && trip.notes!.isNotEmpty) ...[
                   const SizedBox(height: 8),

@@ -39,6 +39,7 @@ class DriverPublishTripBloc extends Bloc<DriverPublishTripEvent, DriverPublishTr
       isEditing: true,
       editingTripId: trip.id,
       originalAvailableSeats: trip.availableSeats, // Preservar cupos disponibles reales
+      originalTotalSeats: trip.totalSeats,
     ));
   }
 
@@ -74,8 +75,14 @@ class DriverPublishTripBloc extends Bloc<DriverPublishTripEvent, DriverPublishTr
     }
     emit(state.copyWith(isLoading: true, response: Loading()));
     final newTotalSeats = int.tryParse(state.totalSeats) ?? 1;
-    // Preservar los cupos disponibles del viaje original (no sobreescribir con totalSeats)
-    final availableSeats = state.originalAvailableSeats ?? newTotalSeats;
+    final int originalTotal = state.originalTotalSeats ?? newTotalSeats;
+    final int originalAvailable = state.originalAvailableSeats ?? newTotalSeats;
+    
+    // Si incrementa o disminuye los cupos totales, ajustar también los cupos disponibles correspondientemente
+    final int difference = newTotalSeats - originalTotal;
+    int availableSeats = originalAvailable + difference;
+    if (availableSeats < 0) availableSeats = 0; // Evitar cupos negativos si reduce drásticamente
+
     final trip = SharedTrip(
       idDriver: event.idDriver,
       originZone: state.originZone,

@@ -101,7 +101,7 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
               onPressed: () => Navigator.pop(context),
             ),
           ),
-          Icon(Icons.lock_reset_rounded, size: 80, color: Color(0xFF00B4D8)),
+          Icon(Icons.lock_reset_rounded, size: 80, color: Color(0xFF00C896)),
           SizedBox(height: 15),
           Text(
             'RECUPERACIÓN',
@@ -152,10 +152,10 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
             ),
             SizedBox(height: 40),
             isLoading 
-              ? Center(child: CircularProgressIndicator(color: Color(0xFF00B4D8))) 
+              ? Center(child: CircularProgressIndicator(color: Color(0xFF00C896))) 
               : DefaultButton(
                   text: 'ENVIAR ENLACE',
-                  color: Color(0xFF00B4D8),
+                  color: Color(0xFF00C896),
                   onPressed: () => _sendEmail(),
                 ),
           ],

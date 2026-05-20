@@ -377,7 +377,7 @@ class _RegisterContentState extends State<RegisterContent> {
                 width: double.infinity,
                 child: DefaultButton(
                   text: 'CREAR CUENTA',
-                  color: Color(0xFF00B4D8),
+                  color: Color(0xFF00C896),
                   onPressed: () {
                     if (widget.state.formKey!.currentState!.validate()) {
                       User userToRegister = User(
@@ -417,7 +417,7 @@ class _RegisterContentState extends State<RegisterContent> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text('Registro', style: TextStyle(color: Colors.white, fontSize: 24, fontWeight: FontWeight.bold)),
-            Container(height: 4, width: 40, color: Color(0xFF00B4D8), margin: EdgeInsets.only(top: 4)),
+            Container(height: 4, width: 40, color: Color(0xFF00C896), margin: EdgeInsets.only(top: 4)),
           ],
         ),
       ],
@@ -427,7 +427,7 @@ class _RegisterContentState extends State<RegisterContent> {
   Widget _textLabel(String text) {
     return Padding(
       padding: EdgeInsets.only(left: 5, bottom: 12, top: 10),
-      child: Text(text, style: TextStyle(color: Color(0xFF00B4D8), fontSize: 13, fontWeight: FontWeight.bold, letterSpacing: 1)),
+      child: Text(text, style: TextStyle(color: Color(0xFF00C896), fontSize: 13, fontWeight: FontWeight.bold, letterSpacing: 1)),
     );
   }
 
@@ -495,7 +495,7 @@ class _RegisterContentState extends State<RegisterContent> {
             height: 110,
             decoration: BoxDecoration(
               shape: BoxShape.circle,
-              border: Border.all(color: Color(0xFF00B4D8), width: 3),
+              border: Border.all(color: Color(0xFF00C896), width: 3),
               boxShadow: [BoxShadow(color: Colors.black26, blurRadius: 10, offset: Offset(0, 5))]
             ),
             child: ClipOval(
@@ -511,7 +511,7 @@ class _RegisterContentState extends State<RegisterContent> {
             right: 0,
             child: Container(
               padding: EdgeInsets.all(8),
-              decoration: BoxDecoration(color: Color(0xFF00B4D8), shape: BoxShape.circle),
+              decoration: BoxDecoration(color: Color(0xFF00C896), shape: BoxShape.circle),
               child: Icon(Icons.camera_alt_rounded, color: Colors.white, size: 20),
             ),
           )
@@ -529,7 +529,7 @@ class _RegisterContentState extends State<RegisterContent> {
             text: '¿Ya tienes cuenta? ',
             style: TextStyle(color: Colors.white60, fontSize: 14),
             children: [
-              TextSpan(text: 'Inicia Sesión', style: TextStyle(color: Color(0xFF00B4D8), fontWeight: FontWeight.bold))
+              TextSpan(text: 'Inicia Sesión', style: TextStyle(color: Color(0xFF00C896), fontWeight: FontWeight.bold))
             ]
           ),
         ),

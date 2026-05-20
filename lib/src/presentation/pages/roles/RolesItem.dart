@@ -27,9 +27,9 @@ class RolesItem extends StatelessWidget {
               height: 70,
               width: 70,
               decoration: BoxDecoration(
-                color: Color(0xFF00B4D8).withOpacity(0.2),
+                color: Color(0xFF00C896).withOpacity(0.2),
                 shape: BoxShape.circle,
-                border: Border.all(color: Color(0xFF00B4D8), width: 2),
+                border: Border.all(color: Color(0xFF00C896), width: 2),
               ),
               child: Icon(
                 role.id == 'STUDENT' ? Icons.school_rounded : Icons.directions_car_rounded,
@@ -59,7 +59,7 @@ class RolesItem extends StatelessWidget {
                 ],
               ),
             ),
-            Icon(Icons.arrow_forward_ios_rounded, color: Color(0xFF00B4D8), size: 20),
+            Icon(Icons.arrow_forward_ios_rounded, color: Color(0xFF00C896), size: 20),
           ],
         ),
       ),

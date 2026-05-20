@@ -77,7 +77,7 @@ class _DriverReservationsPageState extends State<DriverReservationsPage> {
 
             return Column(
               children: [
-                _summaryBar(pending, accepted, dynamicAvailableSeats, widget.trip.totalSeats),
+                _summaryBar(pending, accepted, dynamicAvailableSeats, widget.trip.totalSeats, widget.trip.isFinished || widget.trip.isCancelled),
                 Expanded(
                   child: ListView.builder(
                     padding: const EdgeInsets.all(16),
@@ -116,7 +116,7 @@ class _DriverReservationsPageState extends State<DriverReservationsPage> {
     );
   }
 
-  Widget _summaryBar(int pending, int accepted, int available, int total) {
+  Widget _summaryBar(int pending, int accepted, int available, int total, bool isFinished) {
     return Container(
       margin: const EdgeInsets.all(16),
       padding: const EdgeInsets.all(16),
@@ -129,7 +129,7 @@ class _DriverReservationsPageState extends State<DriverReservationsPage> {
         children: [
           _statItem('Pendientes', pending.toString(), const Color(0xFFF59E0B)),
           _statItem('Aceptados', accepted.toString(), const Color(0xFF00C896)),
-          _statItem('Cupos libres', '$available / $total', const Color(0xFF3B82F6)),
+          _statItem(isFinished ? 'Cupos ocupados' : 'Cupos libres', isFinished ? '${total - available} / $total' : '$available / $total', const Color(0xFF3B82F6)),
         ],
       ),
     );

@@ -50,7 +50,7 @@ class _RolesPageState extends State<RolesPage> {
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Icon(Icons.supervised_user_circle_rounded, size: 80, color: Color(0xFF00B4D8)),
+                      Icon(Icons.supervised_user_circle_rounded, size: 80, color: Color(0xFF00C896)),
                       SizedBox(height: 20),
                       Text(
                         'SELECCIONA UN ROL',

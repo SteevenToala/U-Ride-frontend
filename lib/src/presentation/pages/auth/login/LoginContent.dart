@@ -46,7 +46,7 @@ class LoginContent extends StatelessWidget {
       padding: EdgeInsets.only(top: MediaQuery.of(context).size.height * 0.05, bottom: 20),
       child: Column(
         children: [
-          Icon(Icons.directions_car_filled_rounded, size: 80, color: Color(0xFF00B4D8)),
+          Icon(Icons.directions_car_filled_rounded, size: 80, color: Color(0xFF00C896)),
           SizedBox(height: 15),
           Text(
             'U-RIDE',
@@ -109,7 +109,7 @@ class LoginContent extends StatelessWidget {
                 },
                 icon: Icon(
                   state.isPasswordVisible ? Icons.visibility_rounded : Icons.visibility_off_rounded,
-                  color: Color(0xFF00B4D8),
+                  color: Color(0xFF00C896),
                 ),
               ),
               text: 'Tu contraseña', 
@@ -140,7 +140,7 @@ class LoginContent extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text('Ingreso', style: TextStyle(color: Colors.white, fontSize: 24, fontWeight: FontWeight.bold)),
-            Container(height: 4, width: 40, color: Color(0xFF00B4D8), margin: EdgeInsets.only(top: 4)),
+            Container(height: 4, width: 40, color: Color(0xFF00C896), margin: EdgeInsets.only(top: 4)),
           ],
         ),
         SizedBox(width: 30),
@@ -168,7 +168,7 @@ class LoginContent extends StatelessWidget {
         onTap: () => Navigator.pushNamed(context, 'forgot_password'),
         child: Text(
           '¿Olvidaste tu contraseña?',
-          style: TextStyle(color: Color(0xFF00B4D8), fontWeight: FontWeight.bold, fontSize: 13),
+          style: TextStyle(color: Color(0xFF00C896), fontWeight: FontWeight.bold, fontSize: 13),
         ),
       ),
     );
