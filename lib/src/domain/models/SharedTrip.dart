@@ -80,6 +80,7 @@ class SharedTrip {
       case 'ACTIVE':
         return TripStatus.ACTIVE;
       case 'FINISHED':
+      case 'COMPLETED': // Alias defensivo por registros previos en BD
         return TripStatus.FINISHED;
       case 'CANCELLED':
         return TripStatus.CANCELLED;

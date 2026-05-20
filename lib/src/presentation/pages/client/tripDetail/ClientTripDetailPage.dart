@@ -180,7 +180,8 @@ class _ClientTripDetailPageState extends State<ClientTripDetailPage> {
             const SizedBox(height: 16),
             _rulesCard(),
             const SizedBox(height: 30),
-            if (trip.hasAvailableSeats)
+            // Solo se puede reservar si el viaje está PROGRAMADO y tiene cupos
+            if (trip.isScheduled && trip.hasAvailableSeats)
               SizedBox(
                 width: double.infinity,
                 height: 52,
@@ -201,24 +202,14 @@ class _ClientTripDetailPageState extends State<ClientTripDetailPage> {
                   ),
                 ),
               )
-            else
-              Container(
-                width: double.infinity,
-                padding: const EdgeInsets.all(16),
-                decoration: BoxDecoration(
-                  color: Colors.redAccent.withOpacity(0.15),
-                  borderRadius: BorderRadius.circular(14),
-                  border: Border.all(color: Colors.redAccent.withOpacity(0.4)),
-                ),
-                child: const Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Icon(Icons.no_meeting_room, color: Colors.redAccent),
-                    SizedBox(width: 8),
-                    Text('Sin cupos disponibles', style: TextStyle(color: Colors.redAccent, fontWeight: FontWeight.bold)),
-                  ],
-                ),
-              ),
+            else if (trip.isScheduled && !trip.hasAvailableSeats)
+              _statusBanner(Icons.no_meeting_room, 'Sin cupos disponibles', Colors.redAccent)
+            else if (trip.isActive)
+              _statusBanner(Icons.directions_car, 'Viaje en curso — ya no acepta reservas', const Color(0xFF3B82F6))
+            else if (trip.isFinished)
+              _statusBanner(Icons.check_circle, 'Este viaje ya fue completado', const Color(0xFF00C896))
+            else if (trip.isCancelled)
+              _statusBanner(Icons.cancel, 'Este viaje fue cancelado', Colors.redAccent),
             const SizedBox(height: 20),
           ],
         ),
@@ -428,6 +419,28 @@ class _ClientTripDetailPageState extends State<ClientTripDetailPage> {
                   ],
                 ),
               )),
+        ],
+      ),
+    );
+  }
+
+  Widget _statusBanner(IconData icon, String message, Color color) {
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: color.withOpacity(0.12),
+        borderRadius: BorderRadius.circular(14),
+        border: Border.all(color: color.withOpacity(0.4)),
+      ),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Icon(icon, color: color),
+          const SizedBox(width: 10),
+          Expanded(
+            child: Text(message, style: TextStyle(color: color, fontWeight: FontWeight.bold, fontSize: 14)),
+          ),
         ],
       ),
     );

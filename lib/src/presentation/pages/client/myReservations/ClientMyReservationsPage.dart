@@ -106,8 +106,11 @@ class _ClientMyReservationsPageState extends State<ClientMyReservationsPage> wit
                 : TabBarView(
                     controller: _tabController,
                     children: [
-                      _reservationsList(_filtered(ReservationStatus.PENDING), useCases, canCancel: true),
-                      _reservationsList(_filtered(ReservationStatus.ACCEPTED), useCases, canCancel: true),
+                      // Solo se puede cancelar si el viaje aún está PROGRAMADO
+                      _reservationsList(_filtered(ReservationStatus.PENDING), useCases,
+                          canCancelFn: (r) => r.trip?.isScheduled ?? false),
+                      _reservationsList(_filtered(ReservationStatus.ACCEPTED), useCases,
+                          canCancelFn: (r) => r.trip?.isScheduled ?? false),
                       _historyList(),
                     ],
                   ),
@@ -117,7 +120,12 @@ class _ClientMyReservationsPageState extends State<ClientMyReservationsPage> wit
     );
   }
 
-  Widget _reservationsList(List<TripReservation> items, TripReservationsUseCases? useCases, {bool canCancel = false}) {
+  Widget _reservationsList(
+    List<TripReservation> items,
+    TripReservationsUseCases? useCases, {
+    bool canCancel = false,
+    bool Function(TripReservation)? canCancelFn,
+  }) {
     if (items.isEmpty) {
       return Center(
         child: Column(
@@ -139,9 +147,12 @@ class _ClientMyReservationsPageState extends State<ClientMyReservationsPage> wit
         itemCount: items.length,
         itemBuilder: (context, i) {
           final r = items[i];
+          // Cancelación permitida solo si el viaje sigue PROGRAMADO
+          final allowCancel = useCases != null &&
+              (canCancelFn != null ? canCancelFn(r) : canCancel);
           return _MyReservationCard(
             reservation: r,
-            onCancel: canCancel && useCases != null ? () => _cancelReservation(r, useCases) : null,
+            onCancel: allowCancel ? () => _cancelReservation(r, useCases!) : null,
           );
         },
       ),

@@ -134,6 +134,10 @@ class _MyAppState extends State<MyApp> {
             final destination = args['destination'] as PlacemarkData?;
             return TripMapPickerPage(title: args['title'] as String, initialOrigin: origin, initialDestination: destination);
           },
+          'driver/shared-trips/route-map': (BuildContext context) {
+            final args = ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>;
+            return TripRouteMapPage(trip: args['trip'] as SharedTrip);
+          },
         },
       ),
     );

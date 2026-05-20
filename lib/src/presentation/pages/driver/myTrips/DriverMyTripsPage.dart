@@ -70,48 +70,58 @@ class _DriverMyTripsPageState extends State<DriverMyTripsPage> {
               child: ListView.builder(
                 padding: const EdgeInsets.all(16),
                 itemCount: state.trips.length,
-                itemBuilder: (context, i) => _TripCard(
-                  trip: state.trips[i],
-                  onStart: () => _confirm(
-                    context,
-                    title: '¿Iniciar viaje?',
-                    message: 'El viaje comenzará y no podrás editar la información.',
-                    onConfirm: () => context.read<DriverMyTripsBloc>().add(StartTrip(idTrip: state.trips[i].id!)),
-                  ),
-                  onCancel: () => _confirm(
-                    context,
-                    title: '¿Cancelar viaje?',
-                    message: 'Los pasajeros confirmados serán notificados.',
-                    onConfirm: () => context.read<DriverMyTripsBloc>().add(CancelDriverTrip(idTrip: state.trips[i].id!)),
-                  ),
-                  onFinish: () => _confirm(
-                    context,
-                    title: '¿Finalizar viaje?',
-                    message: 'Marca el viaje como completado.',
-                    onConfirm: () => context.read<DriverMyTripsBloc>().add(FinishTrip(idTrip: state.trips[i].id!)),
-                  ),
-                  onDelete: () => _confirm(
-                    context,
-                    title: '¿Eliminar viaje?',
-                    message: 'Esta acción no se puede deshacer.',
-                    onConfirm: () => context.read<DriverMyTripsBloc>().add(DeleteTrip(idTrip: state.trips[i].id!)),
-                    isDestructive: true,
-                  ),
-                  onEdit: () => Navigator.pushNamed(
-                    context,
-                    'driver/shared-trips/publish',
-                    arguments: {'idDriver': _driverId, 'tripToEdit': state.trips[i]},
-                  ).then((_) {
-                    if (_driverId != null) {
-                      context.read<DriverMyTripsBloc>().add(LoadMyTrips(idDriver: _driverId!));
-                    }
-                  }),
-                  onViewReservations: () => Navigator.pushNamed(
-                    context,
-                    'driver/shared-trips/reservations',
-                    arguments: {'trip': state.trips[i]},
-                  ),
-                ),
+                itemBuilder: (context, i) {
+                  final currentTrip = state.trips[i];
+                  return _TripCard(
+                    trip: currentTrip,
+                    onStart: () => _confirm(
+                      context,
+                      title: '¿Iniciar viaje?',
+                      message: 'El viaje comenzará y no podrás editar la información.',
+                      onConfirm: () => context.read<DriverMyTripsBloc>().add(StartTrip(idTrip: currentTrip.id!)),
+                    ),
+                    onCancel: () => _confirm(
+                      context,
+                      title: '¿Cancelar viaje?',
+                      message: 'Los pasajeros confirmados serán notificados.',
+                      onConfirm: () => context.read<DriverMyTripsBloc>().add(CancelDriverTrip(idTrip: currentTrip.id!)),
+                    ),
+                    onFinish: () => _confirm(
+                      context,
+                      title: '¿Finalizar viaje?',
+                      message: 'Marca el viaje como completado.',
+                      onConfirm: () => context.read<DriverMyTripsBloc>().add(FinishTrip(idTrip: currentTrip.id!)),
+                    ),
+                    onDelete: () => _confirm(
+                      context,
+                      title: '¿Eliminar viaje?',
+                      message: 'Esta acción no se puede deshacer.',
+                      onConfirm: () => context.read<DriverMyTripsBloc>().add(DeleteTrip(idTrip: currentTrip.id!)),
+                      isDestructive: true,
+                    ),
+                    onEdit: () => Navigator.pushNamed(
+                      context,
+                      'driver/shared-trips/publish',
+                      arguments: {'idDriver': _driverId, 'tripToEdit': currentTrip},
+                    ).then((_) {
+                      if (_driverId != null) {
+                        context.read<DriverMyTripsBloc>().add(LoadMyTrips(idDriver: _driverId!));
+                      }
+                    }),
+                    onViewReservations: () => Navigator.pushNamed(
+                      context,
+                      'driver/shared-trips/reservations',
+                      arguments: {'trip': currentTrip},
+                    ),
+                    onViewRoute: (currentTrip.originLat != null && currentTrip.originLat != 0.0)
+                        ? () => Navigator.pushNamed(
+                              context,
+                              'driver/shared-trips/route-map',
+                              arguments: {'trip': currentTrip},
+                            )
+                        : null,
+                  );
+                },
               ),
             );
           },
@@ -189,6 +199,7 @@ class _TripCard extends StatelessWidget {
   final VoidCallback onDelete;
   final VoidCallback onEdit;
   final VoidCallback onViewReservations;
+  final VoidCallback? onViewRoute;
 
   const _TripCard({
     required this.trip,
@@ -198,6 +209,7 @@ class _TripCard extends StatelessWidget {
     required this.onDelete,
     required this.onEdit,
     required this.onViewReservations,
+    this.onViewRoute,
   });
 
   @override
@@ -296,18 +308,36 @@ class _TripCard extends StatelessWidget {
         ],
       );
     } else if (trip.isActive) {
-      return Row(
+      return Column(
         children: [
-          Expanded(child: _actionBtn('Ver Reservas', Icons.people, const Color(0xFF3B82F6), onViewReservations)),
-          const SizedBox(width: 8),
-          Expanded(child: _actionBtn('Finalizar', Icons.check_circle, const Color(0xFF00C896), onFinish)),
+          Row(
+            children: [
+              Expanded(child: _actionBtn('Pasajeros', Icons.people, const Color(0xFF3B82F6), onViewReservations)),
+              const SizedBox(width: 8),
+              Expanded(child: _actionBtn('Finalizar', Icons.check_circle, const Color(0xFF00C896), onFinish)),
+            ],
+          ),
+          if (onViewRoute != null) ...[
+            const SizedBox(height: 8),
+            SizedBox(
+              width: double.infinity,
+              child: _actionBtn('Ver Ruta en Mapa', Icons.map, const Color(0xFF8B5CF6), onViewRoute!),
+            ),
+          ],
         ],
       );
     }
-    // FINISHED or CANCELLED
+    // FINISHED — solo lectura, no se puede eliminar (registro histórico)
+    if (trip.isFinished) {
+      return SizedBox(
+        width: double.infinity,
+        child: _actionBtn('Ver Pasajeros', Icons.people_outline, const Color(0xFF8BA3BC), onViewReservations),
+      );
+    }
+    // CANCELLED — se puede eliminar para limpiar la lista
     return Row(
       children: [
-        Expanded(child: _actionBtn('Ver Detalles', Icons.info_outline, const Color(0xFF8BA3BC), onViewReservations)),
+        Expanded(child: _actionBtn('Ver Pasajeros', Icons.people_outline, const Color(0xFF8BA3BC), onViewReservations)),
         const SizedBox(width: 8),
         Expanded(child: _actionBtn('Eliminar', Icons.delete_outline, Colors.redAccent, onDelete)),
       ],
