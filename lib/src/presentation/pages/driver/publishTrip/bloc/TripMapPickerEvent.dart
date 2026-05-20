@@ -9,6 +9,16 @@ abstract class TripMapPickerEvent extends Equatable {
 
 class TripMapPickerInitEvent extends TripMapPickerEvent {}
 
+class InitMap extends TripMapPickerEvent {}
+
+class InitWithData extends TripMapPickerEvent {
+  final dynamic origin;
+  final dynamic destination;
+  const InitWithData(this.origin, this.destination);
+  @override
+  List<Object> get props => [origin, destination];
+}
+
 class FindCurrentPosition extends TripMapPickerEvent {}
 
 class ChangeMapCameraPosition extends TripMapPickerEvent {

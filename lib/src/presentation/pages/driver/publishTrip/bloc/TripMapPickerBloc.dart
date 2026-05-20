@@ -17,6 +17,21 @@ class TripMapPickerBloc extends Bloc<TripMapPickerEvent, TripMapPickerState> {
       emit(state.copyWith(controller: controller));
     });
 
+    on<InitMap>((event, emit) {
+      add(FindCurrentPosition());
+    });
+
+    on<InitWithData>((event, emit) async {
+      final origin = event.origin as PlacemarkData;
+      final destination = event.destination as PlacemarkData;
+      emit(state.copyWith(
+        origin: origin,
+        destination: destination,
+        selectingOrigin: false,
+      ));
+      await _traceRoute(emit, origin, destination);
+    });
+
     on<FindCurrentPosition>((event, emit) async {
       try {
         Position position = await geolocatorUseCases.findPosition.run();
@@ -168,7 +183,7 @@ class TripMapPickerBloc extends Bloc<TripMapPickerEvent, TripMapPickerState> {
         emit(state.copyWith(isLoadingAddress: false, markers: markers, polylines: polylines));
         
         try {
-          if (state.controller != null && state.controller!.isCompleted) {
+          if (state.controller != null) {
             GoogleMapController controller = await state.controller!.future;
             await Future.delayed(const Duration(milliseconds: 200)); // Delay for web view
             await controller.animateCamera(CameraUpdate.newLatLngBounds(

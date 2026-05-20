@@ -30,8 +30,13 @@ class _DriverPublishTripPageState extends State<DriverPublishTripPage> {
   void initState() {
     super.initState();
     if (widget.tripToEdit != null) {
+      _selectedDateTime = widget.tripToEdit!.departureTime;
       WidgetsBinding.instance.addPostFrameCallback((_) {
         context.read<DriverPublishTripBloc>().add(LoadTripForEdit(widget.tripToEdit!));
+      });
+    } else {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        context.read<DriverPublishTripBloc>().add(const ResetForm());
       });
     }
   }
@@ -117,7 +122,12 @@ class _DriverPublishTripPageState extends State<DriverPublishTripPage> {
                           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                         ),
                         onPressed: () async {
-                          final result = await Navigator.pushNamed(context, 'driver/shared-trips/map-picker', arguments: {'title': 'Trazar Ruta'});
+                          final arguments = {
+                            'title': 'Trazar Ruta',
+                            'origin': state.originLat != 0.0 ? PlacemarkData(address: state.originZone, lat: state.originLat, lng: state.originLng) : null,
+                            'destination': state.destinationLat != 0.0 ? PlacemarkData(address: state.destinationZone, lat: state.destinationLat, lng: state.destinationLng) : null,
+                          };
+                          final result = await Navigator.pushNamed(context, 'driver/shared-trips/map-picker', arguments: arguments);
                           if (result != null && result is Map<String, dynamic>) {
                             final origin = result['origin'] as PlacemarkData;
                             final dest = result['destination'] as PlacemarkData;
@@ -152,6 +162,7 @@ class _DriverPublishTripPageState extends State<DriverPublishTripPage> {
                             label: 'Cupos disponibles',
                             hint: '1 - 8',
                             icon: Icons.people,
+                            isEditing: state.isEditing,
                             keyboardType: TextInputType.number,
                             initialValue: state.totalSeats,
                             onChanged: (v) => context.read<DriverPublishTripBloc>().add(TotalSeatsChanged(v)),
@@ -169,6 +180,7 @@ class _DriverPublishTripPageState extends State<DriverPublishTripPage> {
                             label: 'Tarifa por persona (\$)',
                             hint: 'Ej: 1.50',
                             icon: Icons.attach_money,
+                            isEditing: state.isEditing,
                             keyboardType: TextInputType.number,
                             initialValue: state.farePerSeat,
                             onChanged: (v) => context.read<DriverPublishTripBloc>().add(FarePerSeatChanged(v)),
@@ -186,6 +198,7 @@ class _DriverPublishTripPageState extends State<DriverPublishTripPage> {
                       label: 'Notas o reglas del viaje (opcional)',
                       hint: 'Ej: Puntualidad, no fumar, respetar normas...',
                       icon: Icons.note,
+                      isEditing: state.isEditing,
                       maxLines: 3,
                       initialValue: state.notes,
                       onChanged: (v) => context.read<DriverPublishTripBloc>().add(NotesChanged(v)),
@@ -270,12 +283,14 @@ class _DriverPublishTripPageState extends State<DriverPublishTripPage> {
     required String hint,
     required IconData icon,
     required Function(String) onChanged,
+    required bool isEditing, // NEW PARAMETER
     String? initialValue,
     int maxLines = 1,
     TextInputType keyboardType = TextInputType.text,
     String? Function(String?)? validator,
   }) {
     return TextFormField(
+      key: ValueKey('${label}_$isEditing'), // REBUILD ONLY ONCE WHEN EDITING STATE CHANGES
       initialValue: initialValue,
       maxLines: maxLines,
       keyboardType: keyboardType,

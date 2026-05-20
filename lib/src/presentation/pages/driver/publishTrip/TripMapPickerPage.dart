@@ -13,7 +13,15 @@ import 'package:indriver_clone_flutter/src/presentation/widgets/GooglePlacesAuto
 
 class TripMapPickerPage extends StatefulWidget {
   final String title;
-  const TripMapPickerPage({super.key, required this.title});
+  final PlacemarkData? initialOrigin;
+  final PlacemarkData? initialDestination;
+
+  const TripMapPickerPage({
+    super.key, 
+    required this.title,
+    this.initialOrigin,
+    this.initialDestination,
+  });
 
   @override
   State<TripMapPickerPage> createState() => _TripMapPickerPageState();
@@ -31,11 +39,23 @@ class _TripMapPickerPageState extends State<TripMapPickerPage> {
   }
 
   @override
+  void initState() {
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => TripMapPickerBloc(geolocatorUseCases: locator<GeolocatorUseCases>())
-        ..add(TripMapPickerInitEvent())
-        ..add(FindCurrentPosition()),
+      create: (context) {
+        final bloc = TripMapPickerBloc(geolocatorUseCases: locator<GeolocatorUseCases>())
+          ..add(TripMapPickerInitEvent());
+        if (widget.initialOrigin != null && widget.initialDestination != null) {
+          bloc.add(InitWithData(widget.initialOrigin!, widget.initialDestination!));
+        } else {
+          bloc.add(InitMap());
+        }
+        return bloc;
+      },
       child: Scaffold(
         backgroundColor: const Color(0xFF0D1B2A),
         appBar: AppBar(

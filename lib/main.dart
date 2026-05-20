@@ -35,6 +35,7 @@ import 'package:indriver_clone_flutter/src/presentation/pages/client/searchTrips
 import 'package:indriver_clone_flutter/src/presentation/pages/client/tripDetail/ClientTripDetailPage.dart';
 import 'package:indriver_clone_flutter/src/presentation/pages/client/myReservations/ClientMyReservationsPage.dart';
 import 'package:indriver_clone_flutter/src/presentation/pages/driver/publishTrip/TripMapPickerPage.dart';
+import 'package:indriver_clone_flutter/src/domain/models/PlacemarkData.dart';
 import 'package:indriver_clone_flutter/src/presentation/pages/client/tripDetail/TripRouteMapPage.dart';
 
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
@@ -129,7 +130,9 @@ class _MyAppState extends State<MyApp> {
           },
           'driver/shared-trips/map-picker': (BuildContext context) {
             final args = ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>;
-            return TripMapPickerPage(title: args['title'] as String);
+            final origin = args['origin'] as PlacemarkData?;
+            final destination = args['destination'] as PlacemarkData?;
+            return TripMapPickerPage(title: args['title'] as String, initialOrigin: origin, initialDestination: destination);
           },
         },
       ),
