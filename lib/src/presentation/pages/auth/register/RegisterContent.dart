@@ -377,7 +377,6 @@ class _RegisterContentState extends State<RegisterContent> {
                 width: double.infinity,
                 child: DefaultButton(
                   text: 'CREAR CUENTA',
-                  color: Color(0xFF00C896),
                   onPressed: () {
                     if (widget.state.formKey!.currentState!.validate()) {
                       User userToRegister = User(

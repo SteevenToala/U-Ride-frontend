@@ -155,7 +155,6 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
               ? Center(child: CircularProgressIndicator(color: Color(0xFF00C896))) 
               : DefaultButton(
                   text: 'ENVIAR ENLACE',
-                  color: Color(0xFF00C896),
                   onPressed: () => _sendEmail(),
                 ),
           ],

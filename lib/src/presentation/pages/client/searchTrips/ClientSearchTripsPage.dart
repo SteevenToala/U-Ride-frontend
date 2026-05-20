@@ -83,28 +83,8 @@ class _ClientSearchTripsPageState extends State<ClientSearchTripsPage> {
       padding: const EdgeInsets.fromLTRB(16, 16, 16, 12),
       child: Column(
         children: [
-          Row(
-            children: [
-              Expanded(
-                child: _SearchField(
-                  controller: _originCtrl,
-                  hint: 'Zona origen',
-                  icon: Icons.location_on,
-                  onChanged: (v) => context.read<ClientSearchTripsBloc>().add(FilterOriginChanged(v)),
-                ),
-              ),
-              const SizedBox(width: 8),
-              Expanded(
-                child: _SearchField(
-                  controller: _destCtrl,
-                  hint: 'Zona destino',
-                  icon: Icons.flag,
-                  onChanged: (v) => context.read<ClientSearchTripsBloc>().add(FilterDestinationChanged(v)),
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 10),
+          // Row with origin/destination filters removed as requested
+
           Row(
             children: [
               Expanded(

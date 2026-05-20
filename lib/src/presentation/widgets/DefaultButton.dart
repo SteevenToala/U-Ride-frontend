@@ -34,7 +34,7 @@ class DefaultButton extends StatelessWidget {
         borderRadius: BorderRadius.circular(20),
         gradient: color == Colors.white 
           ? LinearGradient(
-              colors: [Color(0xFF00B4D8), Color(0xFF0077B6)],
+              colors: [Color(0xFF00C896), Color(0xFF00A37A)],
               begin: Alignment.centerLeft,
               end: Alignment.centerRight,
             )
@@ -42,7 +42,7 @@ class DefaultButton extends StatelessWidget {
         color: color != Colors.white ? color : null,
         boxShadow: [
           BoxShadow(
-            color: (color == Colors.white ? Color(0xFF00B4D8) : color).withOpacity(0.3),
+            color: (color == Colors.white ? Color(0xFF00C896) : color).withOpacity(0.3),
             blurRadius: 10,
             offset: Offset(0, 5),
           )

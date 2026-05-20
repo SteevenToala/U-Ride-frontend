@@ -208,7 +208,6 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
               ? Center(child: CircularProgressIndicator(color: Color(0xFF00C896))) 
               : DefaultButton(
                   text: 'CAMBIAR CONTRASEÑA',
-                  color: Color(0xFF00C896),
                   onPressed: () => _resetPassword(),
                 ),
           ],
