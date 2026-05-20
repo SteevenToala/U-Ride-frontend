@@ -96,22 +96,27 @@ class SharedTrip {
     return null;
   }
 
-  Map<String, dynamic> toJson() => {
-        'id': id,
-        'id_driver': idDriver,
-        'origin_zone': originZone,
-        'destination_zone': destinationZone,
-        'origin_lat': originLat,
-        'origin_lng': originLng,
-        'destination_lat': destinationLat,
-        'destination_lng': destinationLng,
-        'departure_time': departureTime.toIso8601String(),
-        'available_seats': availableSeats,
-        'total_seats': totalSeats,
-        'fare_per_seat': farePerSeat,
-        'notes': notes,
-        'status': status.name,
-      };
+  Map<String, dynamic> toJson() {
+    final map = <String, dynamic>{
+      'id_driver': idDriver,
+      'origin_zone': originZone,
+      'destination_zone': destinationZone,
+      'origin_lat': originLat,
+      'origin_lng': originLng,
+      'destination_lat': destinationLat,
+      'destination_lng': destinationLng,
+      'departure_time': departureTime.toIso8601String(),
+      'available_seats': availableSeats,
+      'total_seats': totalSeats,
+      'fare_per_seat': farePerSeat,
+      'notes': notes,
+      'status': status.name,
+    };
+    // Solo incluir 'id' si existe (evita enviar id: null al backend
+    // lo cual causa que TypeORM haga INSERT en lugar de UPDATE)
+    if (id != null) map['id'] = id;
+    return map;
+  }
 
   bool get isScheduled => status == TripStatus.SCHEDULED;
   bool get isActive => status == TripStatus.ACTIVE;

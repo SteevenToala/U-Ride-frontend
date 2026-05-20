@@ -38,6 +38,7 @@ class DriverPublishTripBloc extends Bloc<DriverPublishTripEvent, DriverPublishTr
       notes: trip.notes ?? '',
       isEditing: true,
       editingTripId: trip.id,
+      originalAvailableSeats: trip.availableSeats, // Preservar cupos disponibles reales
     ));
   }
 
@@ -72,6 +73,9 @@ class DriverPublishTripBloc extends Bloc<DriverPublishTripEvent, DriverPublishTr
       return;
     }
     emit(state.copyWith(isLoading: true, response: Loading()));
+    final newTotalSeats = int.tryParse(state.totalSeats) ?? 1;
+    // Preservar los cupos disponibles del viaje original (no sobreescribir con totalSeats)
+    final availableSeats = state.originalAvailableSeats ?? newTotalSeats;
     final trip = SharedTrip(
       idDriver: event.idDriver,
       originZone: state.originZone,
@@ -81,8 +85,8 @@ class DriverPublishTripBloc extends Bloc<DriverPublishTripEvent, DriverPublishTr
       destinationLat: state.destinationLat,
       destinationLng: state.destinationLng,
       departureTime: DateTime.parse(state.departureTime),
-      totalSeats: int.tryParse(state.totalSeats) ?? 1,
-      availableSeats: int.tryParse(state.totalSeats) ?? 1,
+      totalSeats: newTotalSeats,
+      availableSeats: availableSeats, // Mantener cupos disponibles reales
       farePerSeat: double.tryParse(state.farePerSeat) ?? 0.0,
       notes: state.notes.isNotEmpty ? state.notes : null,
       status: TripStatus.SCHEDULED,

@@ -18,6 +18,7 @@ class DriverPublishTripState extends Equatable {
   final String notes;
   final bool isEditing;
   final int? editingTripId;
+  final int? originalAvailableSeats; // Preservar cupos disponibles originales al editar
 
   const DriverPublishTripState({
     this.response,
@@ -34,6 +35,7 @@ class DriverPublishTripState extends Equatable {
     this.notes = '',
     this.isEditing = false,
     this.editingTripId,
+    this.originalAvailableSeats,
   });
 
   DriverPublishTripState copyWith({
@@ -51,6 +53,7 @@ class DriverPublishTripState extends Equatable {
     String? notes,
     bool? isEditing,
     int? editingTripId,
+    int? originalAvailableSeats,
   }) {
     return DriverPublishTripState(
       response: response ?? this.response,
@@ -67,6 +70,7 @@ class DriverPublishTripState extends Equatable {
       notes: notes ?? this.notes,
       isEditing: isEditing ?? this.isEditing,
       editingTripId: editingTripId ?? this.editingTripId,
+      originalAvailableSeats: originalAvailableSeats ?? this.originalAvailableSeats,
     );
   }
 
@@ -79,6 +83,6 @@ class DriverPublishTripState extends Equatable {
   @override
   List<Object?> get props => [
         response, isLoading, originZone, originLat, originLng, destinationZone, destinationLat, destinationLng,
-        departureTime, totalSeats, farePerSeat, notes, isEditing, editingTripId,
+        departureTime, totalSeats, farePerSeat, notes, isEditing, editingTripId, originalAvailableSeats,
       ];
 }
