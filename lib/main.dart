@@ -26,6 +26,16 @@ import 'package:indriver_clone_flutter/src/presentation/pages/profile/update/Pro
 import 'package:indriver_clone_flutter/src/presentation/pages/roles/RolesPage.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
+// U-Ride Shared Trips
+import 'package:indriver_clone_flutter/src/domain/models/SharedTrip.dart';
+import 'package:indriver_clone_flutter/src/presentation/pages/driver/publishTrip/DriverPublishTripPage.dart';
+import 'package:indriver_clone_flutter/src/presentation/pages/driver/myTrips/DriverMyTripsPage.dart';
+import 'package:indriver_clone_flutter/src/presentation/pages/driver/reservations/DriverReservationsPage.dart';
+import 'package:indriver_clone_flutter/src/presentation/pages/client/searchTrips/ClientSearchTripsPage.dart';
+import 'package:indriver_clone_flutter/src/presentation/pages/client/tripDetail/ClientTripDetailPage.dart';
+import 'package:indriver_clone_flutter/src/presentation/pages/client/myReservations/ClientMyReservationsPage.dart';
+import 'package:indriver_clone_flutter/src/presentation/pages/driver/publishTrip/TripMapPickerPage.dart';
+import 'package:indriver_clone_flutter/src/presentation/pages/client/tripDetail/TripRouteMapPage.dart';
 
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
@@ -94,7 +104,33 @@ class _MyAppState extends State<MyApp> {
           'driver/rating/trip': (BuildContext context) => DriverRatingTripPage(),
           'driver/client/request': (BuildContext context) => DriverClientRequestsPage(),
           'client/rating/trip': (BuildContext context) => ClientRatingTripPage(),
-          
+          // U-Ride Shared Trips routes
+          'driver/shared-trips/my': (BuildContext context) => const DriverMyTripsPage(),
+          'driver/shared-trips/publish': (BuildContext context) {
+            final args = ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>?;
+            return DriverPublishTripPage(
+              idDriver: args?['idDriver'] ?? 0,
+              tripToEdit: args?['tripToEdit'] as SharedTrip?,
+            );
+          },
+          'driver/shared-trips/reservations': (BuildContext context) {
+            final args = ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>;
+            return DriverReservationsPage(trip: args['trip'] as SharedTrip);
+          },
+          'client/shared-trips/search': (BuildContext context) => const ClientSearchTripsPage(),
+          'client/shared-trips/detail': (BuildContext context) {
+            final args = ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>;
+            return ClientTripDetailPage(trip: args['trip'] as SharedTrip);
+          },
+          'client/shared-trips/my-reservations': (BuildContext context) => const ClientMyReservationsPage(),
+          'client/shared-trips/route-map': (BuildContext context) {
+            final args = ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>;
+            return TripRouteMapPage(trip: args['trip'] as SharedTrip);
+          },
+          'driver/shared-trips/map-picker': (BuildContext context) {
+            final args = ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>;
+            return TripMapPickerPage(title: args['title'] as String);
+          },
         },
       ),
     );

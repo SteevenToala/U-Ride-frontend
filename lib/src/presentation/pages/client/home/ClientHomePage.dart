@@ -8,6 +8,8 @@ import 'package:indriver_clone_flutter/src/presentation/pages/client/home/bloc/C
 import 'package:indriver_clone_flutter/src/presentation/pages/client/home/bloc/ClientHomeEvent.dart';
 import 'package:indriver_clone_flutter/src/presentation/pages/client/home/bloc/ClientHomeState.dart';
 import 'package:indriver_clone_flutter/src/presentation/pages/client/mapSeeker/ClientMapSeekerPage.dart';
+import 'package:indriver_clone_flutter/src/presentation/pages/client/myReservations/ClientMyReservationsPage.dart';
+import 'package:indriver_clone_flutter/src/presentation/pages/client/searchTrips/ClientSearchTripsPage.dart';
 import 'package:indriver_clone_flutter/src/presentation/pages/profile/info/ProfileInfoPage.dart';
 import 'package:indriver_clone_flutter/src/presentation/pages/roles/RolesPage.dart';
 
@@ -22,6 +24,8 @@ class _ClientHomePageState extends State<ClientHomePage> {
   List<Widget> pageList = <Widget>[
     ClientMapSeekerPage(),
     ClientHistoryTripPage(),
+    ClientSearchTripsPage(),
+    ClientMyReservationsPage(),
     ProfileInfoPage(),
     RolesPage(),
   ];
@@ -92,7 +96,8 @@ class _ClientHomePageState extends State<ClientHomePage> {
                   },
                 ),
                 ListTile(
-                  title: Text('Perfil del usuario'),
+                  leading: const Icon(Icons.search, color: Color(0xFF00C896)),
+                  title: const Text('Buscar Viajes', style: TextStyle(fontWeight: FontWeight.bold)),
                   selected: state.pageIndex == 2,
                   onTap: () {
                     context
@@ -102,12 +107,33 @@ class _ClientHomePageState extends State<ClientHomePage> {
                   },
                 ),
                 ListTile(
-                  title: Text('Roles de usuario'),
+                  leading: const Icon(Icons.bookmark, color: Color(0xFF00C896)),
+                  title: const Text('Mis Reservas', style: TextStyle(fontWeight: FontWeight.bold)),
                   selected: state.pageIndex == 3,
                   onTap: () {
                     context
                         .read<ClientHomeBloc>()
                         .add(ChangeDrawerPage(pageIndex: 3));
+                    Navigator.pop(context);
+                  },
+                ),
+                ListTile(
+                  title: Text('Perfil del usuario'),
+                  selected: state.pageIndex == 4,
+                  onTap: () {
+                    context
+                        .read<ClientHomeBloc>()
+                        .add(ChangeDrawerPage(pageIndex: 4));
+                    Navigator.pop(context);
+                  },
+                ),
+                ListTile(
+                  title: Text('Roles de usuario'),
+                  selected: state.pageIndex == 5,
+                  onTap: () {
+                    context
+                        .read<ClientHomeBloc>()
+                        .add(ChangeDrawerPage(pageIndex: 5));
                     Navigator.pop(context);
                   },
                 ),

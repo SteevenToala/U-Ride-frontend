@@ -9,6 +9,8 @@ import 'package:indriver_clone_flutter/src/domain/useCases/drivers-position/Driv
 import 'package:indriver_clone_flutter/src/domain/useCases/geolocator/GeolocatorUseCases.dart';
 import 'package:indriver_clone_flutter/src/domain/useCases/socket/SocketUseCases.dart';
 import 'package:indriver_clone_flutter/src/domain/useCases/users/UsersUseCases.dart';
+import 'package:indriver_clone_flutter/src/domain/useCases/shared-trips/SharedTripsUseCases.dart';
+import 'package:indriver_clone_flutter/src/domain/useCases/trip-reservations/TripReservationsUseCases.dart';
 import 'package:indriver_clone_flutter/src/presentation/pages/auth/login/bloc/LoginBloc.dart';
 import 'package:indriver_clone_flutter/src/presentation/pages/auth/login/bloc/LoginEvent.dart';
 import 'package:indriver_clone_flutter/src/presentation/pages/auth/register/bloc/RegisterBloc.dart';
@@ -20,13 +22,17 @@ import 'package:indriver_clone_flutter/src/presentation/pages/client/mapBookingI
 import 'package:indriver_clone_flutter/src/presentation/pages/client/mapSeeker/bloc/ClientMapSeekerBloc.dart';
 import 'package:indriver_clone_flutter/src/presentation/pages/client/mapTrip/bloc/ClientMapTripBloc.dart';
 import 'package:indriver_clone_flutter/src/presentation/pages/client/ratingTrip/bloc/ClientRatingTripBloc.dart';
+import 'package:indriver_clone_flutter/src/presentation/pages/client/searchTrips/bloc/ClientSearchTripsBloc.dart';
 import 'package:indriver_clone_flutter/src/presentation/pages/driver/carInfo/bloc/DriverCarInfoBloc.dart';
 import 'package:indriver_clone_flutter/src/presentation/pages/driver/clientRequests/bloc/DriverClientRequestsBloc.dart';
 import 'package:indriver_clone_flutter/src/presentation/pages/driver/historyTrip/bloc/DriverHistoryTripBloc.dart';
 import 'package:indriver_clone_flutter/src/presentation/pages/driver/home/bloc/DriverHomeBloc.dart';
 import 'package:indriver_clone_flutter/src/presentation/pages/driver/mapLocation/bloc/DriverMapLocationBloc.dart';
 import 'package:indriver_clone_flutter/src/presentation/pages/driver/mapTrip/bloc/DriverMapTripBloc.dart';
+import 'package:indriver_clone_flutter/src/presentation/pages/driver/myTrips/bloc/DriverMyTripsBloc.dart';
+import 'package:indriver_clone_flutter/src/presentation/pages/driver/publishTrip/bloc/DriverPublishTripBloc.dart';
 import 'package:indriver_clone_flutter/src/presentation/pages/driver/ratingTrip/bloc/DriverRatingTripBloc.dart';
+import 'package:indriver_clone_flutter/src/presentation/pages/driver/reservations/bloc/DriverReservationsBloc.dart';
 import 'package:indriver_clone_flutter/src/presentation/pages/admin/driverApproval/bloc/DriverApprovalBloc.dart';
 import 'package:indriver_clone_flutter/src/presentation/pages/profile/info/bloc/ProfileInfoBloc.dart';
 import 'package:indriver_clone_flutter/src/presentation/pages/profile/info/bloc/ProfileInfoEvent.dart';
@@ -35,6 +41,7 @@ import 'package:indriver_clone_flutter/src/presentation/pages/roles/bloc/RolesBl
 import 'package:indriver_clone_flutter/src/presentation/pages/roles/bloc/RolesEvent.dart';
 import 'package:indriver_clone_flutter/src/presentation/pages/admin/userManagement/bloc/UserManagementBloc.dart';
 import 'package:indriver_clone_flutter/src/presentation/pages/admin/userManagement/bloc/UserManagementEvent.dart';
+import 'package:indriver_clone_flutter/src/data/dataSource/local/SharefPref.dart';
 
 List<BlocProvider> blocProviders = [
   BlocProvider<UserManagementBloc>(create: (context) => UserManagementBloc(locator<UsersUseCases>())),
@@ -59,4 +66,9 @@ List<BlocProvider> blocProviders = [
   BlocProvider<ClientRatingTripBloc>(create: (context) => ClientRatingTripBloc(locator<ClientRequestsUseCases>())),
   BlocProvider<DriverHistoryTripBloc>(create: (context) => DriverHistoryTripBloc(locator<ClientRequestsUseCases>(), locator<AuthUseCases>())),
   BlocProvider<ClientHistoryTripBloc>(create: (context) => ClientHistoryTripBloc(locator<ClientRequestsUseCases>(), locator<AuthUseCases>())),
+  // U-Ride Shared Trips BLoCs
+  BlocProvider<DriverPublishTripBloc>(create: (context) => DriverPublishTripBloc(sharedTripsUseCases: locator<SharedTripsUseCases>())),
+  BlocProvider<DriverMyTripsBloc>(create: (context) => DriverMyTripsBloc(sharedTripsUseCases: locator<SharedTripsUseCases>(), sharefPref: SharefPref())),
+  BlocProvider<DriverReservationsBloc>(create: (context) => DriverReservationsBloc(reservationsUseCases: locator<TripReservationsUseCases>())),
+  BlocProvider<ClientSearchTripsBloc>(create: (context) => ClientSearchTripsBloc(sharedTripsUseCases: locator<SharedTripsUseCases>())),
 ];

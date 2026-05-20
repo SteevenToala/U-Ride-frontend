@@ -7,6 +7,8 @@ import 'package:indriver_clone_flutter/src/data/dataSource/remote/services/Drive
 import 'package:indriver_clone_flutter/src/data/dataSource/remote/services/DriverTripRequestsService.dart';
 import 'package:indriver_clone_flutter/src/data/dataSource/remote/services/DriversPositionService.dart';
 import 'package:indriver_clone_flutter/src/data/dataSource/remote/services/UsersService.dart';
+import 'package:indriver_clone_flutter/src/data/dataSource/remote/services/SharedTripsService.dart';
+import 'package:indriver_clone_flutter/src/data/dataSource/remote/services/TripReservationsService.dart';
 import 'package:indriver_clone_flutter/src/data/repository/AuthRepositoryImpl.dart';
 import 'package:indriver_clone_flutter/src/data/repository/ClientRequestsRepositoryImpl.dart';
 import 'package:indriver_clone_flutter/src/data/repository/DriverCarInfoRepositoryImpl.dart';
@@ -15,6 +17,8 @@ import 'package:indriver_clone_flutter/src/data/repository/DriversPositionReposi
 import 'package:indriver_clone_flutter/src/data/repository/GeolocatorRepositoryImpl.dart';
 import 'package:indriver_clone_flutter/src/data/repository/SocketRepositoryImpl.dart';
 import 'package:indriver_clone_flutter/src/data/repository/UsersRepositoryImpl.dart';
+import 'package:indriver_clone_flutter/src/data/repository/SharedTripsRepositoryImpl.dart';
+import 'package:indriver_clone_flutter/src/data/repository/TripReservationsRepositoryImpl.dart';
 import 'package:indriver_clone_flutter/src/domain/models/AuthResponse.dart';
 import 'package:indriver_clone_flutter/src/domain/repository/AuthRepository.dart';
 import 'package:indriver_clone_flutter/src/domain/repository/ClientRequestsRepository.dart';
@@ -24,6 +28,8 @@ import 'package:indriver_clone_flutter/src/domain/repository/DriversPositionRepo
 import 'package:indriver_clone_flutter/src/domain/repository/GeolocatorRepository.dart';
 import 'package:indriver_clone_flutter/src/domain/repository/SocketRepository.dart';
 import 'package:indriver_clone_flutter/src/domain/repository/UsersRepository.dart';
+import 'package:indriver_clone_flutter/src/domain/repository/SharedTripsRepository.dart';
+import 'package:indriver_clone_flutter/src/domain/repository/TripReservationsRepository.dart';
 import 'package:indriver_clone_flutter/src/domain/useCases/auth/AuthUseCases.dart';
 import 'package:indriver_clone_flutter/src/domain/useCases/auth/GetUserSessionUseCase.dart';
 import 'package:indriver_clone_flutter/src/domain/useCases/auth/LoginUseCase.dart';
@@ -73,6 +79,8 @@ import 'package:indriver_clone_flutter/src/domain/useCases/users/RequestDriverRo
 import 'package:indriver_clone_flutter/src/domain/useCases/users/UpdateNotificationTokenUseCase.dart';
 import 'package:indriver_clone_flutter/src/domain/useCases/users/UpdateUserUseCase.dart';
 import 'package:indriver_clone_flutter/src/domain/useCases/users/UsersUseCases.dart';
+import 'package:indriver_clone_flutter/src/domain/useCases/shared-trips/SharedTripsUseCases.dart';
+import 'package:indriver_clone_flutter/src/domain/useCases/trip-reservations/TripReservationsUseCases.dart';
 import 'package:injectable/injectable.dart';
 import 'package:socket_io_client/socket_io_client.dart';
 
@@ -214,6 +222,44 @@ abstract class AppModule {
    DriverCarInfoUseCases get driverCarInfoUseCases => DriverCarInfoUseCases(
     createDriverCarInfo: CreateDriverCarInfoUseCase(driverCarInfoRepository),
     getDriverCarInfo: GetDriverCarInfoUseCase(driverCarInfoRepository)
+  );
+
+  // ── U-Ride Shared Trips ──────────────────────────────────────────────────
+
+  @injectable
+  SharedTripsService get sharedTripsService => SharedTripsService();
+
+  @injectable
+  TripReservationsService get tripReservationsService => TripReservationsService();
+
+  @injectable
+  SharedTripsRepository get sharedTripsRepository => SharedTripsRepositoryImpl(sharedTripsService);
+
+  @injectable
+  TripReservationsRepository get tripReservationsRepository => TripReservationsRepositoryImpl(tripReservationsService);
+
+  @injectable
+  SharedTripsUseCases get sharedTripsUseCases => SharedTripsUseCases(
+    create: CreateSharedTripUseCase(sharedTripsRepository),
+    update: UpdateSharedTripUseCase(sharedTripsRepository),
+    delete: DeleteSharedTripUseCase(sharedTripsRepository),
+    getAll: GetSharedTripsUseCase(sharedTripsRepository),
+    getById: GetSharedTripByIdUseCase(sharedTripsRepository),
+    getByDriver: GetTripsByDriverUseCase(sharedTripsRepository),
+    getByPassenger: GetTripsByPassengerUseCase(sharedTripsRepository),
+    startTrip: StartSharedTripUseCase(sharedTripsRepository),
+    cancelTrip: CancelSharedTripUseCase(sharedTripsRepository),
+    finishTrip: FinishSharedTripUseCase(sharedTripsRepository),
+  );
+
+  @injectable
+  TripReservationsUseCases get tripReservationsUseCases => TripReservationsUseCases(
+    create: CreateReservationUseCase(tripReservationsRepository),
+    getByTrip: GetReservationsByTripUseCase(tripReservationsRepository),
+    getByPassenger: GetReservationsByPassengerUseCase(tripReservationsRepository),
+    accept: AcceptReservationUseCase(tripReservationsRepository),
+    reject: RejectReservationUseCase(tripReservationsRepository),
+    cancel: CancelReservationUseCase(tripReservationsRepository),
   );
 
 }

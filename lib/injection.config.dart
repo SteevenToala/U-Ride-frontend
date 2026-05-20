@@ -10,7 +10,7 @@
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:get_it/get_it.dart' as _i1;
 import 'package:indriver_clone_flutter/src/data/dataSource/local/SharefPref.dart'
-    as _i20;
+    as _i23;
 import 'package:indriver_clone_flutter/src/data/dataSource/remote/services/AuthService.dart'
     as _i4;
 import 'package:indriver_clone_flutter/src/data/dataSource/remote/services/ClientRequestsService.dart'
@@ -21,9 +21,13 @@ import 'package:indriver_clone_flutter/src/data/dataSource/remote/services/Drive
     as _i16;
 import 'package:indriver_clone_flutter/src/data/dataSource/remote/services/DriverTripRequestsService.dart'
     as _i15;
+import 'package:indriver_clone_flutter/src/data/dataSource/remote/services/SharedTripsService.dart'
+    as _i21;
+import 'package:indriver_clone_flutter/src/data/dataSource/remote/services/TripReservationsService.dart'
+    as _i28;
 import 'package:indriver_clone_flutter/src/data/dataSource/remote/services/UsersService.dart'
-    as _i25;
-import 'package:indriver_clone_flutter/src/di/AppModule.dart' as _i27;
+    as _i31;
+import 'package:indriver_clone_flutter/src/di/AppModule.dart' as _i33;
 import 'package:indriver_clone_flutter/src/domain/repository/AuthRepository.dart'
     as _i3;
 import 'package:indriver_clone_flutter/src/domain/repository/ClientRequestsRepository.dart'
@@ -36,10 +40,14 @@ import 'package:indriver_clone_flutter/src/domain/repository/DriverTripRequestsR
     as _i14;
 import 'package:indriver_clone_flutter/src/domain/repository/GeolocatorRepository.dart'
     as _i18;
+import 'package:indriver_clone_flutter/src/domain/repository/SharedTripsRepository.dart'
+    as _i20;
 import 'package:indriver_clone_flutter/src/domain/repository/SocketRepository.dart'
-    as _i22;
+    as _i25;
+import 'package:indriver_clone_flutter/src/domain/repository/TripReservationsRepository.dart'
+    as _i27;
 import 'package:indriver_clone_flutter/src/domain/repository/UsersRepository.dart'
-    as _i24;
+    as _i30;
 import 'package:indriver_clone_flutter/src/domain/useCases/auth/AuthUseCases.dart'
     as _i5;
 import 'package:indriver_clone_flutter/src/domain/useCases/client-requests/ClientRequestsUseCases.dart'
@@ -52,12 +60,16 @@ import 'package:indriver_clone_flutter/src/domain/useCases/drivers-position/Driv
     as _i17;
 import 'package:indriver_clone_flutter/src/domain/useCases/geolocator/GeolocatorUseCases.dart'
     as _i19;
+import 'package:indriver_clone_flutter/src/domain/useCases/shared-trips/SharedTripsUseCases.dart'
+    as _i22;
 import 'package:indriver_clone_flutter/src/domain/useCases/socket/SocketUseCases.dart'
-    as _i23;
-import 'package:indriver_clone_flutter/src/domain/useCases/users/UsersUseCases.dart'
     as _i26;
+import 'package:indriver_clone_flutter/src/domain/useCases/trip-reservations/TripReservationsUseCases.dart'
+    as _i29;
+import 'package:indriver_clone_flutter/src/domain/useCases/users/UsersUseCases.dart'
+    as _i32;
 import 'package:injectable/injectable.dart' as _i2;
-import 'package:socket_io_client/socket_io_client.dart' as _i21;
+import 'package:socket_io_client/socket_io_client.dart' as _i24;
 
 extension GetItInjectableX on _i1.GetIt {
 // initializes the registration of main-scope dependencies inside of GetIt
@@ -99,16 +111,26 @@ extension GetItInjectableX on _i1.GetIt {
         () => appModule.driversPositionUseCases);
     gh.factory<_i18.GeolocatorRepository>(() => appModule.geolocatorRepository);
     gh.factory<_i19.GeolocatorUseCases>(() => appModule.geolocatorUseCases);
-    gh.factory<_i20.SharefPref>(() => appModule.sharefPref);
-    gh.factory<_i21.Socket>(() => appModule.socket);
-    gh.factory<_i22.SocketRepository>(() => appModule.socketRepository);
-    gh.factory<_i23.SocketUseCases>(() => appModule.socketUseCases);
+    gh.factory<_i20.SharedTripsRepository>(
+        () => appModule.sharedTripsRepository);
+    gh.factory<_i21.SharedTripsService>(() => appModule.sharedTripsService);
+    gh.factory<_i22.SharedTripsUseCases>(() => appModule.sharedTripsUseCases);
+    gh.factory<_i23.SharefPref>(() => appModule.sharefPref);
+    gh.factory<_i24.Socket>(() => appModule.socket);
+    gh.factory<_i25.SocketRepository>(() => appModule.socketRepository);
+    gh.factory<_i26.SocketUseCases>(() => appModule.socketUseCases);
     gh.factoryAsync<String>(() => appModule.token);
-    gh.factory<_i24.UsersRepository>(() => appModule.usersRepository);
-    gh.factory<_i25.UsersService>(() => appModule.usersService);
-    gh.factory<_i26.UsersUseCases>(() => appModule.usersUseCases);
+    gh.factory<_i27.TripReservationsRepository>(
+        () => appModule.tripReservationsRepository);
+    gh.factory<_i28.TripReservationsService>(
+        () => appModule.tripReservationsService);
+    gh.factory<_i29.TripReservationsUseCases>(
+        () => appModule.tripReservationsUseCases);
+    gh.factory<_i30.UsersRepository>(() => appModule.usersRepository);
+    gh.factory<_i31.UsersService>(() => appModule.usersService);
+    gh.factory<_i32.UsersUseCases>(() => appModule.usersUseCases);
     return this;
   }
 }
 
-class _$AppModule extends _i27.AppModule {}
+class _$AppModule extends _i33.AppModule {}
