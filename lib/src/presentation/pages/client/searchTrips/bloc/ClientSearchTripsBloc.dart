@@ -2,6 +2,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:indriver_clone_flutter/src/domain/models/SharedTrip.dart';
 import 'package:indriver_clone_flutter/src/domain/useCases/shared-trips/SharedTripsUseCases.dart';
 import 'package:indriver_clone_flutter/src/domain/utils/Resource.dart';
+import 'package:indriver_clone_flutter/src/data/dataSource/local/SharefPref.dart';
+import 'package:indriver_clone_flutter/src/domain/models/AuthResponse.dart';
 import 'ClientSearchTripsEvent.dart';
 import 'ClientSearchTripsState.dart';
 
@@ -25,8 +27,16 @@ class ClientSearchTripsBloc extends Bloc<ClientSearchTripsEvent, ClientSearchTri
       date: state.filterDate.isNotEmpty ? state.filterDate : null,
     );
     if (response is Success<List<SharedTrip>>) {
-      // Filter locally for available seats too
-      final available = response.data.where((t) => t.hasAvailableSeats && t.isScheduled).toList();
+      final pref = SharefPref();
+      final session = await pref.read('user');
+      int? userId;
+      if (session != null) {
+        final auth = AuthResponse.fromJson(session);
+        userId = auth.user.id;
+      }
+      
+      // Filter locally for available seats too, and exclude user's own trips
+      final available = response.data.where((t) => t.hasAvailableSeats && t.isScheduled && t.idDriver != userId).toList();
       emit(state.copyWith(trips: available, isLoading: false, response: response));
     } else {
       emit(state.copyWith(isLoading: false, response: response));

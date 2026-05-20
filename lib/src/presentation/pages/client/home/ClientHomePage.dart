@@ -3,11 +3,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:indriver_clone_flutter/blocSocketIO/BlocSocketIO.dart';
 import 'package:indriver_clone_flutter/blocSocketIO/BlocSocketIOEvent.dart';
 import 'package:indriver_clone_flutter/main.dart';
-import 'package:indriver_clone_flutter/src/presentation/pages/client/historyTrip/ClientHistoryTripPage.dart';
 import 'package:indriver_clone_flutter/src/presentation/pages/client/home/bloc/ClientHomeBloc.dart';
 import 'package:indriver_clone_flutter/src/presentation/pages/client/home/bloc/ClientHomeEvent.dart';
 import 'package:indriver_clone_flutter/src/presentation/pages/client/home/bloc/ClientHomeState.dart';
-import 'package:indriver_clone_flutter/src/presentation/pages/client/mapSeeker/ClientMapSeekerPage.dart';
 import 'package:indriver_clone_flutter/src/presentation/pages/client/myReservations/ClientMyReservationsPage.dart';
 import 'package:indriver_clone_flutter/src/presentation/pages/client/searchTrips/ClientSearchTripsPage.dart';
 import 'package:indriver_clone_flutter/src/presentation/pages/profile/info/ProfileInfoPage.dart';
@@ -22,8 +20,6 @@ class ClientHomePage extends StatefulWidget {
 
 class _ClientHomePageState extends State<ClientHomePage> {
   List<Widget> pageList = <Widget>[
-    ClientMapSeekerPage(),
-    ClientHistoryTripPage(),
     ClientSearchTripsPage(),
     ClientMyReservationsPage(),
     ProfileInfoPage(),
@@ -78,7 +74,8 @@ class _ClientHomePageState extends State<ClientHomePage> {
                   )
                 ),
                 ListTile(
-                  title: Text('Mapa de busqueda'),
+                  leading: const Icon(Icons.search, color: Color(0xFF00C896)),
+                  title: const Text('Buscar Viajes', style: TextStyle(fontWeight: FontWeight.bold)),
                   selected: state.pageIndex == 0,
                   onTap: () {
                     context.read<ClientHomeBloc>().add(ChangeDrawerPage(pageIndex: 0));
@@ -86,59 +83,35 @@ class _ClientHomePageState extends State<ClientHomePage> {
                   },
                 ),
                 ListTile(
-                  title: Text('Historial de viajes'),
-                  selected: state.pageIndex == 1,
-                  onTap: () {
-                    context
-                        .read<ClientHomeBloc>()
-                        .add(ChangeDrawerPage(pageIndex: 1));
-                    Navigator.pop(context);
-                  },
-                ),
-                ListTile(
-                  leading: const Icon(Icons.search, color: Color(0xFF00C896)),
-                  title: const Text('Buscar Viajes', style: TextStyle(fontWeight: FontWeight.bold)),
-                  selected: state.pageIndex == 2,
-                  onTap: () {
-                    context
-                        .read<ClientHomeBloc>()
-                        .add(ChangeDrawerPage(pageIndex: 2));
-                    Navigator.pop(context);
-                  },
-                ),
-                ListTile(
                   leading: const Icon(Icons.bookmark, color: Color(0xFF00C896)),
                   title: const Text('Mis Reservas', style: TextStyle(fontWeight: FontWeight.bold)),
+                  selected: state.pageIndex == 1,
+                  onTap: () {
+                    context.read<ClientHomeBloc>().add(ChangeDrawerPage(pageIndex: 1));
+                    Navigator.pop(context);
+                  },
+                ),
+                ListTile(
+                  leading: Icon(Icons.person, color: Color(0xFF00C896)),
+                  title: Text('Perfil del usuario', style: TextStyle(fontWeight: FontWeight.bold)),
+                  selected: state.pageIndex == 2,
+                  onTap: () {
+                    context.read<ClientHomeBloc>().add(ChangeDrawerPage(pageIndex: 2));
+                    Navigator.pop(context);
+                  },
+                ),
+                ListTile(
+                  leading: Icon(Icons.supervised_user_circle_rounded, color: Color(0xFF00C896)),
+                  title: Text('Roles de usuario', style: TextStyle(fontWeight: FontWeight.bold)),
                   selected: state.pageIndex == 3,
                   onTap: () {
-                    context
-                        .read<ClientHomeBloc>()
-                        .add(ChangeDrawerPage(pageIndex: 3));
+                    context.read<ClientHomeBloc>().add(ChangeDrawerPage(pageIndex: 3));
                     Navigator.pop(context);
                   },
                 ),
                 ListTile(
-                  title: Text('Perfil del usuario'),
-                  selected: state.pageIndex == 4,
-                  onTap: () {
-                    context
-                        .read<ClientHomeBloc>()
-                        .add(ChangeDrawerPage(pageIndex: 4));
-                    Navigator.pop(context);
-                  },
-                ),
-                ListTile(
-                  title: Text('Roles de usuario'),
-                  selected: state.pageIndex == 5,
-                  onTap: () {
-                    context
-                        .read<ClientHomeBloc>()
-                        .add(ChangeDrawerPage(pageIndex: 5));
-                    Navigator.pop(context);
-                  },
-                ),
-                ListTile(
-                  title: Text('Cerrar sesion'),
+                  leading: Icon(Icons.logout, color: Color(0xFF00C896)),
+                  title: Text('Cerrar sesion', style: TextStyle(fontWeight: FontWeight.bold)),
                   onTap: () {
                     context.read<ClientHomeBloc>().add(Logout());
                     context.read<BlocSocketIO>().add(DisconnectSocketIO());

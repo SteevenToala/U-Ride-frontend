@@ -3,14 +3,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:indriver_clone_flutter/blocSocketIO/BlocSocketIO.dart';
 import 'package:indriver_clone_flutter/blocSocketIO/BlocSocketIOEvent.dart';
 import 'package:indriver_clone_flutter/main.dart';
-import 'package:indriver_clone_flutter/src/presentation/pages/client/mapSeeker/ClientMapSeekerPage.dart';
-import 'package:indriver_clone_flutter/src/presentation/pages/driver/carInfo/DriverCarInfoPage.dart';
-import 'package:indriver_clone_flutter/src/presentation/pages/driver/clientRequests/DriverClientRequestsPage.dart';
-import 'package:indriver_clone_flutter/src/presentation/pages/driver/historyTrip/DriverHistoryTripPage.dart';
 import 'package:indriver_clone_flutter/src/presentation/pages/driver/home/bloc/DriverHomeBloc.dart';
 import 'package:indriver_clone_flutter/src/presentation/pages/driver/home/bloc/DriverHomeState.dart';
 import 'package:indriver_clone_flutter/src/presentation/pages/driver/home/bloc/DriverHomeEvent.dart';
-import 'package:indriver_clone_flutter/src/presentation/pages/driver/mapLocation/DriverMapLocationPage.dart';
 import 'package:indriver_clone_flutter/src/presentation/pages/driver/myTrips/DriverMyTripsPage.dart';
 import 'package:indriver_clone_flutter/src/presentation/pages/profile/info/ProfileInfoPage.dart';
 import 'package:indriver_clone_flutter/src/presentation/pages/roles/RolesPage.dart';
@@ -24,10 +19,6 @@ class DriverHomePage extends StatefulWidget {
 
 class _DriverHomePageState extends State<DriverHomePage> {
   List<Widget> pageList = <Widget>[
-    DriverMapLocationPage(),
-    DriverClientRequestsPage(),
-    DriverCarInfoPage(),
-    DriverHistoryTripPage(),
     DriverMyTripsPage(),
     ProfileInfoPage(),
     RolesPage(),
@@ -81,7 +72,8 @@ class _DriverHomePageState extends State<DriverHomePage> {
                   )
                 ),
                 ListTile(
-                  title: Text('Mapa de localizacion'),
+                  leading: Icon(Icons.directions_car, color: Color(0xFF00C896)),
+                  title: Text('Mis Viajes U-Ride', style: TextStyle(fontWeight: FontWeight.bold)),
                   selected: state.pageIndex == 0,
                   onTap: () {
                     context.read<DriverHomeBloc>().add(ChangeDrawerPage(pageIndex: 0));
@@ -89,7 +81,8 @@ class _DriverHomePageState extends State<DriverHomePage> {
                   },
                 ),
                 ListTile(
-                  title: Text('Solicitudes de viaje'),
+                  leading: Icon(Icons.person, color: Color(0xFF00C896)),
+                  title: Text('Perfil del usuario', style: TextStyle(fontWeight: FontWeight.bold)),
                   selected: state.pageIndex == 1,
                   onTap: () {
                     context.read<DriverHomeBloc>().add(ChangeDrawerPage(pageIndex: 1));
@@ -97,7 +90,8 @@ class _DriverHomePageState extends State<DriverHomePage> {
                   },
                 ),
                 ListTile(
-                  title: Text('Mi Vehiculo'),
+                  leading: Icon(Icons.supervised_user_circle_rounded, color: Color(0xFF00C896)),
+                  title: Text('Roles de usuario', style: TextStyle(fontWeight: FontWeight.bold)),
                   selected: state.pageIndex == 2,
                   onTap: () {
                     context.read<DriverHomeBloc>().add(ChangeDrawerPage(pageIndex: 2));
@@ -105,48 +99,8 @@ class _DriverHomePageState extends State<DriverHomePage> {
                   },
                 ),
                 ListTile(
-                  title: Text('Historial de viajes'),
-                  selected: state.pageIndex == 3,
-                  onTap: () {
-                    context
-                        .read<DriverHomeBloc>()
-                        .add(ChangeDrawerPage(pageIndex: 3));
-                    Navigator.pop(context);
-                  },
-                ),
-                ListTile(
-                  leading: Icon(Icons.directions_car, color: Color(0xFF00C896)),
-                  title: Text('Mis Viajes U-Ride', style: TextStyle(fontWeight: FontWeight.bold)),
-                  selected: state.pageIndex == 4,
-                  onTap: () {
-                    context
-                        .read<DriverHomeBloc>()
-                        .add(ChangeDrawerPage(pageIndex: 4));
-                    Navigator.pop(context);
-                  },
-                ),
-                ListTile(
-                  title: Text('Perfil del usuario'),
-                  selected: state.pageIndex == 5,
-                  onTap: () {
-                    context
-                        .read<DriverHomeBloc>()
-                        .add(ChangeDrawerPage(pageIndex: 5));
-                    Navigator.pop(context);
-                  },
-                ),
-                ListTile(
-                  title: Text('Roles de usuario'),
-                  selected: state.pageIndex == 6,
-                  onTap: () {
-                    context
-                        .read<DriverHomeBloc>()
-                        .add(ChangeDrawerPage(pageIndex: 6));
-                    Navigator.pop(context);
-                  },
-                ),
-                ListTile(
-                  title: Text('Cerrar sesion'),
+                  leading: Icon(Icons.logout, color: Color(0xFF00C896)),
+                  title: Text('Cerrar sesion', style: TextStyle(fontWeight: FontWeight.bold)),
                   onTap: () {
                     context.read<DriverHomeBloc>().add(Logout());
                     context.read<BlocSocketIO>().add(DisconnectSocketIO());
