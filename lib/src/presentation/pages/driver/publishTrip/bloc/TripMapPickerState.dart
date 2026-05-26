@@ -36,12 +36,14 @@ class TripMapPickerState extends Equatable {
     Set<Polyline>? polylines,
     bool? isLoadingAddress,
     bool? selectingOrigin,
+    bool clearOrigin = false,
+    bool clearDestination = false,
   }) {
     return TripMapPickerState(
       controller: controller ?? this.controller,
       cameraPosition: cameraPosition ?? this.cameraPosition,
-      origin: origin ?? this.origin,
-      destination: destination ?? this.destination,
+      origin: clearOrigin ? null : (origin ?? this.origin),
+      destination: clearDestination ? null : (destination ?? this.destination),
       markers: markers ?? this.markers,
       polylines: polylines ?? this.polylines,
       isLoadingAddress: isLoadingAddress ?? this.isLoadingAddress,

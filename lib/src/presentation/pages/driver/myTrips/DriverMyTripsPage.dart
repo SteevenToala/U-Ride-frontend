@@ -335,17 +335,37 @@ class _TripCard extends StatelessWidget {
     }
     // FINISHED — solo lectura, no se puede eliminar (registro histórico)
     if (trip.isFinished) {
-      return SizedBox(
-        width: double.infinity,
-        child: _actionBtn('Ver Pasajeros', Icons.people_outline, const Color(0xFF8BA3BC), onViewReservations),
+      return Column(
+        children: [
+          Row(
+            children: [
+              Expanded(child: _actionBtn('Pasajeros', Icons.people_outline, const Color(0xFF8BA3BC), onViewReservations)),
+              if (onViewRoute != null) ...[
+                const SizedBox(width: 8),
+                Expanded(child: _actionBtn('Ver Ruta', Icons.map, const Color(0xFF8B5CF6), onViewRoute!)),
+              ],
+            ],
+          ),
+        ],
       );
     }
     // CANCELLED — se puede eliminar para limpiar la lista
-    return Row(
+    return Column(
       children: [
-        Expanded(child: _actionBtn('Ver Pasajeros', Icons.people_outline, const Color(0xFF8BA3BC), onViewReservations)),
-        const SizedBox(width: 8),
-        Expanded(child: _actionBtn('Eliminar', Icons.delete_outline, Colors.redAccent, onDelete)),
+        Row(
+          children: [
+            Expanded(child: _actionBtn('Pasajeros', Icons.people_outline, const Color(0xFF8BA3BC), onViewReservations)),
+            const SizedBox(width: 8),
+            Expanded(child: _actionBtn('Eliminar', Icons.delete_outline, Colors.redAccent, onDelete)),
+          ],
+        ),
+        if (onViewRoute != null) ...[
+          const SizedBox(height: 8),
+          SizedBox(
+            width: double.infinity,
+            child: _actionBtn('Ver Ruta en Mapa', Icons.map, const Color(0xFF8B5CF6), onViewRoute!),
+          ),
+        ],
       ],
     );
   }

@@ -77,8 +77,8 @@ class TripMapPickerBloc extends Bloc<TripMapPickerEvent, TripMapPickerState> {
 
     on<ResetSelection>((event, emit) {
       emit(state.copyWith(
-        origin: null,
-        destination: null,
+        clearOrigin: true,
+        clearDestination: true,
         selectingOrigin: true,
         markers: {},
         polylines: {},
@@ -135,7 +135,7 @@ class TripMapPickerBloc extends Bloc<TripMapPickerEvent, TripMapPickerState> {
 
       if (state.origin == null || (state.origin != null && state.destination != null)) {
         // Set origin and clear destination
-        emit(state.copyWith(origin: newPlacemark, destination: null, selectingOrigin: false, polylines: {}, isLoadingAddress: false));
+        emit(state.copyWith(origin: newPlacemark, clearDestination: true, selectingOrigin: false, polylines: {}, isLoadingAddress: false));
         await _traceRoute(emit, newPlacemark, null);
       } else {
         // Set destination

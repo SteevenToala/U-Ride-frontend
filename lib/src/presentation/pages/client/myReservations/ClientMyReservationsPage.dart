@@ -221,7 +221,42 @@ class _MyReservationCard extends StatelessWidget {
                       '\$${(reservation.seatsRequested * trip.farePerSeat).toStringAsFixed(2)} total'),
               ],
             ),
-            if (onCancel != null) ...[
+            if (trip != null) ...[
+              const SizedBox(height: 12),
+              Row(
+                children: [
+                  Expanded(
+                    child: OutlinedButton.icon(
+                      style: OutlinedButton.styleFrom(
+                        foregroundColor: const Color(0xFF00C896),
+                        side: const BorderSide(color: Color(0xFF00C896)),
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                      ),
+                      onPressed: () {
+                        Navigator.pushNamed(context, 'client/shared-trips/route-map', arguments: {'trip': trip});
+                      },
+                      icon: const Icon(Icons.map_outlined, size: 16),
+                      label: const Text('Ver Ruta'),
+                    ),
+                  ),
+                  if (onCancel != null) ...[
+                    const SizedBox(width: 10),
+                    Expanded(
+                      child: OutlinedButton.icon(
+                        style: OutlinedButton.styleFrom(
+                          foregroundColor: Colors.redAccent,
+                          side: const BorderSide(color: Colors.redAccent),
+                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                        ),
+                        onPressed: onCancel,
+                        icon: const Icon(Icons.cancel_outlined, size: 16),
+                        label: const Text('Cancelar'),
+                      ),
+                    ),
+                  ],
+                ],
+              ),
+            ] else if (onCancel != null) ...[
               const SizedBox(height: 12),
               SizedBox(
                 width: double.infinity,

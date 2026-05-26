@@ -160,7 +160,7 @@ class _DriverPublishTripPageState extends State<DriverPublishTripPage> {
                         Expanded(
                           child: _buildTextField(
                             label: 'Cupos disponibles',
-                            hint: '1 - 8',
+                            hint: '1 - 42',
                             icon: Icons.people,
                             isEditing: state.isEditing,
                             keyboardType: TextInputType.number,
@@ -169,7 +169,7 @@ class _DriverPublishTripPageState extends State<DriverPublishTripPage> {
                             validator: (v) {
                               if (v == null || v.isEmpty) return 'Requerido';
                               final n = int.tryParse(v);
-                              if (n == null || n < 1 || n > 8) return '1 a 8 cupos';
+                              if (n == null || n < 1 || n > 42) return '1 a 42 cupos';
                               return null;
                             },
                           ),
