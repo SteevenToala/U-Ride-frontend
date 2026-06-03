@@ -100,12 +100,22 @@ class GeolocatorRepositoryImpl implements GeolocatorRepository {
   Future<List<LatLng>> getPolyline(LatLng pickUpLatLng, LatLng destinationLatLng) async {
     List<LatLng> polylineCoordinates = [];
     try {
-      PolylineResult result = await PolylinePoints().getRouteBetweenCoordinates(
-          API_KEY_GOOGLE,
-          PointLatLng(pickUpLatLng.latitude, pickUpLatLng.longitude),
-          PointLatLng(destinationLatLng.latitude, destinationLatLng.longitude),
-          travelMode: TravelMode.driving,
-      );
+      PolylinePoints polylinePoints = PolylinePoints();
+
+PolylineResult result = await polylinePoints.getRouteBetweenCoordinates(
+  googleApiKey: API_KEY_GOOGLE,
+  request: PolylineRequest(
+    origin: PointLatLng(
+      pickUpLatLng.latitude,
+      pickUpLatLng.longitude,
+    ),
+    destination: PointLatLng(
+      destinationLatLng.latitude,
+      destinationLatLng.longitude,
+    ),
+    mode: TravelMode.driving,
+  ),
+);
       if (result.points.isNotEmpty) {
         result.points.forEach((PointLatLng point) {
           polylineCoordinates.add(LatLng(point.latitude, point.longitude));

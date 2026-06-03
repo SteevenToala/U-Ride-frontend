@@ -6,6 +6,7 @@ import 'package:indriver_clone_flutter/src/domain/models/SharedTrip.dart';
 import 'package:indriver_clone_flutter/src/domain/models/TripStatus.dart';
 import 'package:indriver_clone_flutter/src/domain/utils/Resource.dart';
 import 'package:indriver_clone_flutter/src/data/dataSource/local/SharefPref.dart';
+import 'package:indriver_clone_flutter/src/presentation/theme/AppTheme.dart';
 import 'bloc/DriverMyTripsBloc.dart';
 import 'bloc/DriverMyTripsEvent.dart';
 import 'bloc/DriverMyTripsState.dart';
@@ -41,109 +42,210 @@ class _DriverMyTripsPageState extends State<DriverMyTripsPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFF0D1B2A),
-      body: BlocListener<DriverMyTripsBloc, DriverMyTripsState>(
-        listener: (context, state) {
-          if (state.response is ErrorData) {
-            Fluttertoast.showToast(
-              msg: (state.response as ErrorData).message,
-              backgroundColor: Colors.red,
-            );
-          }
-        },
-        child: BlocBuilder<DriverMyTripsBloc, DriverMyTripsState>(
-          builder: (context, state) {
-            if (state.isLoading && state.trips.isEmpty) {
-              return const Center(child: CircularProgressIndicator(color: Color(0xFF00C896)));
-            }
-            if (state.trips.isEmpty) {
-              return _emptyState();
-            }
-            return RefreshIndicator(
-              color: const Color(0xFF00C896),
-              backgroundColor: const Color(0xFF1A2E44),
-              onRefresh: () async {
-                if (_driverId != null) {
-                  context.read<DriverMyTripsBloc>().add(LoadMyTrips(idDriver: _driverId!));
+      backgroundColor: AppTheme.backgroundDark,
+      body: Column(
+        children: [
+          _pageHeader(),
+          Expanded(
+            child: BlocListener<DriverMyTripsBloc, DriverMyTripsState>(
+              listener: (context, state) {
+                if (state.response is ErrorData) {
+                  Fluttertoast.showToast(
+                    msg: (state.response as ErrorData).message,
+                    backgroundColor: Colors.red,
+                  );
                 }
               },
-              child: ListView.builder(
-                padding: const EdgeInsets.all(16),
-                itemCount: state.trips.length,
-                itemBuilder: (context, i) {
-                  final currentTrip = state.trips[i];
-                  return _TripCard(
-                    trip: currentTrip,
-                    onStart: () => _confirm(
-                      context,
-                      title: '¿Iniciar viaje?',
-                      message: 'El viaje comenzará y no podrás editar la información.',
-                      onConfirm: () => context.read<DriverMyTripsBloc>().add(StartTrip(idTrip: currentTrip.id!)),
-                    ),
-                    onCancel: () => _confirm(
-                      context,
-                      title: '¿Cancelar viaje?',
-                      message: 'Los pasajeros confirmados serán notificados.',
-                      onConfirm: () => context.read<DriverMyTripsBloc>().add(CancelDriverTrip(idTrip: currentTrip.id!)),
-                    ),
-                    onFinish: () => _confirm(
-                      context,
-                      title: '¿Finalizar viaje?',
-                      message: 'Marca el viaje como completado.',
-                      onConfirm: () => context.read<DriverMyTripsBloc>().add(FinishTrip(idTrip: currentTrip.id!)),
-                    ),
-                    onDelete: () => _confirm(
-                      context,
-                      title: '¿Eliminar viaje?',
-                      message: 'Esta acción no se puede deshacer.',
-                      onConfirm: () => context.read<DriverMyTripsBloc>().add(DeleteTrip(idTrip: currentTrip.id!)),
-                      isDestructive: true,
-                    ),
-                    onEdit: () => Navigator.pushNamed(
-                      context,
-                      'driver/shared-trips/publish',
-                      arguments: {'idDriver': _driverId, 'tripToEdit': currentTrip},
-                    ).then((_) {
+              child: BlocBuilder<DriverMyTripsBloc, DriverMyTripsState>(
+                builder: (context, state) {
+                  if (state.isLoading && state.trips.isEmpty) {
+                    return const Center(
+                      child: CircularProgressIndicator(color: AppTheme.driverColor),
+                    );
+                  }
+                  if (state.trips.isEmpty) return _emptyState();
+                  return RefreshIndicator(
+                    color: AppTheme.driverColor,
+                    backgroundColor: AppTheme.backgroundDarkSecondary,
+                    onRefresh: () async {
                       if (_driverId != null) {
-                        context.read<DriverMyTripsBloc>().add(LoadMyTrips(idDriver: _driverId!));
+                        context
+                            .read<DriverMyTripsBloc>()
+                            .add(LoadMyTrips(idDriver: _driverId!));
                       }
-                    }),
-                    onViewReservations: () => Navigator.pushNamed(
-                      context,
-                      'driver/shared-trips/reservations',
-                      arguments: {'trip': currentTrip},
-                    ).then((_) {
-                      if (_driverId != null) {
-                        context.read<DriverMyTripsBloc>().add(LoadMyTrips(idDriver: _driverId!));
-                      }
-                    }),
-                    onViewRoute: (currentTrip.originLat != null && currentTrip.originLat != 0.0)
-                        ? () => Navigator.pushNamed(
-                              context,
-                              'driver/shared-trips/route-map',
-                              arguments: {'trip': currentTrip},
-                            )
-                        : null,
+                    },
+                    child: ListView.builder(
+                      padding: const EdgeInsets.fromLTRB(16, 8, 16, 100),
+                      itemCount: state.trips.length,
+                      itemBuilder: (context, i) {
+                        final t = state.trips[i];
+                        return _TripCard(
+                          trip: t,
+                          onStart: () => _confirm(
+                            context,
+                            title: '¿Iniciar viaje?',
+                            message: 'El viaje comenzará y no podrás editar la información.',
+                            onConfirm: () => context
+                                .read<DriverMyTripsBloc>()
+                                .add(StartTrip(idTrip: t.id!)),
+                            confirmColor: AppTheme.accentColor,
+                          ),
+                          onCancel: () => _confirm(
+                            context,
+                            title: '¿Cancelar viaje?',
+                            message: 'Los pasajeros confirmados serán notificados.',
+                            onConfirm: () => context
+                                .read<DriverMyTripsBloc>()
+                                .add(CancelDriverTrip(idTrip: t.id!)),
+                            isDestructive: true,
+                          ),
+                          onFinish: () => _confirm(
+                            context,
+                            title: '¿Finalizar viaje?',
+                            message: 'Marca el viaje como completado.',
+                            onConfirm: () => context
+                                .read<DriverMyTripsBloc>()
+                                .add(FinishTrip(idTrip: t.id!)),
+                            confirmColor: AppTheme.accentColor,
+                          ),
+                          onDelete: () => _confirm(
+                            context,
+                            title: '¿Eliminar viaje?',
+                            message: 'Esta acción no se puede deshacer.',
+                            onConfirm: () => context
+                                .read<DriverMyTripsBloc>()
+                                .add(DeleteTrip(idTrip: t.id!)),
+                            isDestructive: true,
+                          ),
+                          onEdit: () => Navigator.pushNamed(
+                            context,
+                            'driver/shared-trips/publish',
+                            arguments: {'idDriver': _driverId, 'tripToEdit': t},
+                          ).then((_) {
+                            if (mounted && _driverId != null) {
+                              context
+                                  .read<DriverMyTripsBloc>()
+                                  .add(LoadMyTrips(idDriver: _driverId!));
+                            }
+                          }),
+                          onViewReservations: () => Navigator.pushNamed(
+                            context,
+                            'driver/shared-trips/reservations',
+                            arguments: {'trip': t},
+                          ).then((_) {
+                            if (mounted && _driverId != null) {
+                              context
+                                  .read<DriverMyTripsBloc>()
+                                  .add(LoadMyTrips(idDriver: _driverId!));
+                            }
+                          }),
+                          onViewRoute: (t.originLat != null && t.originLat != 0.0)
+                              ? () => Navigator.pushNamed(
+                                    context,
+                                    'driver/shared-trips/route-map',
+                                    arguments: {'trip': t},
+                                  )
+                              : null,
+                        );
+                      },
+                    ),
                   );
                 },
               ),
-            );
-          },
+            ),
+          ),
+        ],
+      ),
+      floatingActionButton: _publishFab(),
+    );
+  }
+
+  Widget _pageHeader() {
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.fromLTRB(20, 20, 20, 16),
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [
+            AppTheme.driverColor.withValues(alpha: 0.25),
+            AppTheme.backgroundDarkSecondary,
+          ],
+        ),
+        border: Border(
+          bottom: BorderSide(
+              color: AppTheme.driverColor.withValues(alpha: 0.2), width: 1),
         ),
       ),
-      floatingActionButton: FloatingActionButton.extended(
-        backgroundColor: const Color(0xFF00C896),
+      child: Row(
+        children: [
+          Container(
+            width: 42,
+            height: 42,
+            decoration: BoxDecoration(
+              gradient: AppTheme.driverGradient,
+              borderRadius: BorderRadius.circular(12),
+              boxShadow: [
+                BoxShadow(
+                  color: AppTheme.driverColor.withValues(alpha: 0.4),
+                  blurRadius: 10,
+                  offset: const Offset(0, 4),
+                ),
+              ],
+            ),
+            child: const Icon(Icons.directions_car_rounded, color: Colors.white, size: 22),
+          ),
+          const SizedBox(width: 14),
+          const Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                'Mis Viajes',
+                style: TextStyle(
+                    color: Colors.white, fontWeight: FontWeight.w900, fontSize: 18),
+              ),
+              Text(
+                'Gestiona tus rutas publicadas',
+                style: TextStyle(color: Colors.white38, fontSize: 12),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _publishFab() {
+    return Container(
+      decoration: BoxDecoration(
+        gradient: AppTheme.driverGradient,
+        borderRadius: BorderRadius.circular(16),
+        boxShadow: [
+          BoxShadow(
+            color: AppTheme.driverColor.withValues(alpha: 0.5),
+            blurRadius: 16,
+            offset: const Offset(0, 6),
+          ),
+        ],
+      ),
+      child: FloatingActionButton.extended(
+        backgroundColor: Colors.transparent,
+        elevation: 0,
         onPressed: () => Navigator.pushNamed(
           context,
           'driver/shared-trips/publish',
           arguments: {'idDriver': _driverId},
         ).then((_) {
-          if (_driverId != null) {
+          if (mounted && _driverId != null) {
             context.read<DriverMyTripsBloc>().add(LoadMyTrips(idDriver: _driverId!));
           }
         }),
-        icon: const Icon(Icons.add, color: Colors.white),
-        label: const Text('Nuevo Viaje', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+        icon: const Icon(Icons.add_rounded, color: Colors.white),
+        label: const Text(
+          'Nuevo Viaje',
+          style: TextStyle(color: Colors.white, fontWeight: FontWeight.w800, fontSize: 14),
+        ),
       ),
     );
   }
@@ -153,11 +255,29 @@ class _DriverMyTripsPageState extends State<DriverMyTripsPage> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(Icons.directions_car_outlined, size: 80, color: Colors.white.withOpacity(0.2)),
-          const SizedBox(height: 16),
-          const Text('No tienes viajes publicados', style: TextStyle(color: Colors.white70, fontSize: 16)),
+          Container(
+            width: 90,
+            height: 90,
+            decoration: BoxDecoration(
+              color: AppTheme.driverColor.withValues(alpha: 0.1),
+              shape: BoxShape.circle,
+            ),
+            child: Icon(
+              Icons.directions_car_outlined,
+              size: 46,
+              color: AppTheme.driverColor.withValues(alpha: 0.5),
+            ),
+          ),
+          const SizedBox(height: 20),
+          const Text(
+            'No tienes viajes publicados',
+            style: TextStyle(color: Colors.white70, fontSize: 16, fontWeight: FontWeight.w600),
+          ),
           const SizedBox(height: 8),
-          const Text('Toca el botón + para publicar tu primer viaje', style: TextStyle(color: Color(0xFF4A6278), fontSize: 13)),
+          Text(
+            'Toca el botón + para publicar tu primer viaje',
+            style: TextStyle(color: Colors.white.withValues(alpha: 0.35), fontSize: 13),
+          ),
         ],
       ),
     );
@@ -169,21 +289,28 @@ class _DriverMyTripsPageState extends State<DriverMyTripsPage> {
     required String message,
     required VoidCallback onConfirm,
     bool isDestructive = false,
+    Color? confirmColor,
   }) async {
+    final color = isDestructive ? Colors.redAccent : (confirmColor ?? AppTheme.driverColor);
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (ctx) => AlertDialog(
-        backgroundColor: const Color(0xFF1A2E44),
-        title: Text(title, style: const TextStyle(color: Colors.white)),
-        content: Text(message, style: const TextStyle(color: Color(0xFF8BA3BC))),
+        backgroundColor: AppTheme.backgroundDarkSecondary,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+        title: Text(title,
+            style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w800)),
+        content: Text(message,
+            style: TextStyle(color: Colors.white.withValues(alpha: 0.6))),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(ctx, false),
-            child: const Text('Cancelar', style: TextStyle(color: Color(0xFF8BA3BC))),
+            child: Text('Cancelar',
+                style: TextStyle(color: Colors.white.withValues(alpha: 0.5))),
           ),
           ElevatedButton(
             style: ElevatedButton.styleFrom(
-              backgroundColor: isDestructive ? Colors.redAccent : const Color(0xFF00C896),
+              backgroundColor: color,
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
             ),
             onPressed: () => Navigator.pop(ctx, true),
             child: const Text('Confirmar', style: TextStyle(color: Colors.white)),
@@ -194,6 +321,8 @@ class _DriverMyTripsPageState extends State<DriverMyTripsPage> {
     if (confirmed == true) onConfirm();
   }
 }
+
+// ── Trip card ────────────────────────────────────────────────────────────────
 
 class _TripCard extends StatelessWidget {
   final SharedTrip trip;
@@ -216,42 +345,91 @@ class _TripCard extends StatelessWidget {
     this.onViewRoute,
   });
 
+  Color get _sc => switch (trip.status) {
+        TripStatus.SCHEDULED => const Color(0xFFF59E0B),
+        TripStatus.ACTIVE    => AppTheme.accentColor,
+        TripStatus.FINISHED  => const Color(0xFF3B82F6),
+        TripStatus.CANCELLED => Colors.redAccent,
+      };
+
+  IconData get _si => switch (trip.status) {
+        TripStatus.SCHEDULED => Icons.schedule_rounded,
+        TripStatus.ACTIVE    => Icons.directions_car_rounded,
+        TripStatus.FINISHED  => Icons.check_circle_rounded,
+        TripStatus.CANCELLED => Icons.cancel_rounded,
+      };
+
+  String get _sl => switch (trip.status) {
+        TripStatus.SCHEDULED => 'Programado',
+        TripStatus.ACTIVE    => 'En curso',
+        TripStatus.FINISHED  => 'Finalizado',
+        TripStatus.CANCELLED => 'Cancelado',
+      };
+
   @override
   Widget build(BuildContext context) {
     return Container(
       margin: const EdgeInsets.only(bottom: 16),
       decoration: BoxDecoration(
-        color: const Color(0xFF1A2E44),
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: _statusColor().withOpacity(0.4)),
+        color: AppTheme.backgroundDarkSecondary,
+        borderRadius: BorderRadius.circular(18),
+        border: Border.all(color: _sc.withValues(alpha: 0.35), width: 1.5),
         boxShadow: [
-          BoxShadow(color: _statusColor().withOpacity(0.15), blurRadius: 8, offset: const Offset(0, 4)),
+          BoxShadow(
+            color: _sc.withValues(alpha: 0.12),
+            blurRadius: 12,
+            offset: const Offset(0, 5),
+          ),
         ],
       ),
       child: Column(
         children: [
-          // Header
+          // Status header
           Container(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 11),
             decoration: BoxDecoration(
-              color: _statusColor().withOpacity(0.15),
-              borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
+              color: _sc.withValues(alpha: 0.14),
+              borderRadius: const BorderRadius.vertical(top: Radius.circular(18)),
             ),
             child: Row(
               children: [
-                Icon(_statusIcon(), color: _statusColor(), size: 20),
-                const SizedBox(width: 8),
-                Text(_statusLabel(), style: TextStyle(color: _statusColor(), fontWeight: FontWeight.bold)),
-                const Spacer(),
                 Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
                   decoration: BoxDecoration(
-                    color: const Color(0xFF00C896).withOpacity(0.2),
+                    color: _sc.withValues(alpha: 0.2),
                     borderRadius: BorderRadius.circular(20),
+                    border: Border.all(color: _sc.withValues(alpha: 0.5), width: 1),
+                  ),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Icon(_si, color: _sc, size: 13),
+                      const SizedBox(width: 5),
+                      Text(_sl,
+                          style: TextStyle(
+                              color: _sc, fontWeight: FontWeight.w800, fontSize: 12)),
+                    ],
+                  ),
+                ),
+                const Spacer(),
+                // Price badge — always visible (solid gradient)
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 5),
+                  decoration: BoxDecoration(
+                    gradient: AppTheme.driverGradient,
+                    borderRadius: BorderRadius.circular(20),
+                    boxShadow: [
+                      BoxShadow(
+                        color: AppTheme.driverColor.withValues(alpha: 0.4),
+                        blurRadius: 6,
+                        offset: const Offset(0, 2),
+                      ),
+                    ],
                   ),
                   child: Text(
                     '\$${trip.farePerSeat.toStringAsFixed(2)}/persona',
-                    style: const TextStyle(color: Color(0xFF00C896), fontWeight: FontWeight.bold, fontSize: 13),
+                    style: const TextStyle(
+                        color: Colors.white, fontWeight: FontWeight.w900, fontSize: 12),
                   ),
                 ),
               ],
@@ -259,56 +437,64 @@ class _TripCard extends StatelessWidget {
           ),
           // Body
           Padding(
-            padding: const EdgeInsets.all(16),
+            padding: const EdgeInsets.fromLTRB(16, 14, 16, 6),
             child: Column(
               children: [
-                _infoRow(Icons.location_on, 'Origen', trip.originZone),
+                _infoRow(Icons.radio_button_checked, 'Origen', trip.originZone,
+                    AppTheme.driverColorLight),
                 const SizedBox(height: 8),
-                _infoRow(Icons.flag, 'Destino', trip.destinationZone),
+                _infoRow(Icons.location_on_rounded, 'Destino', trip.destinationZone,
+                    const Color(0xFFF59E0B)),
                 const SizedBox(height: 8),
-                _infoRow(Icons.access_time, 'Salida', _formatDateTime(trip.departureTime)),
+                _infoRow(Icons.access_time_rounded, 'Salida',
+                    _formatDateTime(trip.departureTime), Colors.white54),
                 const SizedBox(height: 8),
                 _infoRow(
-                  Icons.people,
+                  Icons.people_rounded,
                   'Cupos',
                   trip.isFinished || trip.isCancelled
                       ? '${trip.totalSeats - trip.availableSeats}/${trip.totalSeats} ocupados'
                       : '${trip.availableSeats}/${trip.totalSeats} disponibles',
+                  AppTheme.accentColor,
                 ),
                 if (trip.notes != null && trip.notes!.isNotEmpty) ...[
                   const SizedBox(height: 8),
-                  _infoRow(Icons.note, 'Notas', trip.notes!),
+                  _infoRow(Icons.note_rounded, 'Notas', trip.notes!, Colors.white38),
                 ],
               ],
             ),
           ),
           // Actions
           Padding(
-            padding: const EdgeInsets.fromLTRB(12, 0, 12, 12),
-            child: _buildActions(context),
+            padding: const EdgeInsets.fromLTRB(12, 8, 12, 12),
+            child: _buildActions(),
           ),
         ],
       ),
     );
   }
 
-  Widget _buildActions(BuildContext context) {
+  Widget _buildActions() {
     if (trip.isScheduled) {
       return Column(
         children: [
           Row(
             children: [
-              Expanded(child: _actionBtn('Ver Reservas', Icons.people, const Color(0xFF3B82F6), onViewReservations)),
+              Expanded(child: _btn('Ver Reservas', Icons.people_rounded,
+                  const Color(0xFF3B82F6), onViewReservations)),
               const SizedBox(width: 8),
-              Expanded(child: _actionBtn('Iniciar', Icons.play_arrow, const Color(0xFF00C896), onStart)),
+              Expanded(child: _btn('Iniciar', Icons.play_circle_rounded,
+                  AppTheme.accentColor, onStart)),
             ],
           ),
           const SizedBox(height: 8),
           Row(
             children: [
-              Expanded(child: _actionBtn('Editar', Icons.edit, const Color(0xFFF59E0B), onEdit)),
+              Expanded(child: _btn('Editar', Icons.edit_rounded,
+                  const Color(0xFFF59E0B), onEdit)),
               const SizedBox(width: 8),
-              Expanded(child: _actionBtn('Cancelar', Icons.cancel, Colors.redAccent, onCancel)),
+              Expanded(child: _btn('Cancelar', Icons.cancel_rounded,
+                  Colors.redAccent, onCancel)),
             ],
           ),
         ],
@@ -318,124 +504,129 @@ class _TripCard extends StatelessWidget {
         children: [
           Row(
             children: [
-              Expanded(child: _actionBtn('Pasajeros', Icons.people, const Color(0xFF3B82F6), onViewReservations)),
+              Expanded(child: _btn('Pasajeros', Icons.people_rounded,
+                  const Color(0xFF3B82F6), onViewReservations)),
               const SizedBox(width: 8),
-              Expanded(child: _actionBtn('Finalizar', Icons.check_circle, const Color(0xFF00C896), onFinish)),
+              Expanded(child: _btn('Finalizar', Icons.check_circle_rounded,
+                  AppTheme.accentColor, onFinish)),
             ],
           ),
           if (onViewRoute != null) ...[
             const SizedBox(height: 8),
             SizedBox(
               width: double.infinity,
-              child: _actionBtn('Ver Ruta en Mapa', Icons.map, const Color(0xFF8B5CF6), onViewRoute!),
+              child: _btn('Ver Ruta en Mapa', Icons.map_rounded,
+                  const Color(0xFF8B5CF6), onViewRoute!),
             ),
           ],
         ],
       );
     }
-    // FINISHED — solo lectura, no se puede eliminar (registro histórico)
     if (trip.isFinished) {
-      return Column(
+      return Row(
         children: [
-          Row(
-            children: [
-              Expanded(child: _actionBtn('Pasajeros', Icons.people_outline, const Color(0xFF8BA3BC), onViewReservations)),
-              if (onViewRoute != null) ...[
-                const SizedBox(width: 8),
-                Expanded(child: _actionBtn('Ver Ruta', Icons.map, const Color(0xFF8B5CF6), onViewRoute!)),
-              ],
-            ],
-          ),
+          Expanded(child: _btn('Pasajeros', Icons.people_outline,
+              Colors.white38, onViewReservations, subtle: true)),
+          if (onViewRoute != null) ...[
+            const SizedBox(width: 8),
+            Expanded(child: _btn('Ver Ruta', Icons.map_rounded,
+                const Color(0xFF8B5CF6), onViewRoute!)),
+          ],
         ],
       );
     }
-    // CANCELLED — se puede eliminar para limpiar la lista
-    return Column(
-      children: [
-        Row(
-          children: [
-            Expanded(child: _actionBtn('Pasajeros', Icons.people_outline, const Color(0xFF8BA3BC), onViewReservations)),
-            const SizedBox(width: 8),
-            Expanded(child: _actionBtn('Eliminar', Icons.delete_outline, Colors.redAccent, onDelete)),
-          ],
-        ),
-        if (onViewRoute != null) ...[
-          const SizedBox(height: 8),
-          SizedBox(
-            width: double.infinity,
-            child: _actionBtn('Ver Ruta en Mapa', Icons.map, const Color(0xFF8B5CF6), onViewRoute!),
-          ),
-        ],
-      ],
-    );
-  }
-
-  Widget _actionBtn(String label, IconData icon, Color color, VoidCallback onTap) {
-    return OutlinedButton.icon(
-      style: OutlinedButton.styleFrom(
-        foregroundColor: color,
-        side: BorderSide(color: color.withOpacity(0.5)),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-        padding: const EdgeInsets.symmetric(vertical: 10),
-      ),
-      onPressed: onTap,
-      icon: Icon(icon, size: 16),
-      label: Text(label, style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600)),
-    );
-  }
-
-  Widget _infoRow(IconData icon, String label, String value) {
+    // CANCELLED
     return Row(
       children: [
-        Icon(icon, size: 16, color: const Color(0xFF00C896)),
+        Expanded(child: _btn('Pasajeros', Icons.people_outline,
+            Colors.white38, onViewReservations, subtle: true)),
         const SizedBox(width: 8),
-        Text('$label: ', style: const TextStyle(color: Color(0xFF8BA3BC), fontSize: 13)),
-        Expanded(child: Text(value, style: const TextStyle(color: Colors.white, fontSize: 13), overflow: TextOverflow.ellipsis)),
+        Expanded(child: _btn('Eliminar', Icons.delete_rounded,
+            Colors.redAccent, onDelete)),
       ],
     );
   }
 
-  Color _statusColor() {
-    switch (trip.status) {
-      case TripStatus.SCHEDULED:
-        return const Color(0xFFF59E0B);
-      case TripStatus.ACTIVE:
-        return const Color(0xFF00C896);
-      case TripStatus.FINISHED:
-        return const Color(0xFF3B82F6);
-      case TripStatus.CANCELLED:
-        return Colors.redAccent;
-    }
+  Widget _btn(String label, IconData icon, Color color, VoidCallback onTap,
+      {bool subtle = false}) {
+    final gradient = subtle
+        ? null
+        : LinearGradient(
+            colors: [
+              HSLColor.fromColor(color)
+                  .withLightness(
+                    (HSLColor.fromColor(color).lightness + 0.1).clamp(0.0, 1.0),
+                  )
+                  .toColor(),
+              color,
+            ],
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+          );
+
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        padding: const EdgeInsets.symmetric(vertical: 10),
+        decoration: BoxDecoration(
+          gradient: gradient,
+          color: subtle ? Colors.white.withValues(alpha: 0.06) : null,
+          borderRadius: BorderRadius.circular(12),
+          border: subtle
+              ? Border.all(color: AppTheme.dividerColor, width: 1)
+              : null,
+          boxShadow: subtle
+              ? null
+              : [
+                  BoxShadow(
+                    color: color.withValues(alpha: 0.35),
+                    blurRadius: 8,
+                    offset: const Offset(0, 3),
+                  ),
+                ],
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(icon, size: 15, color: subtle ? Colors.white38 : Colors.white),
+            const SizedBox(width: 6),
+            Text(
+              label,
+              style: TextStyle(
+                color: subtle ? Colors.white38 : Colors.white,
+                fontSize: 12,
+                fontWeight: FontWeight.w800,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
   }
 
-  IconData _statusIcon() {
-    switch (trip.status) {
-      case TripStatus.SCHEDULED:
-        return Icons.schedule;
-      case TripStatus.ACTIVE:
-        return Icons.directions_car;
-      case TripStatus.FINISHED:
-        return Icons.check_circle;
-      case TripStatus.CANCELLED:
-        return Icons.cancel;
-    }
-  }
-
-  String _statusLabel() {
-    switch (trip.status) {
-      case TripStatus.SCHEDULED:
-        return 'Programado';
-      case TripStatus.ACTIVE:
-        return 'En curso';
-      case TripStatus.FINISHED:
-        return 'Finalizado';
-      case TripStatus.CANCELLED:
-        return 'Cancelado';
-    }
+  Widget _infoRow(IconData icon, String label, String value, Color iconColor) {
+    return Row(
+      children: [
+        Icon(icon, size: 15, color: iconColor),
+        const SizedBox(width: 8),
+        Text('$label: ',
+            style: TextStyle(color: Colors.white.withValues(alpha: 0.45), fontSize: 13)),
+        Expanded(
+          child: Text(
+            value,
+            style: const TextStyle(color: Colors.white, fontSize: 13),
+            overflow: TextOverflow.ellipsis,
+          ),
+        ),
+      ],
+    );
   }
 
   String _formatDateTime(DateTime dt) {
-    return '${dt.day.toString().padLeft(2, '0')}/${dt.month.toString().padLeft(2, '0')}/${dt.year} '
-        '${dt.hour.toString().padLeft(2, '0')}:${dt.minute.toString().padLeft(2, '0')}';
+    return '${dt.day.toString().padLeft(2, '0')}/'
+        '${dt.month.toString().padLeft(2, '0')}/'
+        '${dt.year} '
+        '${dt.hour.toString().padLeft(2, '0')}:'
+        '${dt.minute.toString().padLeft(2, '0')}';
   }
 }

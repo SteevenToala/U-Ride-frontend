@@ -1,28 +1,40 @@
 import 'package:flutter/material.dart';
+import 'package:indriver_clone_flutter/src/presentation/theme/AppTheme.dart';
 
 class DefaultButton extends StatelessWidget {
 
-  Function() onPressed;
-  String text;
-  Color color;
-  Color textColor;
-  EdgeInsetsGeometry margin;
-  double? width;
-  double height;
-  IconData? iconData;
-  Color iconColor;
+  final Function() onPressed;
+  final String text;
+  final Color color;
+  final Color textColor;
+  final EdgeInsetsGeometry margin;
+  final double? width;
+  final double height;
+  final IconData? iconData;
+  final Color iconColor;
 
-  DefaultButton({
+  const DefaultButton({
+    super.key,
     required this.text,
     required this.onPressed,
     this.color = Colors.white,
-    this.textColor = Colors.black,
+    this.textColor = Colors.white,
     this.margin = const EdgeInsets.symmetric(vertical: 15),
-    this.height = 45,
+    this.height = 52,
     this.width,
     this.iconData,
-    this.iconColor = Colors.blueAccent
+    this.iconColor = Colors.white,
   });
+
+  LinearGradient get _gradient {
+    if (color == Colors.white) return AppTheme.accentGradient;
+    return AppTheme.buttonGradientForColor(color);
+  }
+
+  Color get _glowColor {
+    if (color == Colors.white) return AppTheme.accentColor;
+    return color;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -31,21 +43,15 @@ class DefaultButton extends StatelessWidget {
       height: height,
       margin: margin,
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(20),
-        gradient: color == Colors.white 
-          ? LinearGradient(
-              colors: [Color(0xFF00C896), Color(0xFF00A37A)],
-              begin: Alignment.centerLeft,
-              end: Alignment.centerRight,
-            )
-          : null,
-        color: color != Colors.white ? color : null,
+        borderRadius: BorderRadius.circular(14),
+        gradient: _gradient,
         boxShadow: [
           BoxShadow(
-            color: (color == Colors.white ? Color(0xFF00C896) : color).withOpacity(0.3),
-            blurRadius: 10,
-            offset: Offset(0, 5),
-          )
+            color: _glowColor.withValues(alpha: 0.45),
+            blurRadius: 18,
+            spreadRadius: 0,
+            offset: const Offset(0, 6),
+          ),
         ],
       ),
       child: ElevatedButton(
@@ -53,20 +59,21 @@ class DefaultButton extends StatelessWidget {
         style: ElevatedButton.styleFrom(
           backgroundColor: Colors.transparent,
           shadowColor: Colors.transparent,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-          padding: EdgeInsets.symmetric(horizontal: 20),
+          overlayColor: Colors.white.withValues(alpha: 0.12),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+          padding: const EdgeInsets.symmetric(horizontal: 20),
         ),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             if (iconData != null) ...[
-              Icon(iconData, color: Colors.white, size: 24),
-              SizedBox(width: 10),
+              Icon(iconData, color: Colors.white, size: 22),
+              const SizedBox(width: 10),
             ],
             Text(
               text,
-              style: TextStyle(
-                color: color == Colors.white ? Colors.white : textColor,
+              style: const TextStyle(
+                color: Colors.white,
                 fontSize: 16,
                 fontWeight: FontWeight.w900,
                 letterSpacing: 1.5,

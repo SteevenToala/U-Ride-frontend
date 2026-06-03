@@ -7,6 +7,7 @@ import 'package:indriver_clone_flutter/src/domain/models/TripReservation.dart';
 import 'package:indriver_clone_flutter/src/domain/useCases/trip-reservations/TripReservationsUseCases.dart';
 import 'package:indriver_clone_flutter/src/domain/utils/Resource.dart';
 import 'package:indriver_clone_flutter/src/data/dataSource/local/SharefPref.dart';
+import 'package:indriver_clone_flutter/src/presentation/theme/AppTheme.dart';
 
 class ClientMyReservationsPage extends StatefulWidget {
   const ClientMyReservationsPage({super.key});
@@ -15,7 +16,8 @@ class ClientMyReservationsPage extends StatefulWidget {
   State<ClientMyReservationsPage> createState() => _ClientMyReservationsPageState();
 }
 
-class _ClientMyReservationsPageState extends State<ClientMyReservationsPage> with SingleTickerProviderStateMixin {
+class _ClientMyReservationsPageState extends State<ClientMyReservationsPage>
+    with SingleTickerProviderStateMixin {
   late TabController _tabController;
   List<TripReservation> _reservations = [];
   bool _isLoading = true;
@@ -39,7 +41,10 @@ class _ClientMyReservationsPageState extends State<ClientMyReservationsPage> wit
     final session = await pref.read('user');
     if (session == null) return;
     final auth = AuthResponse.fromJson(session);
-    setState(() { _passengerId = auth.user.id; _isLoading = true; });
+    setState(() {
+      _passengerId = auth.user.id;
+      _isLoading = true;
+    });
 
     final useCases = GetIt.instance<TripReservationsUseCases>();
     final response = await useCases.getByPassenger.run(auth.user.id!);
@@ -47,21 +52,34 @@ class _ClientMyReservationsPageState extends State<ClientMyReservationsPage> wit
     if (response is Success<List<TripReservation>>) {
       setState(() => _reservations = response.data);
     } else if (response is ErrorData) {
-      Fluttertoast.showToast(msg: (response as ErrorData).message, backgroundColor: Colors.red);
+      Fluttertoast.showToast(
+          msg: (response as ErrorData).message, backgroundColor: Colors.red);
     }
   }
 
-  Future<void> _cancelReservation(TripReservation reservation, TripReservationsUseCases useCases) async {
+  Future<void> _cancelReservation(
+      TripReservation reservation, TripReservationsUseCases useCases) async {
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (ctx) => AlertDialog(
-        backgroundColor: const Color(0xFF1A2E44),
-        title: const Text('¿Cancelar reserva?', style: TextStyle(color: Colors.white)),
-        content: const Text('No podrás deshacer esta acción.', style: TextStyle(color: Color(0xFF8BA3BC))),
+        backgroundColor: AppTheme.backgroundDarkSecondary,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+        title: const Text('¿Cancelar reserva?',
+            style: TextStyle(color: Colors.white, fontWeight: FontWeight.w800)),
+        content: Text(
+          'No podrás deshacer esta acción.',
+          style: TextStyle(color: Colors.white.withValues(alpha: 0.6)),
+        ),
         actions: [
-          TextButton(onPressed: () => Navigator.pop(ctx, false), child: const Text('No', style: TextStyle(color: Color(0xFF8BA3BC)))),
+          TextButton(
+            onPressed: () => Navigator.pop(ctx, false),
+            child: Text('No', style: TextStyle(color: Colors.white.withValues(alpha: 0.5))),
+          ),
           ElevatedButton(
-            style: ElevatedButton.styleFrom(backgroundColor: Colors.redAccent),
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.redAccent,
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+            ),
             onPressed: () => Navigator.pop(ctx, true),
             child: const Text('Sí, cancelar', style: TextStyle(color: Colors.white)),
           ),
@@ -74,7 +92,9 @@ class _ClientMyReservationsPageState extends State<ClientMyReservationsPage> wit
       Fluttertoast.showToast(msg: 'Reserva cancelada', backgroundColor: Colors.orange);
       _loadReservations();
     } else if (response is ErrorData) {
-      Fluttertoast.showToast(msg: (response as ErrorData<TripReservation>).message, backgroundColor: Colors.red);
+      Fluttertoast.showToast(
+          msg: (response as ErrorData<TripReservation>).message,
+          backgroundColor: Colors.red);
     }
   }
 
@@ -84,32 +104,42 @@ class _ClientMyReservationsPageState extends State<ClientMyReservationsPage> wit
   @override
   Widget build(BuildContext context) {
     final useCases = GetIt.instance<TripReservationsUseCases>();
+    final pending = _filtered(ReservationStatus.PENDING);
+    final accepted = _filtered(ReservationStatus.ACCEPTED);
 
     return Scaffold(
-      backgroundColor: const Color(0xFF0D1B2A),
+      backgroundColor: AppTheme.backgroundDark,
       body: Column(
         children: [
-          TabBar(
-            controller: _tabController,
-            indicatorColor: const Color(0xFF00C896),
-            labelColor: const Color(0xFF00C896),
-            unselectedLabelColor: const Color(0xFF4A6278),
-            tabs: [
-              Tab(text: 'Pendientes (${_filtered(ReservationStatus.PENDING).length})'),
-              Tab(text: 'Aceptadas (${_filtered(ReservationStatus.ACCEPTED).length})'),
-              Tab(text: 'Historial'),
-            ],
+          _pageHeader(),
+          // Tab bar with passenger color
+          Container(
+            color: AppTheme.backgroundDarkSecondary,
+            child: TabBar(
+              controller: _tabController,
+              indicatorColor: AppTheme.passengerColorLight,
+              indicatorWeight: 3,
+              indicatorSize: TabBarIndicatorSize.tab,
+              labelColor: Colors.white,
+              unselectedLabelColor: Colors.white38,
+              labelStyle: const TextStyle(fontWeight: FontWeight.w700, fontSize: 12),
+              tabs: [
+                Tab(text: 'Pendientes (${pending.length})'),
+                Tab(text: 'Aceptadas (${accepted.length})'),
+                const Tab(text: 'Historial'),
+              ],
+            ),
           ),
           Expanded(
             child: _isLoading
-                ? const Center(child: CircularProgressIndicator(color: Color(0xFF00C896)))
+                ? const Center(
+                    child: CircularProgressIndicator(color: AppTheme.passengerColor))
                 : TabBarView(
                     controller: _tabController,
                     children: [
-                      // Solo se puede cancelar si el viaje aún está PROGRAMADO
-                      _reservationsList(_filtered(ReservationStatus.PENDING), useCases,
+                      _reservationsList(pending, useCases,
                           canCancelFn: (r) => r.trip?.isScheduled ?? false),
-                      _reservationsList(_filtered(ReservationStatus.ACCEPTED), useCases,
+                      _reservationsList(accepted, useCases,
                           canCancelFn: (r) => r.trip?.isScheduled ?? false),
                       _historyList(),
                     ],
@@ -120,10 +150,79 @@ class _ClientMyReservationsPageState extends State<ClientMyReservationsPage> wit
     );
   }
 
+  Widget _pageHeader() {
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.fromLTRB(20, 20, 20, 16),
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [
+            AppTheme.passengerColor.withValues(alpha: 0.25),
+            AppTheme.backgroundDarkSecondary,
+          ],
+        ),
+        border: Border(
+          bottom: BorderSide(
+              color: AppTheme.passengerColor.withValues(alpha: 0.2), width: 1),
+        ),
+      ),
+      child: Row(
+        children: [
+          Container(
+            width: 42,
+            height: 42,
+            decoration: BoxDecoration(
+              gradient: AppTheme.passengerGradient,
+              borderRadius: BorderRadius.circular(12),
+              boxShadow: [
+                BoxShadow(
+                  color: AppTheme.passengerColor.withValues(alpha: 0.4),
+                  blurRadius: 10,
+                  offset: const Offset(0, 4),
+                ),
+              ],
+            ),
+            child: const Icon(Icons.bookmark_rounded, color: Colors.white, size: 22),
+          ),
+          const SizedBox(width: 14),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Text(
+                'Mis Reservas',
+                style: TextStyle(
+                    color: Colors.white, fontWeight: FontWeight.w900, fontSize: 18),
+              ),
+              Text(
+                '${_reservations.length} reserva${_reservations.length != 1 ? 's' : ''} en total',
+                style: TextStyle(color: Colors.white.withValues(alpha: 0.5), fontSize: 12),
+              ),
+            ],
+          ),
+          const Spacer(),
+          // Refresh
+          GestureDetector(
+            onTap: _loadReservations,
+            child: Container(
+              padding: const EdgeInsets.all(8),
+              decoration: BoxDecoration(
+                color: Colors.white.withValues(alpha: 0.07),
+                borderRadius: BorderRadius.circular(10),
+                border: Border.all(color: AppTheme.dividerColor),
+              ),
+              child: const Icon(Icons.refresh_rounded, color: Colors.white54, size: 18),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
   Widget _reservationsList(
     List<TripReservation> items,
     TripReservationsUseCases? useCases, {
-    bool canCancel = false,
     bool Function(TripReservation)? canCancelFn,
   }) {
     if (items.isEmpty) {
@@ -131,28 +230,47 @@ class _ClientMyReservationsPageState extends State<ClientMyReservationsPage> wit
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(Icons.inbox_outlined, size: 70, color: Colors.white.withOpacity(0.15)),
-            const SizedBox(height: 12),
-            const Text('No hay reservas aquí', style: TextStyle(color: Colors.white38, fontSize: 15)),
+            Container(
+              width: 80,
+              height: 80,
+              decoration: BoxDecoration(
+                color: AppTheme.passengerColor.withValues(alpha: 0.08),
+                shape: BoxShape.circle,
+              ),
+              child: Icon(
+                Icons.inbox_outlined,
+                size: 40,
+                color: AppTheme.passengerColor.withValues(alpha: 0.35),
+              ),
+            ),
+            const SizedBox(height: 16),
+            const Text('No hay reservas aquí',
+                style: TextStyle(color: Colors.white54, fontSize: 15)),
           ],
         ),
       );
     }
     return RefreshIndicator(
-      color: const Color(0xFF00C896),
-      backgroundColor: const Color(0xFF1A2E44),
+      color: AppTheme.passengerColor,
+      backgroundColor: AppTheme.backgroundDarkSecondary,
       onRefresh: _loadReservations,
       child: ListView.builder(
-        padding: const EdgeInsets.all(16),
+        padding: const EdgeInsets.fromLTRB(16, 12, 16, 24),
         itemCount: items.length,
         itemBuilder: (context, i) {
           final r = items[i];
-          // Cancelación permitida solo si el viaje sigue PROGRAMADO
           final allowCancel = useCases != null &&
-              (canCancelFn != null ? canCancelFn(r) : canCancel);
+              (canCancelFn != null ? canCancelFn(r) : false);
           return _MyReservationCard(
             reservation: r,
             onCancel: allowCancel ? () => _cancelReservation(r, useCases!) : null,
+            onViewRoute: r.trip != null
+                ? () => Navigator.pushNamed(
+                      context,
+                      'client/shared-trips/route-map',
+                      arguments: {'trip': r.trip},
+                    )
+                : null,
           );
         },
       ),
@@ -161,19 +279,39 @@ class _ClientMyReservationsPageState extends State<ClientMyReservationsPage> wit
 
   Widget _historyList() {
     final history = _reservations
-        .where((r) => r.status == ReservationStatus.REJECTED || r.status == ReservationStatus.CANCELLED)
+        .where((r) =>
+            r.status == ReservationStatus.REJECTED ||
+            r.status == ReservationStatus.CANCELLED)
         .toList();
     return _reservationsList(history, null);
   }
 }
 
-// Removed TripReservationsUseCasesProvider (replaced by GetIt.instance usage)
+// ── Reservation card ─────────────────────────────────────────────────────────
 
 class _MyReservationCard extends StatelessWidget {
   final TripReservation reservation;
   final VoidCallback? onCancel;
+  final VoidCallback? onViewRoute;
 
-  const _MyReservationCard({required this.reservation, this.onCancel});
+  const _MyReservationCard({
+    required this.reservation,
+    this.onCancel,
+    this.onViewRoute,
+  });
+
+  Color get _statusColor {
+    switch (reservation.status) {
+      case ReservationStatus.PENDING:
+        return const Color(0xFFF59E0B);
+      case ReservationStatus.ACCEPTED:
+        return AppTheme.accentColor;
+      case ReservationStatus.REJECTED:
+        return Colors.redAccent;
+      case ReservationStatus.CANCELLED:
+        return Colors.grey;
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -181,97 +319,181 @@ class _MyReservationCard extends StatelessWidget {
     return Container(
       margin: const EdgeInsets.only(bottom: 14),
       decoration: BoxDecoration(
-        color: const Color(0xFF1A2E44),
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: _statusColor().withOpacity(0.35)),
-        boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.25), blurRadius: 6, offset: const Offset(0, 3))],
+        color: AppTheme.backgroundDarkSecondary,
+        borderRadius: BorderRadius.circular(18),
+        border: Border.all(
+          color: _statusColor.withValues(alpha: 0.35),
+          width: 1.5,
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: _statusColor.withValues(alpha: 0.12),
+            blurRadius: 12,
+            offset: const Offset(0, 4),
+          ),
+        ],
       ),
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
+      child: Column(
+        children: [
+          // Status header stripe
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+            decoration: BoxDecoration(
+              color: _statusColor.withValues(alpha: 0.12),
+              borderRadius: const BorderRadius.vertical(top: Radius.circular(18)),
+            ),
+            child: Row(
               children: [
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
+                _StatusChip(status: reservation.status),
+                const Spacer(),
+                if (trip != null)
+                  Text(
+                    _formatDateTime(trip.departureTime),
+                    style: TextStyle(
+                      color: Colors.white.withValues(alpha: 0.5),
+                      fontSize: 11,
+                    ),
+                  ),
+              ],
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(16),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                if (trip != null) ...[
+                  Row(
                     children: [
-                      if (trip != null) ...[
-                        Text('${trip.originZone} → ${trip.destinationZone}',
-                            style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 15)),
-                        const SizedBox(height: 4),
-                        Text(_formatDateTime(trip.departureTime),
-                            style: const TextStyle(color: Color(0xFF8BA3BC), fontSize: 12)),
-                      ] else
-                        const Text('Viaje', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+                      const Icon(Icons.radio_button_checked,
+                          color: AppTheme.passengerColorLight, size: 14),
+                      const SizedBox(width: 6),
+                      Expanded(
+                        child: Text(trip.originZone,
+                            style: const TextStyle(
+                                color: Colors.white,
+                                fontWeight: FontWeight.w700,
+                                fontSize: 14),
+                            overflow: TextOverflow.ellipsis),
+                      ),
                     ],
                   ),
-                ),
-                _StatusChip(status: reservation.status),
-              ],
-            ),
-            const SizedBox(height: 10),
-            Row(
-              children: [
-                _infoChip(Icons.people, '${reservation.seatsRequested} cupo${reservation.seatsRequested > 1 ? 's' : ''}'),
-                const SizedBox(width: 8),
-                if (trip != null)
-                  _infoChip(Icons.attach_money,
-                      '\$${(reservation.seatsRequested * trip.farePerSeat).toStringAsFixed(2)} total'),
-              ],
-            ),
-            if (trip != null) ...[
-              const SizedBox(height: 12),
-              Row(
-                children: [
-                  Expanded(
-                    child: OutlinedButton.icon(
-                      style: OutlinedButton.styleFrom(
-                        foregroundColor: const Color(0xFF00C896),
-                        side: const BorderSide(color: Color(0xFF00C896)),
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-                      ),
-                      onPressed: () {
-                        Navigator.pushNamed(context, 'client/shared-trips/route-map', arguments: {'trip': trip});
-                      },
-                      icon: const Icon(Icons.map_outlined, size: 16),
-                      label: const Text('Ver Ruta'),
-                    ),
+                  const SizedBox(height: 2),
+                  const Padding(
+                    padding: EdgeInsets.only(left: 6),
+                    child: Icon(Icons.more_vert, color: Colors.white24, size: 14),
                   ),
-                  if (onCancel != null) ...[
-                    const SizedBox(width: 10),
-                    Expanded(
-                      child: OutlinedButton.icon(
-                        style: OutlinedButton.styleFrom(
-                          foregroundColor: Colors.redAccent,
-                          side: const BorderSide(color: Colors.redAccent),
-                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-                        ),
-                        onPressed: onCancel,
-                        icon: const Icon(Icons.cancel_outlined, size: 16),
-                        label: const Text('Cancelar'),
+                  const SizedBox(height: 2),
+                  Row(
+                    children: [
+                      const Icon(Icons.location_on_rounded,
+                          color: Color(0xFFF59E0B), size: 14),
+                      const SizedBox(width: 6),
+                      Expanded(
+                        child: Text(trip.destinationZone,
+                            style: const TextStyle(
+                                color: Colors.white,
+                                fontWeight: FontWeight.w700,
+                                fontSize: 14),
+                            overflow: TextOverflow.ellipsis),
                       ),
-                    ),
+                    ],
+                  ),
+                ] else
+                  const Text('Viaje',
+                      style: TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold)),
+                const SizedBox(height: 12),
+                Row(
+                  children: [
+                    _infoChip(Icons.people_rounded,
+                        '${reservation.seatsRequested} cupo${reservation.seatsRequested > 1 ? 's' : ''}'),
+                    const SizedBox(width: 8),
+                    if (trip != null)
+                      _infoChip(Icons.attach_money_rounded,
+                          '\$${(reservation.seatsRequested * trip.farePerSeat).toStringAsFixed(2)} total'),
                   ],
-                ],
-              ),
-            ] else if (onCancel != null) ...[
-              const SizedBox(height: 12),
-              SizedBox(
-                width: double.infinity,
-                child: OutlinedButton.icon(
-                  style: OutlinedButton.styleFrom(
-                    foregroundColor: Colors.redAccent,
-                    side: const BorderSide(color: Colors.redAccent),
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-                  ),
-                  onPressed: onCancel,
-                  icon: const Icon(Icons.cancel_outlined, size: 16),
-                  label: const Text('Cancelar Reserva'),
                 ),
+                const SizedBox(height: 14),
+                _actionRow(context),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _actionRow(BuildContext context) {
+    final hasRoute = onViewRoute != null;
+    final hasCancel = onCancel != null;
+
+    if (!hasRoute && !hasCancel) return const SizedBox.shrink();
+
+    return Row(
+      children: [
+        if (hasRoute)
+          Expanded(
+            child: _solidBtn(
+              label: 'Ver Ruta',
+              icon: Icons.map_rounded,
+              color: AppTheme.passengerColor,
+              gradient: AppTheme.passengerGradient,
+              onTap: onViewRoute!,
+            ),
+          ),
+        if (hasRoute && hasCancel) const SizedBox(width: 10),
+        if (hasCancel)
+          Expanded(
+            child: _solidBtn(
+              label: 'Cancelar',
+              icon: Icons.cancel_rounded,
+              color: Colors.redAccent,
+              gradient: const LinearGradient(
+                colors: [Color(0xFFD32F2F), Colors.redAccent],
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
               ),
-            ],
+              onTap: onCancel!,
+            ),
+          ),
+      ],
+    );
+  }
+
+  Widget _solidBtn({
+    required String label,
+    required IconData icon,
+    required Color color,
+    required LinearGradient gradient,
+    required VoidCallback onTap,
+  }) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        padding: const EdgeInsets.symmetric(vertical: 10),
+        decoration: BoxDecoration(
+          gradient: gradient,
+          borderRadius: BorderRadius.circular(12),
+          boxShadow: [
+            BoxShadow(
+              color: color.withValues(alpha: 0.35),
+              blurRadius: 8,
+              offset: const Offset(0, 3),
+            ),
+          ],
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(icon, size: 15, color: Colors.white),
+            const SizedBox(width: 6),
+            Text(label,
+                style: const TextStyle(
+                    color: Colors.white,
+                    fontSize: 12,
+                    fontWeight: FontWeight.w800)),
           ],
         ),
       ),
@@ -280,36 +502,33 @@ class _MyReservationCard extends StatelessWidget {
 
   Widget _infoChip(IconData icon, String label) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
       decoration: BoxDecoration(
-        color: const Color(0xFF0D1B2A),
+        color: Colors.white.withValues(alpha: 0.06),
         borderRadius: BorderRadius.circular(20),
+        border: Border.all(color: AppTheme.dividerColor, width: 1),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(icon, size: 12, color: const Color(0xFF8BA3BC)),
-          const SizedBox(width: 4),
-          Text(label, style: const TextStyle(color: Color(0xFF8BA3BC), fontSize: 12)),
+          Icon(icon, size: 12, color: Colors.white38),
+          const SizedBox(width: 5),
+          Text(label, style: const TextStyle(color: Colors.white54, fontSize: 12)),
         ],
       ),
     );
   }
 
-  Color _statusColor() {
-    switch (reservation.status) {
-      case ReservationStatus.PENDING: return const Color(0xFFF59E0B);
-      case ReservationStatus.ACCEPTED: return const Color(0xFF00C896);
-      case ReservationStatus.REJECTED: return Colors.redAccent;
-      case ReservationStatus.CANCELLED: return Colors.grey;
-    }
-  }
-
   String _formatDateTime(DateTime dt) {
-    return '${dt.day.toString().padLeft(2, '0')}/${dt.month.toString().padLeft(2, '0')}/${dt.year} '
-        '${dt.hour.toString().padLeft(2, '0')}:${dt.minute.toString().padLeft(2, '0')}';
+    return '${dt.day.toString().padLeft(2, '0')}/'
+        '${dt.month.toString().padLeft(2, '0')}/'
+        '${dt.year} '
+        '${dt.hour.toString().padLeft(2, '0')}:'
+        '${dt.minute.toString().padLeft(2, '0')}';
   }
 }
+
+// ── Status chip ───────────────────────────────────────────────────────────────
 
 class _StatusChip extends StatelessWidget {
   final ReservationStatus status;
@@ -322,31 +541,41 @@ class _StatusChip extends StatelessWidget {
     IconData icon;
     switch (status) {
       case ReservationStatus.PENDING:
-        color = const Color(0xFFF59E0B); label = 'Pendiente'; icon = Icons.hourglass_top;
+        color = const Color(0xFFF59E0B);
+        label = 'Pendiente';
+        icon = Icons.hourglass_top_rounded;
         break;
       case ReservationStatus.ACCEPTED:
-        color = const Color(0xFF00C896); label = '¡Confirmado!'; icon = Icons.check_circle;
+        color = AppTheme.accentColor;
+        label = '¡Confirmado!';
+        icon = Icons.check_circle_rounded;
         break;
       case ReservationStatus.REJECTED:
-        color = Colors.redAccent; label = 'Rechazado'; icon = Icons.cancel;
+        color = Colors.redAccent;
+        label = 'Rechazado';
+        icon = Icons.cancel_rounded;
         break;
       case ReservationStatus.CANCELLED:
-        color = Colors.grey; label = 'Cancelado'; icon = Icons.do_not_disturb;
+        color = Colors.grey;
+        label = 'Cancelado';
+        icon = Icons.do_not_disturb_rounded;
         break;
     }
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
       decoration: BoxDecoration(
-        color: color.withOpacity(0.15),
+        color: color.withValues(alpha: 0.18),
         borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: color.withOpacity(0.5)),
+        border: Border.all(color: color.withValues(alpha: 0.5), width: 1),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
           Icon(icon, size: 13, color: color),
-          const SizedBox(width: 4),
-          Text(label, style: TextStyle(color: color, fontSize: 11, fontWeight: FontWeight.bold)),
+          const SizedBox(width: 5),
+          Text(label,
+              style: TextStyle(
+                  color: color, fontSize: 11, fontWeight: FontWeight.w800)),
         ],
       ),
     );

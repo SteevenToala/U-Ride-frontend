@@ -26,6 +26,7 @@ import 'package:indriver_clone_flutter/src/presentation/pages/profile/update/Pro
 import 'package:indriver_clone_flutter/src/presentation/pages/roles/RolesPage.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
+import 'package:indriver_clone_flutter/src/presentation/theme/ThemeConfig.dart';
 // U-Ride Shared Trips
 import 'package:indriver_clone_flutter/src/domain/models/SharedTrip.dart';
 import 'package:indriver_clone_flutter/src/presentation/pages/driver/publishTrip/DriverPublishTripPage.dart';
@@ -81,12 +82,12 @@ class _MyAppState extends State<MyApp> {
         title: 'U-RIDE',
         navigatorKey: navigatorKey,
         debugShowCheckedModeBanner: false,
-        theme: ThemeData(
-          colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-          useMaterial3: true,
-        ),
+        theme: ThemeConfig.appTheme,
         initialRoute: 'login',
         routes: {
+            '/student': (BuildContext context) => ClientHomePage(),
+  '/driver': (BuildContext context) => DriverHomePage(),
+  '/admin': (BuildContext context) => AdminHomePage(),
           'login': (BuildContext context) => LoginPage(),
           'register': (BuildContext context) => RegisterPage(),
           'forgot_password': (BuildContext context) => ForgotPasswordPage(),
