@@ -5,6 +5,7 @@ import 'package:indriver_clone_flutter/src/domain/models/ReservationStatus.dart'
 import 'package:indriver_clone_flutter/src/domain/models/SharedTrip.dart';
 import 'package:indriver_clone_flutter/src/domain/models/TripReservation.dart';
 import 'package:indriver_clone_flutter/src/domain/utils/Resource.dart';
+import 'package:indriver_clone_flutter/src/presentation/theme/AppTheme.dart';
 import 'bloc/DriverReservationsBloc.dart';
 import 'bloc/DriverReservationsEvent.dart';
 import 'bloc/DriverReservationsState.dart';
@@ -30,16 +31,16 @@ class _DriverReservationsPageState extends State<DriverReservationsPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFF0D1B2A),
+      backgroundColor: AppTheme.backgroundDark,
       appBar: AppBar(
-        backgroundColor: const Color(0xFF1A2E44),
+        backgroundColor: AppTheme.backgroundDarkCard,
         title: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             const Text('Reservas del Viaje', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 16)),
             Text(
               '${widget.trip.originZone} → ${widget.trip.destinationZone}',
-              style: const TextStyle(color: Color(0xFF8BA3BC), fontSize: 12),
+              style: const TextStyle(color: AppTheme.textMuted, fontSize: 12),
             ),
           ],
         ),
@@ -60,7 +61,7 @@ class _DriverReservationsPageState extends State<DriverReservationsPage> {
         child: BlocBuilder<DriverReservationsBloc, DriverReservationsState>(
           builder: (context, state) {
             if (state.isLoading && state.reservations.isEmpty) {
-              return const Center(child: CircularProgressIndicator(color: Color(0xFF00C896)));
+              return const Center(child: CircularProgressIndicator(color: AppTheme.accentColor));
             }
             if (state.reservations.isEmpty) {
               return _emptyState();
@@ -121,15 +122,15 @@ class _DriverReservationsPageState extends State<DriverReservationsPage> {
       margin: const EdgeInsets.all(16),
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: const Color(0xFF1A2E44),
+        color: AppTheme.backgroundDarkCard,
         borderRadius: BorderRadius.circular(12),
       ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: [
-          _statItem('Pendientes', pending.toString(), const Color(0xFFF59E0B)),
-          _statItem('Aceptados', accepted.toString(), const Color(0xFF00C896)),
-          _statItem(isFinished ? 'Cupos ocupados' : 'Cupos libres', isFinished ? '${total - available} / $total' : '$available / $total', const Color(0xFF3B82F6)),
+          _statItem('Pendientes', pending.toString(), AppTheme.statusScheduledColor),
+          _statItem('Aceptados', accepted.toString(), AppTheme.accentColor),
+          _statItem(isFinished ? 'Cupos ocupados' : 'Cupos libres', isFinished ? '${total - available} / $total' : '$available / $total', AppTheme.statusFinishedColor),
         ],
       ),
     );
@@ -139,7 +140,7 @@ class _DriverReservationsPageState extends State<DriverReservationsPage> {
     return Column(
       children: [
         Text(value, style: TextStyle(color: color, fontSize: 20, fontWeight: FontWeight.bold)),
-        Text(label, style: const TextStyle(color: Color(0xFF8BA3BC), fontSize: 12)),
+        Text(label, style: const TextStyle(color: AppTheme.textMuted, fontSize: 12)),
       ],
     );
   }
@@ -153,7 +154,7 @@ class _DriverReservationsPageState extends State<DriverReservationsPage> {
           const SizedBox(height: 16),
           const Text('Sin reservas aún', style: TextStyle(color: Colors.white70, fontSize: 16)),
           const SizedBox(height: 8),
-          const Text('Las solicitudes de los pasajeros aparecerán aquí', style: TextStyle(color: Color(0xFF4A6278), fontSize: 13)),
+          const Text('Las solicitudes de los pasajeros aparecerán aquí', style: TextStyle(color: AppTheme.textFaint, fontSize: 13)),
         ],
       ),
     );
@@ -169,17 +170,17 @@ class _DriverReservationsPageState extends State<DriverReservationsPage> {
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (ctx) => AlertDialog(
-        backgroundColor: const Color(0xFF1A2E44),
+        backgroundColor: AppTheme.backgroundDarkCard,
         title: Text(title, style: const TextStyle(color: Colors.white)),
-        content: Text(message, style: const TextStyle(color: Color(0xFF8BA3BC))),
+        content: Text(message, style: const TextStyle(color: AppTheme.textMuted)),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(ctx, false),
-            child: const Text('No', style: TextStyle(color: Color(0xFF8BA3BC))),
+            child: const Text('No', style: TextStyle(color: AppTheme.textMuted)),
           ),
           ElevatedButton(
             style: ElevatedButton.styleFrom(
-              backgroundColor: isDestructive ? Colors.redAccent : const Color(0xFF00C896),
+              backgroundColor: isDestructive ? Colors.redAccent : AppTheme.accentColor,
             ),
             onPressed: () => Navigator.pop(ctx, true),
             child: const Text('Sí', style: TextStyle(color: Colors.white)),
@@ -214,7 +215,7 @@ class _ReservationCard extends StatelessWidget {
     return Container(
       margin: const EdgeInsets.only(bottom: 14),
       decoration: BoxDecoration(
-        color: const Color(0xFF1A2E44),
+        color: AppTheme.backgroundDarkCard,
         borderRadius: BorderRadius.circular(14),
         border: Border.all(color: _statusColor().withOpacity(0.4)),
         boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.2), blurRadius: 6, offset: const Offset(0, 3))],
@@ -229,10 +230,10 @@ class _ReservationCard extends StatelessWidget {
               children: [
                 CircleAvatar(
                   radius: 26,
-                  backgroundColor: const Color(0xFF0D1B2A),
+                  backgroundColor: AppTheme.backgroundDark,
                   backgroundImage: passenger?.image != null ? NetworkImage(passenger!.image!) : null,
                   child: passenger?.image == null
-                      ? const Icon(Icons.person, color: Color(0xFF00C896), size: 26)
+                      ? const Icon(Icons.person, color: AppTheme.accentColor, size: 26)
                       : null,
                 ),
                 const SizedBox(width: 12),
@@ -245,9 +246,9 @@ class _ReservationCard extends StatelessWidget {
                         style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 15),
                       ),
                       if (passenger?.career != null)
-                        Text(passenger!.career!, style: const TextStyle(color: Color(0xFF8BA3BC), fontSize: 12)),
+                        Text(passenger!.career!, style: const TextStyle(color: AppTheme.textMuted, fontSize: 12)),
                       if (passenger?.referenceZone != null)
-                        Text('📍 ${passenger!.referenceZone}', style: const TextStyle(color: Color(0xFF4A6278), fontSize: 12)),
+                        Text('📍 ${passenger!.referenceZone}', style: const TextStyle(color: AppTheme.textFaint, fontSize: 12)),
                     ],
                   ),
                 ),
@@ -261,9 +262,9 @@ class _ReservationCard extends StatelessWidget {
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
               decoration: BoxDecoration(
-                color: const Color(0xFF0D1B2A),
+                color: AppTheme.backgroundDark,
                 borderRadius: BorderRadius.circular(10),
-                border: Border.all(color: const Color(0xFF1E3A5F)),
+                border: Border.all(color: AppTheme.borderSubtle),
               ),
               child: Row(
                 children: [
@@ -271,10 +272,10 @@ class _ReservationCard extends StatelessWidget {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        const Text('Cupos solicitados', style: TextStyle(color: Color(0xFF8BA3BC), fontSize: 10)),
+                        const Text('Cupos solicitados', style: TextStyle(color: AppTheme.textMuted, fontSize: 10)),
                         Row(
                           children: [
-                            const Icon(Icons.event_seat, color: Color(0xFF00C896), size: 16),
+                            const Icon(Icons.event_seat, color: AppTheme.accentColor, size: 16),
                             const SizedBox(width: 6),
                             Text(
                               '${reservation.seatsRequested} cupo${reservation.seatsRequested > 1 ? "s" : ""}',
@@ -285,20 +286,20 @@ class _ReservationCard extends StatelessWidget {
                       ],
                     ),
                   ),
-                  Container(width: 1, height: 38, color: const Color(0xFF1E3A5F)),
+                  Container(width: 1, height: 38, color: AppTheme.borderSubtle),
                   const SizedBox(width: 14),
                   Expanded(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        const Text('Total a cobrar', style: TextStyle(color: Color(0xFF8BA3BC), fontSize: 10)),
+                        const Text('Total a cobrar', style: TextStyle(color: AppTheme.textMuted, fontSize: 10)),
                         Row(
                           children: [
-                            const Icon(Icons.attach_money, color: Color(0xFFF59E0B), size: 16),
+                            const Icon(Icons.attach_money, color: AppTheme.statusScheduledColor, size: 16),
                             const SizedBox(width: 4),
                             Text(
                               '\$${totalCost.toStringAsFixed(2)}',
-                              style: const TextStyle(color: Color(0xFFF59E0B), fontWeight: FontWeight.bold, fontSize: 16),
+                              style: const TextStyle(color: AppTheme.statusScheduledColor, fontWeight: FontWeight.bold, fontSize: 16),
                             ),
                           ],
                         ),
@@ -315,15 +316,15 @@ class _ReservationCard extends StatelessWidget {
               Container(
                 padding: const EdgeInsets.all(10),
                 decoration: BoxDecoration(
-                  color: const Color(0xFF0D1B2A),
+                  color: AppTheme.backgroundDark,
                   borderRadius: BorderRadius.circular(8),
                 ),
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Icon(Icons.message_outlined, color: Color(0xFF8BA3BC), size: 14),
+                    const Icon(Icons.message_outlined, color: AppTheme.textMuted, size: 14),
                     const SizedBox(width: 6),
-                    Expanded(child: Text(reservation.message!, style: const TextStyle(color: Color(0xFF8BA3BC), fontSize: 13))),
+                    Expanded(child: Text(reservation.message!, style: const TextStyle(color: AppTheme.textMuted, fontSize: 13))),
                   ],
                 ),
               ),
@@ -334,11 +335,11 @@ class _ReservationCard extends StatelessWidget {
               const SizedBox(height: 8),
               Row(
                 children: [
-                  const Icon(Icons.access_time, size: 12, color: Color(0xFF4A6278)),
+                  const Icon(Icons.access_time, size: 12, color: AppTheme.textFaint),
                   const SizedBox(width: 4),
                   Text(
                     'Solicitado: ${_formatDate(reservation.createdAt!)}',
-                    style: const TextStyle(color: Color(0xFF4A6278), fontSize: 11),
+                    style: const TextStyle(color: AppTheme.textFaint, fontSize: 11),
                   ),
                 ],
               ),
@@ -368,7 +369,7 @@ class _ReservationCard extends StatelessWidget {
                     Expanded(
                       child: ElevatedButton.icon(
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: const Color(0xFF00C896),
+                          backgroundColor: AppTheme.accentColor,
                           foregroundColor: Colors.white,
                           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
                           padding: const EdgeInsets.symmetric(vertical: 10),
@@ -395,9 +396,9 @@ class _ReservationCard extends StatelessWidget {
   Color _statusColor() {
     switch (reservation.status) {
       case ReservationStatus.PENDING:
-        return const Color(0xFFF59E0B);
+        return AppTheme.statusScheduledColor;
       case ReservationStatus.ACCEPTED:
-        return const Color(0xFF00C896);
+        return AppTheme.accentColor;
       case ReservationStatus.REJECTED:
         return Colors.redAccent;
       case ReservationStatus.CANCELLED:
@@ -418,11 +419,11 @@ class _StatusBadge extends StatelessWidget {
     String label;
     switch (status) {
       case ReservationStatus.PENDING:
-        color = const Color(0xFFF59E0B);
+        color = AppTheme.statusScheduledColor;
         label = 'Pendiente';
         break;
       case ReservationStatus.ACCEPTED:
-        color = const Color(0xFF00C896);
+        color = AppTheme.accentColor;
         label = 'Aceptado';
         break;
       case ReservationStatus.REJECTED:

@@ -7,6 +7,7 @@ import 'package:indriver_clone_flutter/src/presentation/pages/client/mapBookingI
 import 'package:indriver_clone_flutter/src/presentation/pages/client/mapBookingInfo/bloc/ClientMapBookingInfoState.dart';
 import 'package:indriver_clone_flutter/src/presentation/utils/BlocFormItem.dart';
 import 'package:indriver_clone_flutter/src/presentation/widgets/DefaultIconBack.dart';
+import 'package:indriver_clone_flutter/src/presentation/theme/AppTheme.dart';
 import 'package:indriver_clone_flutter/src/presentation/widgets/DefaultTextField.dart';
 
 class ClientMapBookingInfoContent extends StatelessWidget {
@@ -38,14 +39,7 @@ class ClientMapBookingInfoContent extends StatelessWidget {
       height: MediaQuery.of(context).size.height * 0.49,
       padding: EdgeInsets.only(left: 20, right: 20),
       decoration: BoxDecoration(
-        gradient: LinearGradient(
-          begin: Alignment.topRight,
-          end: Alignment.bottomLeft,
-          colors: [
-            Color.fromARGB(255, 255, 255, 255),
-            Color.fromARGB(255, 186, 186, 186),
-          ]
-        ),
+        gradient: AppTheme.backgroundGradient,
         borderRadius: BorderRadius.only(
           topLeft: Radius.circular(30),
           topRight: Radius.circular(30),
@@ -159,8 +153,8 @@ class ClientMapBookingInfoContent extends StatelessWidget {
                 begin: Alignment.topRight,
                 end: Alignment.bottomLeft,
                 colors: [
-                  Color.fromARGB(255, 19, 58, 213),
-                  Color.fromARGB(255, 65, 173, 255),
+                  AppTheme.accentColorDark,
+                  AppTheme.accentColor,
                 ]
               ),
               borderRadius: BorderRadius.all(Radius.circular(50))

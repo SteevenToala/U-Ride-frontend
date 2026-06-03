@@ -6,6 +6,7 @@ import 'package:indriver_clone_flutter/src/presentation/pages/client/home/bloc/C
 import 'package:indriver_clone_flutter/src/presentation/pages/client/home/bloc/ClientHomeEvent.dart';
 import 'package:indriver_clone_flutter/src/presentation/pages/profile/info/ProfileInfoPage.dart';
 import 'package:indriver_clone_flutter/src/presentation/pages/roles/RolesPage.dart';
+import 'package:indriver_clone_flutter/src/presentation/theme/AppTheme.dart';
 import 'package:indriver_clone_flutter/src/presentation/pages/admin/userManagement/UserManagementPage.dart';
 
 class AdminHomePage extends StatefulWidget {
@@ -37,16 +38,7 @@ class _AdminHomePageState extends State<AdminHomePage> {
           padding: EdgeInsets.zero,
           children: [
             DrawerHeader(
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  begin: Alignment.topRight,
-                  end: Alignment.bottomLeft,
-                  colors: [
-                    Color.fromARGB(255, 12, 38, 145),
-                    Color.fromARGB(255, 34, 156, 249),
-                  ]
-                ),
-              ),
+              decoration: const BoxDecoration(gradient: AppTheme.accentGradient),
               child: Text(
                 'Menú del Administrador',
                 style: TextStyle(color: Colors.white, fontSize: 18),

@@ -6,6 +6,7 @@ import 'package:indriver_clone_flutter/src/presentation/pages/driver/carInfo/blo
 import 'package:indriver_clone_flutter/src/presentation/pages/driver/carInfo/bloc/DriverCarInfoState.dart';
 import 'package:indriver_clone_flutter/src/presentation/utils/BlocFormItem.dart';
 import 'package:indriver_clone_flutter/src/presentation/widgets/DefaultIconBack.dart';
+import 'package:indriver_clone_flutter/src/presentation/theme/AppTheme.dart';
 import 'package:indriver_clone_flutter/src/presentation/widgets/DefaultTextField.dart';
 
 class DriverCarInfoContent extends StatelessWidget {
@@ -118,14 +119,7 @@ class DriverCarInfoContent extends StatelessWidget {
           leading: Container(
             padding: EdgeInsets.all(10),
             decoration: BoxDecoration(
-              gradient: LinearGradient(
-                begin: Alignment.topRight,
-                end: Alignment.bottomLeft,
-                colors: [
-                  Color.fromARGB(255, 19, 58, 213),
-                  Color.fromARGB(255, 65, 173, 255),
-                ]
-              ),
+              gradient: AppTheme.accentGradient,
               borderRadius: BorderRadius.all(Radius.circular(50))
             ),
             child: Icon(
@@ -145,14 +139,7 @@ class DriverCarInfoContent extends StatelessWidget {
       height: MediaQuery.of(context).size.height * 0.3,
       width: MediaQuery.of(context).size.width,
       decoration: BoxDecoration(
-        gradient: LinearGradient(
-          begin: Alignment.topRight,
-          end: Alignment.bottomLeft,
-          colors: [
-            Color.fromARGB(255, 19, 58, 213),
-                Color.fromARGB(255, 65, 173, 255),
-          ]
-        ),
+        gradient: AppTheme.accentGradient,
       ),
       child: Text(
         'DATOS DEL VEHICULO',

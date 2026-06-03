@@ -4,12 +4,12 @@ import 'AppTheme.dart';
 class ThemeConfig {
   static final ThemeData appTheme = ThemeData(
     brightness: Brightness.dark,
-    primaryColor: AppTheme.passengerColor,
+    primaryColor: AppTheme.accentColor,
     scaffoldBackgroundColor: AppTheme.backgroundDark,
     canvasColor: AppTheme.backgroundDarkSecondary,
 
     appBarTheme: const AppBarTheme(
-      backgroundColor: AppTheme.passengerColor,
+      backgroundColor: AppTheme.accentColor,
       foregroundColor: Colors.white,
       elevation: 0,
       centerTitle: false,
@@ -22,9 +22,9 @@ class ThemeConfig {
     ),
 
     colorScheme: const ColorScheme.dark(
-      primary: AppTheme.passengerColor,
+      primary: AppTheme.accentColor,
       secondary: AppTheme.driverColor,
-      tertiary: AppTheme.accentColor,
+      tertiary: AppTheme.passengerColor,
       surface: AppTheme.backgroundDarkSecondary,
     ),
 

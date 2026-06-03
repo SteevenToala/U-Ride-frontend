@@ -7,6 +7,7 @@ import 'package:indriver_clone_flutter/src/domain/models/TripReservation.dart';
 import 'package:indriver_clone_flutter/src/domain/useCases/trip-reservations/TripReservationsUseCases.dart';
 import 'package:indriver_clone_flutter/src/domain/utils/Resource.dart';
 import 'package:indriver_clone_flutter/src/data/dataSource/local/SharefPref.dart';
+import 'package:indriver_clone_flutter/src/presentation/theme/AppTheme.dart';
 
 class ClientTripDetailPage extends StatefulWidget {
   final SharedTrip trip;
@@ -49,7 +50,7 @@ class _ClientTripDetailPageState extends State<ClientTripDetailPage> {
       context: context,
       builder: (ctx) => StatefulBuilder(
         builder: (ctx, setS) => AlertDialog(
-          backgroundColor: const Color(0xFF1A2E44),
+          backgroundColor: AppTheme.backgroundDarkCard,
           title: const Text('Reservar lugar', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
           content: Column(
             mainAxisSize: MainAxisSize.min,
@@ -59,7 +60,7 @@ class _ClientTripDetailPageState extends State<ClientTripDetailPage> {
                 children: [
                   IconButton(
                     onPressed: seats > 1 ? () => setS(() => seats--) : null,
-                    icon: const Icon(Icons.remove_circle, color: Color(0xFF00C896)),
+                    icon: const Icon(Icons.remove_circle, color: AppTheme.accentColor),
                   ),
                   Text('$seats cupo${seats > 1 ? 's' : ''}',
                       style: const TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold)),
@@ -67,14 +68,14 @@ class _ClientTripDetailPageState extends State<ClientTripDetailPage> {
                     onPressed: seats < widget.trip.availableSeats
                         ? () => setS(() => seats++)
                         : null,
-                    icon: const Icon(Icons.add_circle, color: Color(0xFF00C896)),
+                    icon: const Icon(Icons.add_circle, color: AppTheme.accentColor),
                   ),
                 ],
               ),
               const SizedBox(height: 8),
               Text(
                 'Total: \$${(seats * widget.trip.farePerSeat).toStringAsFixed(2)}',
-                style: const TextStyle(color: Color(0xFF00C896), fontSize: 16, fontWeight: FontWeight.bold),
+                style: const TextStyle(color: AppTheme.accentColor, fontSize: 16, fontWeight: FontWeight.bold),
               ),
               const SizedBox(height: 16),
               TextField(
@@ -83,17 +84,17 @@ class _ClientTripDetailPageState extends State<ClientTripDetailPage> {
                 maxLines: 2,
                 decoration: InputDecoration(
                   hintText: 'Mensaje al conductor (opcional)',
-                  hintStyle: const TextStyle(color: Color(0xFF4A6278)),
+                  hintStyle: const TextStyle(color: AppTheme.textFaint),
                   enabledBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(10),
-                    borderSide: const BorderSide(color: Color(0xFF1E3A5F)),
+                    borderSide: const BorderSide(color: AppTheme.borderSubtle),
                   ),
                   focusedBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(10),
-                    borderSide: const BorderSide(color: Color(0xFF00C896)),
+                    borderSide: const BorderSide(color: AppTheme.accentColor),
                   ),
                   filled: true,
-                  fillColor: const Color(0xFF0D1B2A),
+                  fillColor: AppTheme.backgroundDark,
                 ),
               ),
             ],
@@ -101,11 +102,11 @@ class _ClientTripDetailPageState extends State<ClientTripDetailPage> {
           actions: [
             TextButton(
               onPressed: () => Navigator.pop(ctx),
-              child: const Text('Cancelar', style: TextStyle(color: Color(0xFF8BA3BC))),
+              child: const Text('Cancelar', style: TextStyle(color: AppTheme.textMuted)),
             ),
             ElevatedButton(
               style: ElevatedButton.styleFrom(
-                backgroundColor: const Color(0xFF00C896),
+                backgroundColor: AppTheme.accentColor,
                 foregroundColor: Colors.white,
                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
               ),
@@ -154,9 +155,9 @@ class _ClientTripDetailPageState extends State<ClientTripDetailPage> {
     final useCases = GetIt.instance<TripReservationsUseCases>();
 
     return Scaffold(
-      backgroundColor: const Color(0xFF0D1B2A),
+      backgroundColor: AppTheme.backgroundDark,
       appBar: AppBar(
-        backgroundColor: const Color(0xFF1A2E44),
+        backgroundColor: AppTheme.backgroundDarkCard,
         title: const Text('Detalle del Viaje', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
         iconTheme: const IconThemeData(color: Colors.white),
         elevation: 0,
@@ -187,7 +188,7 @@ class _ClientTripDetailPageState extends State<ClientTripDetailPage> {
                 height: 52,
                 child: ElevatedButton.icon(
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xFF00C896),
+                    backgroundColor: AppTheme.accentColor,
                     foregroundColor: Colors.white,
                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
                     elevation: 4,
@@ -205,9 +206,9 @@ class _ClientTripDetailPageState extends State<ClientTripDetailPage> {
             else if (trip.isScheduled && !trip.hasAvailableSeats)
               _statusBanner(Icons.no_meeting_room, 'Sin cupos disponibles', Colors.redAccent)
             else if (trip.isActive)
-              _statusBanner(Icons.directions_car, 'Viaje en curso — ya no acepta reservas', const Color(0xFF3B82F6))
+              _statusBanner(Icons.directions_car, 'Viaje en curso — ya no acepta reservas', AppTheme.statusFinishedColor)
             else if (trip.isFinished)
-              _statusBanner(Icons.check_circle, 'Este viaje ya fue completado', const Color(0xFF00C896))
+              _statusBanner(Icons.check_circle, 'Este viaje ya fue completado', AppTheme.accentColor)
             else if (trip.isCancelled)
               _statusBanner(Icons.cancel, 'Este viaje fue cancelado', Colors.redAccent),
             const SizedBox(height: 20),
@@ -222,24 +223,24 @@ class _ClientTripDetailPageState extends State<ClientTripDetailPage> {
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
         gradient: const LinearGradient(
-          colors: [Color(0xFF1A2E44), Color(0xFF0D2137)],
+          colors: [AppTheme.backgroundDarkCard, Color(0xFF0D2137)],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: const Color(0xFF00C896).withOpacity(0.3)),
+        border: Border.all(color: AppTheme.accentColor.withOpacity(0.3)),
       ),
       child: Column(
         children: [
           Row(
             children: [
-              const Icon(Icons.location_on, color: Color(0xFF00C896), size: 22),
+              const Icon(Icons.location_on, color: AppTheme.accentColor, size: 22),
               const SizedBox(width: 10),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Text('Origen', style: TextStyle(color: Color(0xFF8BA3BC), fontSize: 11)),
+                    const Text('Origen', style: TextStyle(color: AppTheme.textMuted, fontSize: 11)),
                     Text(trip.originZone, style: const TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold)),
                   ],
                 ),
@@ -252,19 +253,19 @@ class _ClientTripDetailPageState extends State<ClientTripDetailPage> {
               children: List.generate(3, (i) => Container(
                 width: 2, height: 6,
                 margin: const EdgeInsets.symmetric(vertical: 2),
-                color: const Color(0xFF1E3A5F),
+                color: AppTheme.borderSubtle,
               )),
             ),
           ),
           Row(
             children: [
-              const Icon(Icons.flag, color: Color(0xFFF59E0B), size: 22),
+              const Icon(Icons.flag, color: AppTheme.textMuted, size: 22),
               const SizedBox(width: 10),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Text('Destino', style: TextStyle(color: Color(0xFF8BA3BC), fontSize: 11)),
+                    const Text('Destino', style: TextStyle(color: AppTheme.textMuted, fontSize: 11)),
                     Text(trip.destinationZone, style: const TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold)),
                   ],
                 ),
@@ -278,8 +279,8 @@ class _ClientTripDetailPageState extends State<ClientTripDetailPage> {
               height: 40,
               child: OutlinedButton.icon(
                 style: OutlinedButton.styleFrom(
-                  foregroundColor: const Color(0xFF00C896),
-                  side: const BorderSide(color: Color(0xFF00C896)),
+                  foregroundColor: AppTheme.accentColor,
+                  side: const BorderSide(color: AppTheme.accentColor),
                   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
                 ),
                 onPressed: () {
@@ -299,17 +300,17 @@ class _ClientTripDetailPageState extends State<ClientTripDetailPage> {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: const Color(0xFF1A2E44),
+        color: AppTheme.backgroundDarkCard,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: const Color(0xFF1E3A5F)),
+        border: Border.all(color: AppTheme.borderSubtle),
       ),
       child: Column(
         children: [
-          _detailRow(Icons.calendar_today, 'Salida', _formatDateTime(trip.departureTime), const Color(0xFF3B82F6)),
-          const Divider(color: Color(0xFF1E3A5F), height: 20),
-          _detailRow(Icons.people, 'Cupos disponibles', '${trip.availableSeats} de ${trip.totalSeats}', const Color(0xFF00C896)),
-          const Divider(color: Color(0xFF1E3A5F), height: 20),
-          _detailRow(Icons.attach_money, 'Tarifa por persona', '\$${trip.farePerSeat.toStringAsFixed(2)}', const Color(0xFFF59E0B)),
+          _detailRow(Icons.calendar_today, 'Salida', _formatDateTime(trip.departureTime), Colors.white54),
+          const Divider(color: AppTheme.borderSubtle, height: 20),
+          _detailRow(Icons.people, 'Cupos disponibles', '${trip.availableSeats} de ${trip.totalSeats}', AppTheme.accentColor),
+          const Divider(color: AppTheme.borderSubtle, height: 20),
+          _detailRow(Icons.attach_money, 'Tarifa por persona', '\$${trip.farePerSeat.toStringAsFixed(2)}', AppTheme.statusScheduledColor),
         ],
       ),
     );
@@ -323,7 +324,7 @@ class _ClientTripDetailPageState extends State<ClientTripDetailPage> {
         Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(label, style: const TextStyle(color: Color(0xFF8BA3BC), fontSize: 12)),
+            Text(label, style: const TextStyle(color: AppTheme.textMuted, fontSize: 12)),
             Text(value, style: const TextStyle(color: Colors.white, fontSize: 15, fontWeight: FontWeight.w600)),
           ],
         ),
@@ -335,32 +336,32 @@ class _ClientTripDetailPageState extends State<ClientTripDetailPage> {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: const Color(0xFF1A2E44),
+        color: AppTheme.backgroundDarkCard,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: const Color(0xFF1E3A5F)),
+        border: Border.all(color: AppTheme.borderSubtle),
       ),
       child: Row(
         children: [
           CircleAvatar(
             radius: 28,
-            backgroundColor: const Color(0xFF0D1B2A),
+            backgroundColor: AppTheme.backgroundDark,
             backgroundImage: driver.image != null ? NetworkImage(driver.image) : null,
-            child: driver.image == null ? const Icon(Icons.person, color: Color(0xFF00C896), size: 28) : null,
+            child: driver.image == null ? const Icon(Icons.person, color: AppTheme.accentColor, size: 28) : null,
           ),
           const SizedBox(width: 14),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Text('Conductor', style: TextStyle(color: Color(0xFF8BA3BC), fontSize: 11)),
+                const Text('Conductor', style: TextStyle(color: AppTheme.textMuted, fontSize: 11)),
                 Text('${driver.name} ${driver.lastname}',
                     style: const TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold)),
                 if (driver.career != null)
-                  Text(driver.career, style: const TextStyle(color: Color(0xFF4A6278), fontSize: 12)),
+                  Text(driver.career, style: const TextStyle(color: AppTheme.textFaint, fontSize: 12)),
               ],
             ),
           ),
-          const Icon(Icons.verified, color: Color(0xFF00C896), size: 22),
+          const Icon(Icons.verified, color: AppTheme.accentColor, size: 22),
         ],
       ),
     );
@@ -370,16 +371,16 @@ class _ClientTripDetailPageState extends State<ClientTripDetailPage> {
     return Container(
       padding: const EdgeInsets.all(14),
       decoration: BoxDecoration(
-        color: const Color(0xFF1A2E44),
+        color: AppTheme.backgroundDarkCard,
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: const Color(0xFFF59E0B).withOpacity(0.3)),
+        border: Border.all(color: AppTheme.dividerColor),
       ),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Icon(Icons.note, color: Color(0xFFF59E0B), size: 18),
+          const Icon(Icons.note, color: AppTheme.textMuted, size: 18),
           const SizedBox(width: 10),
-          Expanded(child: Text(notes, style: const TextStyle(color: Color(0xFF8BA3BC), fontSize: 13))),
+          Expanded(child: Text(notes, style: const TextStyle(color: AppTheme.textMuted, fontSize: 13))),
         ],
       ),
     );
@@ -389,16 +390,16 @@ class _ClientTripDetailPageState extends State<ClientTripDetailPage> {
     return Container(
       padding: const EdgeInsets.all(14),
       decoration: BoxDecoration(
-        color: const Color(0xFF1A2E44),
+        color: AppTheme.backgroundDarkCard,
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: const Color(0xFF1E3A5F)),
+        border: Border.all(color: AppTheme.borderSubtle),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           const Row(
             children: [
-              Icon(Icons.shield, color: Color(0xFF00C896), size: 18),
+              Icon(Icons.shield, color: AppTheme.accentColor, size: 18),
               SizedBox(width: 8),
               Text('Normas de Convivencia', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 14)),
             ],
@@ -413,9 +414,9 @@ class _ClientTripDetailPageState extends State<ClientTripDetailPage> {
                 padding: const EdgeInsets.symmetric(vertical: 3),
                 child: Row(
                   children: [
-                    const Icon(Icons.check_circle_outline, color: Color(0xFF00C896), size: 14),
+                    const Icon(Icons.check_circle_outline, color: AppTheme.accentColor, size: 14),
                     const SizedBox(width: 8),
-                    Expanded(child: Text(r, style: const TextStyle(color: Color(0xFF8BA3BC), fontSize: 12))),
+                    Expanded(child: Text(r, style: const TextStyle(color: AppTheme.textMuted, fontSize: 12))),
                   ],
                 ),
               )),

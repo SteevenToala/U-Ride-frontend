@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:indriver_clone_flutter/src/presentation/theme/AppTheme.dart';
 
 class DefaultTextField extends StatelessWidget {
 
@@ -48,7 +49,7 @@ class DefaultTextField extends StatelessWidget {
           labelStyle: TextStyle(color: Colors.white60, fontSize: 14),
           border: InputBorder.none,
           suffixIcon: suffixIcon,
-          prefixIcon: Icon(icon, color: Color(0xFF00C896), size: 22),
+          prefixIcon: Icon(icon, color: AppTheme.accentColor, size: 22),
         ),
       ),
     );

@@ -6,6 +6,7 @@ import 'package:indriver_clone_flutter/src/domain/models/PlacemarkData.dart';
 import 'package:indriver_clone_flutter/injection.dart';
 import 'package:indriver_clone_flutter/src/domain/useCases/geolocator/GeolocatorUseCases.dart';
 import 'package:indriver_clone_flutter/src/presentation/pages/driver/publishTrip/bloc/TripMapPickerBloc.dart';
+import 'package:indriver_clone_flutter/src/presentation/theme/AppTheme.dart';
 import 'package:indriver_clone_flutter/src/presentation/pages/driver/publishTrip/bloc/TripMapPickerEvent.dart';
 import 'package:indriver_clone_flutter/src/presentation/pages/driver/publishTrip/bloc/TripMapPickerState.dart';
 import 'package:indriver_clone_flutter/src/presentation/widgets/DefaultButton.dart';
@@ -57,9 +58,9 @@ class _TripMapPickerPageState extends State<TripMapPickerPage> {
         return bloc;
       },
       child: Scaffold(
-        backgroundColor: const Color(0xFF0D1B2A),
+        backgroundColor: AppTheme.backgroundDark,
         appBar: AppBar(
-          backgroundColor: const Color(0xFF1A2E44),
+          backgroundColor: AppTheme.backgroundDarkCard,
           title: Text(widget.title, style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
           iconTheme: const IconThemeData(color: Colors.white),
         ),
@@ -132,11 +133,11 @@ class _TripMapPickerPageState extends State<TripMapPickerPage> {
 
   Widget _buildInfoBanner(TripMapPickerState state) {
     String message = '';
-    Color color = const Color(0xFF00C896);
+    Color color = AppTheme.accentColor;
 
     if (state.hasLocation) {
       message = 'Ruta trazada con éxito. Verifica y confirma.';
-      color = const Color(0xFF1E3A5F);
+      color = AppTheme.borderSubtle;
     } else if (state.selectingOrigin) {
       message = 'Mueve el mapa para seleccionar tu ORIGEN';
       color = Colors.blueAccent;
@@ -179,7 +180,7 @@ class _TripMapPickerPageState extends State<TripMapPickerPage> {
             DefaultButton(
               text: 'CONFIRMAR RUTA',
               iconData: Icons.check_circle,
-              color: const Color(0xFF00C896),
+              color: AppTheme.accentColor,
               onPressed: () {
                 if (!state.isLoadingAddress) {
                   Navigator.pop(context, {

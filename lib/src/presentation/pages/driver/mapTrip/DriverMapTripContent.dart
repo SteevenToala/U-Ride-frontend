@@ -7,6 +7,7 @@ import 'package:indriver_clone_flutter/src/domain/models/TimeAndDistanceValues.d
 import 'package:indriver_clone_flutter/src/presentation/pages/driver/mapTrip/bloc/DriverMapTripBloc.dart';
 import 'package:indriver_clone_flutter/src/presentation/pages/driver/mapTrip/bloc/DriverMapTripState.dart';
 import 'package:indriver_clone_flutter/src/presentation/pages/driver/mapTrip/bloc/DriverMapTripEvent.dart';
+import 'package:indriver_clone_flutter/src/presentation/theme/AppTheme.dart';
 import 'package:indriver_clone_flutter/src/presentation/widgets/DefaultImageUrl.dart';
 
 class DriverMapTripContent extends StatelessWidget {
@@ -35,14 +36,7 @@ class DriverMapTripContent extends StatelessWidget {
       height: MediaQuery.of(context).size.height * 0.47,
       padding: EdgeInsets.only(left: 20, right: 20),
       decoration: BoxDecoration(
-        gradient: LinearGradient(
-          begin: Alignment.topRight,
-          end: Alignment.bottomLeft,
-          colors: [
-            Color.fromARGB(255, 255, 255, 255),
-            Color.fromARGB(255, 186, 186, 186),
-          ]
-        ),
+        gradient: AppTheme.backgroundGradient,
         borderRadius: BorderRadius.only(
           topLeft: Radius.circular(30),
           topRight: Radius.circular(30),
@@ -58,7 +52,7 @@ class DriverMapTripContent extends StatelessWidget {
                 fontSize: 17, 
                 fontWeight: FontWeight.bold,
                 fontStyle: FontStyle.italic,
-                color: Colors.blueAccent
+                color: AppTheme.accentColor
               ),
             ),
            ListTile(
@@ -86,7 +80,7 @@ class DriverMapTripContent extends StatelessWidget {
               fontSize: 17, 
               fontWeight: FontWeight.bold,
               fontStyle: FontStyle.italic,
-              color: Colors.blueAccent
+              color: AppTheme.accentColor
             ),
           ),
           ListTile(
@@ -127,7 +121,7 @@ class DriverMapTripContent extends StatelessWidget {
               '\$${clientRequest?.fareAssigned}',
               style: TextStyle(
                 fontSize: 17,
-                color: Colors.blueAccent,
+                color: AppTheme.accentColor,
                 fontWeight: FontWeight.bold
               ),
             ),
@@ -172,14 +166,7 @@ class DriverMapTripContent extends StatelessWidget {
           leading: Container(
             padding: EdgeInsets.all(10),
             decoration: BoxDecoration(
-              gradient: LinearGradient(
-                begin: Alignment.topRight,
-                end: Alignment.bottomLeft,
-                colors: [
-                  Color.fromARGB(255, 19, 58, 213),
-                  Color.fromARGB(255, 65, 173, 255),
-                ]
-              ),
+              gradient: AppTheme.accentGradient,
               borderRadius: BorderRadius.all(Radius.circular(50))
             ),
             child: Icon(

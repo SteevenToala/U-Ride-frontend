@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:indriver_clone_flutter/src/presentation/pages/auth/verify/bloc/VerifyAccountBloc.dart';
 import 'package:indriver_clone_flutter/src/presentation/pages/auth/verify/bloc/VerifyAccountEvent.dart';
 import 'package:indriver_clone_flutter/src/presentation/pages/auth/verify/bloc/VerifyAccountState.dart';
+import 'package:indriver_clone_flutter/src/presentation/theme/AppTheme.dart';
 import 'package:indriver_clone_flutter/src/presentation/utils/BlocFormItem.dart';
 import 'package:indriver_clone_flutter/src/presentation/widgets/DefaultButton.dart';
 import 'package:indriver_clone_flutter/src/presentation/widgets/DefaultTextField.dart';
@@ -17,17 +18,7 @@ class VerifyAccountContent extends StatelessWidget {
     return Container(
       height: MediaQuery.of(context).size.height,
       width: MediaQuery.of(context).size.width,
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-          colors: [
-            Color(0xFF0D1B2A),
-            Color(0xFF1B263B),
-            Color(0xFF415A77),
-          ],
-        ),
-      ),
+      decoration: const BoxDecoration(gradient: AppTheme.backgroundGradient),
       child: Center(
         child: SingleChildScrollView(
           child: Column(
@@ -47,7 +38,7 @@ class VerifyAccountContent extends StatelessWidget {
       padding: EdgeInsets.symmetric(vertical: 40),
       child: Column(
         children: [
-          Icon(Icons.mark_email_read_rounded, size: 80, color: Color(0xFF00B4D8)),
+          const Icon(Icons.mark_email_read_rounded, size: 80, color: AppTheme.accentColor),
           SizedBox(height: 15),
           Text(
             'VERIFICACIÓN',

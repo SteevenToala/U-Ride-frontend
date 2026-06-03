@@ -10,6 +10,7 @@ import 'package:indriver_clone_flutter/src/presentation/utils/BlocFormItem.dart'
 import 'package:indriver_clone_flutter/src/presentation/utils/GalleryOrPhotoDialog.dart';
 import 'package:indriver_clone_flutter/src/presentation/widgets/DefaultIconBack.dart';
 import 'package:indriver_clone_flutter/src/presentation/widgets/DefaultTextField.dart';
+import 'package:indriver_clone_flutter/src/presentation/theme/AppTheme.dart';
 import 'package:indriver_clone_flutter/src/presentation/widgets/DefaultButton.dart';
 
 class ProfileUpdateContent extends StatelessWidget {
@@ -87,17 +88,7 @@ class ProfileUpdateContent extends StatelessWidget {
       child: Container(
         height: MediaQuery.of(context).size.height,
         width: MediaQuery.of(context).size.width,
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-            colors: [
-              Color(0xFF0D1B2A),
-              Color(0xFF1B263B),
-              Color(0xFF415A77),
-            ],
-          ),
-        ),
+        decoration: const BoxDecoration(gradient: AppTheme.backgroundGradient),
         child: Stack(
           children: [
             SingleChildScrollView(
@@ -140,7 +131,7 @@ class ProfileUpdateContent extends StatelessWidget {
             height: 120,
             decoration: BoxDecoration(
               shape: BoxShape.circle,
-              border: Border.all(color: Color(0xFF00B4D8), width: 3),
+              border: Border.all(color: AppTheme.accentColor, width: 3),
               boxShadow: [BoxShadow(color: Colors.black26, blurRadius: 10, offset: Offset(0, 5))]
             ),
             child: ClipOval(
@@ -162,7 +153,7 @@ class ProfileUpdateContent extends StatelessWidget {
             right: 0,
             child: Container(
               padding: EdgeInsets.all(8),
-              decoration: BoxDecoration(color: Color(0xFF00B4D8), shape: BoxShape.circle),
+              decoration: BoxDecoration(color: AppTheme.accentColor, shape: BoxShape.circle),
               child: Icon(Icons.edit_rounded, color: Colors.white, size: 20),
             ),
           )
@@ -243,7 +234,7 @@ class ProfileUpdateContent extends StatelessWidget {
           value: state.selectedFacultad,
           hint: Text('Selecciona tu facultad', style: TextStyle(color: Colors.white60, fontSize: 14)),
           isExpanded: true,
-          dropdownColor: Color(0xFF1B263B),
+          dropdownColor: AppTheme.backgroundDarkSecondary,
           style: TextStyle(color: Colors.white),
           items: _facultadCarreras.keys.map((f) => DropdownMenuItem(value: f, child: Text(f, style: TextStyle(fontSize: 12), overflow: TextOverflow.ellipsis))).toList(),
           onChanged: (val) => context.read<ProfileUpdateBloc>().add(FacultadChanged(facultad: val)),
@@ -265,7 +256,7 @@ class ProfileUpdateContent extends StatelessWidget {
           value: (state.selectedFacultad != null && _facultadCarreras[state.selectedFacultad]!.contains(state.career.value)) ? state.career.value : null,
           hint: Text('Selecciona tu carrera', style: TextStyle(color: Colors.white60, fontSize: 14)),
           isExpanded: true,
-          dropdownColor: Color(0xFF1B263B),
+          dropdownColor: AppTheme.backgroundDarkSecondary,
           style: TextStyle(color: Colors.white),
           items: state.selectedFacultad != null
               ? _facultadCarreras[state.selectedFacultad]!.map((c) => DropdownMenuItem(value: c, child: Text(c, style: TextStyle(fontSize: 12), overflow: TextOverflow.ellipsis))).toList()
@@ -283,7 +274,7 @@ class ProfileUpdateContent extends StatelessWidget {
         margin: EdgeInsets.symmetric(horizontal: 25, vertical: 20),
         child: DefaultButton(
           text: option,
-          color: Color(0xFF00B4D8),
+          color: AppTheme.accentColor,
           onPressed: () {
             if (state.formKey!.currentState?.validate() ?? true) {
               context.read<ProfileUpdateBloc>().add(FormSubmit());
@@ -325,7 +316,7 @@ class ProfileUpdateContent extends StatelessWidget {
         padding: EdgeInsets.only(left: 5, bottom: 12),
         child: Text(
           text, 
-          style: TextStyle(color: Color(0xFF00B4D8), fontSize: 13, fontWeight: FontWeight.bold, letterSpacing: 1)
+          style: TextStyle(color: AppTheme.accentColor, fontSize: 13, fontWeight: FontWeight.bold, letterSpacing: 1)
         ),
       ),
     );

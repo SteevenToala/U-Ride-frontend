@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:indriver_clone_flutter/src/presentation/theme/AppTheme.dart';
 
 class DefaultActionText extends StatelessWidget {
 
@@ -33,14 +34,7 @@ class DefaultActionText extends StatelessWidget {
           leading: Container(
             padding: EdgeInsets.all(10),
             decoration: BoxDecoration(
-              gradient: LinearGradient(
-                begin: Alignment.topRight,
-                end: Alignment.bottomLeft,
-                colors: [
-                  Color.fromARGB(255, 19, 58, 213),
-                  Color.fromARGB(255, 65, 173, 255),
-                ]
-              ),
+              gradient: AppTheme.accentGradient,
               borderRadius: BorderRadius.all(Radius.circular(50))
             ),
             child: Icon(

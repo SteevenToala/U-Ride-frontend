@@ -4,6 +4,7 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:indriver_clone_flutter/injection.dart';
 import 'package:indriver_clone_flutter/src/domain/models/SharedTrip.dart';
 import 'package:indriver_clone_flutter/src/domain/useCases/geolocator/GeolocatorUseCases.dart';
+import 'package:indriver_clone_flutter/src/presentation/theme/AppTheme.dart';
 
 class TripRouteMapPage extends StatefulWidget {
   final SharedTrip trip;
@@ -61,7 +62,7 @@ class _TripRouteMapPageState extends State<TripRouteMapPage> {
       final polylinePoints = await useCases.getPolyline.run(origin, dest);
       final polyline = Polyline(
         polylineId: const PolylineId('route'),
-        color: const Color(0xFF00C896),
+        color: AppTheme.accentColor,
         points: polylinePoints,
         width: 5,
       );
@@ -101,7 +102,7 @@ class _TripRouteMapPageState extends State<TripRouteMapPage> {
 
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: const Color(0xFF1A2E44),
+        backgroundColor: AppTheme.backgroundDarkCard,
         title: const Text('Ruta del Viaje', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
         iconTheme: const IconThemeData(color: Colors.white),
       ),
@@ -128,13 +129,13 @@ class _TripRouteMapPageState extends State<TripRouteMapPage> {
           if (_isLoadingRoute)
             const Center(
               child: Card(
-                color: Color(0xFF1A2E44),
+                color: AppTheme.backgroundDarkCard,
                 child: Padding(
                   padding: EdgeInsets.all(16.0),
                   child: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      CircularProgressIndicator(color: Color(0xFF00C896)),
+                      CircularProgressIndicator(color: AppTheme.accentColor),
                       SizedBox(width: 16),
                       Text('Calculando ruta...', style: TextStyle(color: Colors.white)),
                     ],

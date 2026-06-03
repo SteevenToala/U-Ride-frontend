@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:indriver_clone_flutter/blocSocketIO/BlocSocketIO.dart';
 import 'package:indriver_clone_flutter/blocSocketIO/BlocSocketIOEvent.dart';
-import 'package:indriver_clone_flutter/main.dart';
 import 'package:indriver_clone_flutter/src/presentation/pages/driver/home/bloc/DriverHomeBloc.dart';
 import 'package:indriver_clone_flutter/src/presentation/pages/driver/home/bloc/DriverHomeState.dart';
 import 'package:indriver_clone_flutter/src/presentation/pages/driver/home/bloc/DriverHomeEvent.dart';
@@ -236,4 +235,5 @@ class _DriverHomePageState extends State<DriverHomePage> {
       ),
     );
   }
+
 }

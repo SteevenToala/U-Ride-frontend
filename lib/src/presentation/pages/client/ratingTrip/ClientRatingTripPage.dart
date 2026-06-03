@@ -4,6 +4,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:indriver_clone_flutter/src/domain/models/ClientRequestResponse.dart';
 import 'package:indriver_clone_flutter/src/domain/utils/Resource.dart';
 import 'package:indriver_clone_flutter/src/presentation/pages/client/ratingTrip/ClientRatingTripContent.dart';
+import 'package:indriver_clone_flutter/src/presentation/theme/AppTheme.dart';
 import 'package:indriver_clone_flutter/src/presentation/pages/client/ratingTrip/bloc/ClientRatingTripBloc.dart';
 import 'package:indriver_clone_flutter/src/presentation/pages/client/ratingTrip/bloc/ClientRatingTripState.dart';
 
@@ -34,14 +35,7 @@ class _ClientRatingTripPageState extends State<ClientRatingTripPage> {
         child: BlocBuilder<ClientRatingTripBloc, ClientRatingTripState>(
           builder: (context, state) {
             return Container(
-                decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                        begin: Alignment.topRight,
-                        end: Alignment.bottomLeft,
-                        colors: [
-                      Color.fromARGB(255, 12, 38, 145),
-                      Color.fromARGB(255, 34, 156, 249),
-                    ])),
+                decoration: const BoxDecoration(gradient: AppTheme.backgroundGradient),
                 child: ClientRatingTripContent(state, clientRequestResponse));
           },
         ),

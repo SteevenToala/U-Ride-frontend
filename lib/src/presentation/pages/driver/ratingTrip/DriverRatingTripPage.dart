@@ -6,6 +6,7 @@ import 'package:indriver_clone_flutter/src/domain/utils/Resource.dart';
 import 'package:indriver_clone_flutter/src/presentation/pages/driver/ratingTrip/DriverRatingTripContent.dart';
 import 'package:indriver_clone_flutter/src/presentation/pages/driver/ratingTrip/bloc/DriverRatingTripBloc.dart';
 import 'package:indriver_clone_flutter/src/presentation/pages/driver/ratingTrip/bloc/DriverRatingTripState.dart';
+import 'package:indriver_clone_flutter/src/presentation/theme/AppTheme.dart';
 import 'package:indriver_clone_flutter/src/presentation/widgets/DefaultButton.dart';
 
 class DriverRatingTripPage extends StatefulWidget {
@@ -35,14 +36,7 @@ class _DriverRatingTripPageState extends State<DriverRatingTripPage> {
         child: BlocBuilder<DriverRatingTripBloc, DriverRatingTripState>(
           builder: (context, state) {
             return Container(
-                decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                        begin: Alignment.topRight,
-                        end: Alignment.bottomLeft,
-                        colors: [
-                      Color.fromARGB(255, 12, 38, 145),
-                      Color.fromARGB(255, 34, 156, 249),
-                    ])),
+                decoration: const BoxDecoration(gradient: AppTheme.backgroundGradient),
                 child: DriverRatingTripContent(state, clientRequestResponse));
           },
         ),

@@ -4,6 +4,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:indriver_clone_flutter/src/domain/models/PlacemarkData.dart';
 import 'package:indriver_clone_flutter/src/domain/models/SharedTrip.dart';
 import 'package:indriver_clone_flutter/src/domain/utils/Resource.dart';
+import 'package:indriver_clone_flutter/src/presentation/theme/AppTheme.dart';
 import 'bloc/DriverPublishTripBloc.dart';
 import 'bloc/DriverPublishTripEvent.dart';
 import 'bloc/DriverPublishTripState.dart';
@@ -90,9 +91,9 @@ class _DriverPublishTripPageState extends State<DriverPublishTripPage> {
         }
       },
       child: Scaffold(
-        backgroundColor: const Color(0xFF0D1B2A),
+        backgroundColor: AppTheme.backgroundDark,
         appBar: AppBar(
-          backgroundColor: const Color(0xFF1A2E44),
+          backgroundColor: AppTheme.backgroundDarkCard,
           title: Text(
             isEditing ? 'Editar Viaje' : 'Publicar Viaje',
             style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
@@ -116,9 +117,9 @@ class _DriverPublishTripPageState extends State<DriverPublishTripPage> {
                       height: 50,
                       child: ElevatedButton.icon(
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: const Color(0xFF1A2E44),
-                          foregroundColor: const Color(0xFF00C896),
-                          side: const BorderSide(color: Color(0xFF00C896)),
+                          backgroundColor: AppTheme.backgroundDarkCard,
+                          foregroundColor: AppTheme.accentColor,
+                          side: const BorderSide(color: AppTheme.accentColor),
                           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                         ),
                         onPressed: () async {
@@ -143,7 +144,7 @@ class _DriverPublishTripPageState extends State<DriverPublishTripPage> {
                     ),
                     const SizedBox(height: 16),
                     if (state.originZone.isNotEmpty)
-                      _infoRow(Icons.location_on, 'Origen:', state.originZone, const Color(0xFF00C896)),
+                      _infoRow(Icons.location_on, 'Origen:', state.originZone, AppTheme.accentColor),
                     if (state.destinationZone.isNotEmpty) ...[
                       const SizedBox(height: 8),
                       _infoRow(Icons.flag, 'Destino:', state.destinationZone, Colors.orangeAccent),
@@ -211,7 +212,7 @@ class _DriverPublishTripPageState extends State<DriverPublishTripPage> {
                       height: 52,
                       child: ElevatedButton(
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: const Color(0xFF00C896),
+                          backgroundColor: AppTheme.accentColor,
                           foregroundColor: Colors.white,
                           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
                           elevation: 4,
@@ -269,7 +270,7 @@ class _DriverPublishTripPageState extends State<DriverPublishTripPage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(label, style: const TextStyle(color: Color(0xFF8BA3BC), fontSize: 12)),
+              Text(label, style: const TextStyle(color: AppTheme.textMuted, fontSize: 12)),
               Text(value, style: const TextStyle(color: Colors.white, fontSize: 14)),
             ],
           ),
@@ -298,16 +299,16 @@ class _DriverPublishTripPageState extends State<DriverPublishTripPage> {
       decoration: InputDecoration(
         labelText: label,
         hintText: hint,
-        labelStyle: const TextStyle(color: Color(0xFF8BA3BC)),
-        hintStyle: const TextStyle(color: Color(0xFF4A6278)),
-        prefixIcon: Icon(icon, color: const Color(0xFF00C896)),
+        labelStyle: const TextStyle(color: AppTheme.textMuted),
+        hintStyle: const TextStyle(color: AppTheme.textFaint),
+        prefixIcon: Icon(icon, color: AppTheme.accentColor),
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
-          borderSide: const BorderSide(color: Color(0xFF1E3A5F)),
+          borderSide: const BorderSide(color: AppTheme.borderSubtle),
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
-          borderSide: const BorderSide(color: Color(0xFF00C896), width: 2),
+          borderSide: const BorderSide(color: AppTheme.accentColor, width: 2),
         ),
         errorBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
@@ -318,7 +319,7 @@ class _DriverPublishTripPageState extends State<DriverPublishTripPage> {
           borderSide: const BorderSide(color: Colors.redAccent, width: 2),
         ),
         filled: true,
-        fillColor: const Color(0xFF1A2E44),
+        fillColor: AppTheme.backgroundDarkCard,
       ),
       onChanged: onChanged,
       validator: validator,
@@ -331,28 +332,28 @@ class _DriverPublishTripPageState extends State<DriverPublishTripPage> {
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
         decoration: BoxDecoration(
-          color: const Color(0xFF1A2E44),
+          color: AppTheme.backgroundDarkCard,
           borderRadius: BorderRadius.circular(12),
           border: Border.all(
-            color: _selectedDateTime != null ? const Color(0xFF00C896) : const Color(0xFF1E3A5F),
+            color: _selectedDateTime != null ? AppTheme.accentColor : AppTheme.borderSubtle,
             width: _selectedDateTime != null ? 2 : 1,
           ),
         ),
         child: Row(
           children: [
-            const Icon(Icons.calendar_today, color: Color(0xFF00C896)),
+            const Icon(Icons.calendar_today, color: AppTheme.accentColor),
             const SizedBox(width: 12),
             Text(
               _selectedDateTime != null
                   ? _formatDateTime(_selectedDateTime!)
                   : 'Seleccionar fecha y hora',
               style: TextStyle(
-                color: _selectedDateTime != null ? Colors.white : const Color(0xFF4A6278),
+                color: _selectedDateTime != null ? Colors.white : AppTheme.textFaint,
                 fontSize: 15,
               ),
             ),
             const Spacer(),
-            const Icon(Icons.arrow_drop_down, color: Color(0xFF8BA3BC)),
+            const Icon(Icons.arrow_drop_down, color: AppTheme.textMuted),
           ],
         ),
       ),
@@ -363,16 +364,16 @@ class _DriverPublishTripPageState extends State<DriverPublishTripPage> {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: const Color(0xFF1A2E44),
+        color: AppTheme.backgroundDarkCard,
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: const Color(0xFF1E3A5F)),
+        border: Border.all(color: AppTheme.borderSubtle),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: const [
           Row(
             children: [
-              Icon(Icons.shield, color: Color(0xFF00C896), size: 20),
+              Icon(Icons.shield, color: AppTheme.accentColor, size: 20),
               SizedBox(width: 8),
               Text('Reglas de Seguridad U-Ride', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
             ],
@@ -400,9 +401,9 @@ class _RuleItem extends StatelessWidget {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Icon(Icons.check_circle_outline, color: Color(0xFF00C896), size: 16),
+          const Icon(Icons.check_circle_outline, color: AppTheme.accentColor, size: 16),
           const SizedBox(width: 8),
-          Expanded(child: Text(text, style: const TextStyle(color: Color(0xFF8BA3BC), fontSize: 13))),
+          Expanded(child: Text(text, style: const TextStyle(color: AppTheme.textMuted, fontSize: 13))),
         ],
       ),
     );

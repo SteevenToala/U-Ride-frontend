@@ -3,6 +3,7 @@ import 'package:indriver_clone_flutter/injection.dart';
 import 'package:indriver_clone_flutter/src/domain/useCases/auth/AuthUseCases.dart';
 import 'package:indriver_clone_flutter/src/domain/utils/Resource.dart';
 import 'package:indriver_clone_flutter/src/presentation/widgets/DefaultButton.dart';
+import 'package:indriver_clone_flutter/src/presentation/theme/AppTheme.dart';
 import 'package:indriver_clone_flutter/src/presentation/widgets/DefaultTextField.dart';
 
 class ForgotPasswordPage extends StatefulWidget {
@@ -66,17 +67,7 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
       body: Container(
         height: MediaQuery.of(context).size.height,
         width: MediaQuery.of(context).size.width,
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-            colors: [
-              Color(0xFF0D1B2A),
-              Color(0xFF1B263B),
-              Color(0xFF415A77),
-            ],
-          ),
-        ),
+        decoration: const BoxDecoration(gradient: AppTheme.backgroundGradient),
         child: SingleChildScrollView(
           child: Column(
             children: [
@@ -101,7 +92,7 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
               onPressed: () => Navigator.pop(context),
             ),
           ),
-          Icon(Icons.lock_reset_rounded, size: 80, color: Color(0xFF00C896)),
+          Icon(Icons.lock_reset_rounded, size: 80, color: AppTheme.accentColor),
           SizedBox(height: 15),
           Text(
             'RECUPERACIÓN',
@@ -152,7 +143,7 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
             ),
             SizedBox(height: 40),
             isLoading 
-              ? Center(child: CircularProgressIndicator(color: Color(0xFF00C896))) 
+              ? const Center(child: CircularProgressIndicator(color: AppTheme.accentColor))
               : DefaultButton(
                   text: 'ENVIAR ENLACE',
                   onPressed: () => _sendEmail(),

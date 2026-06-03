@@ -303,7 +303,7 @@ class _MyReservationCard extends StatelessWidget {
   Color get _statusColor {
     switch (reservation.status) {
       case ReservationStatus.PENDING:
-        return const Color(0xFFF59E0B);
+        return AppTheme.statusScheduledColor;
       case ReservationStatus.ACCEPTED:
         return AppTheme.accentColor;
       case ReservationStatus.REJECTED:
@@ -387,7 +387,7 @@ class _MyReservationCard extends StatelessWidget {
                   Row(
                     children: [
                       const Icon(Icons.location_on_rounded,
-                          color: Color(0xFFF59E0B), size: 14),
+                          color: AppTheme.textMuted, size: 14),
                       const SizedBox(width: 6),
                       Expanded(
                         child: Text(trip.destinationZone,
@@ -450,8 +450,8 @@ class _MyReservationCard extends StatelessWidget {
               label: 'Cancelar',
               icon: Icons.cancel_rounded,
               color: Colors.redAccent,
-              gradient: const LinearGradient(
-                colors: [Color(0xFFD32F2F), Colors.redAccent],
+              gradient: LinearGradient(
+                colors: [Colors.redAccent.withValues(alpha: 0.8), Colors.redAccent],
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
               ),
@@ -541,7 +541,7 @@ class _StatusChip extends StatelessWidget {
     IconData icon;
     switch (status) {
       case ReservationStatus.PENDING:
-        color = const Color(0xFFF59E0B);
+        color = AppTheme.statusScheduledColor;
         label = 'Pendiente';
         icon = Icons.hourglass_top_rounded;
         break;

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:indriver_clone_flutter/src/presentation/theme/AppTheme.dart';
 
 class DefaultTextFieldOutlined extends StatelessWidget {
 
@@ -44,11 +45,11 @@ class DefaultTextFieldOutlined extends StatelessWidget {
           contentPadding: EdgeInsets.symmetric(horizontal: 15, vertical: 15),
           labelText: text,
           labelStyle: TextStyle(color: Colors.white60, fontSize: 14),
-          prefixIcon: Icon(icon, color: Color(0xFF00C896), size: 22),
+          prefixIcon: Icon(icon, color: AppTheme.accentColor, size: 22),
           suffixIcon: suffixIcon,
           focusedBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(15),
-            borderSide: BorderSide(color: Color(0xFF00C896), width: 2),
+            borderSide: BorderSide(color: AppTheme.accentColor, width: 2),
           ),
           enabledBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(15),

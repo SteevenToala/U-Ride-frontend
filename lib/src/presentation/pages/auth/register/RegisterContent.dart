@@ -6,6 +6,7 @@ import 'package:indriver_clone_flutter/src/domain/models/user.dart';
 import 'package:indriver_clone_flutter/src/presentation/pages/auth/register/bloc/RegisterBloc.dart';
 import 'package:indriver_clone_flutter/src/presentation/pages/auth/register/bloc/RegisterEvent.dart';
 import 'package:indriver_clone_flutter/src/presentation/pages/auth/register/bloc/RegisterState.dart';
+import 'package:indriver_clone_flutter/src/presentation/theme/AppTheme.dart';
 import 'package:indriver_clone_flutter/src/presentation/utils/BlocFormItem.dart';
 import 'package:indriver_clone_flutter/src/presentation/utils/GalleryOrPhotoDialog.dart';
 import 'package:indriver_clone_flutter/src/presentation/widgets/DefaultButton.dart';
@@ -145,17 +146,7 @@ class _RegisterContentState extends State<RegisterContent> {
       child: Container(
         height: MediaQuery.of(context).size.height,
         width: MediaQuery.of(context).size.width,
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-            colors: [
-              Color(0xFF0D1B2A),
-              Color(0xFF1B263B),
-              Color(0xFF415A77),
-            ],
-          ),
-        ),
+        decoration: const BoxDecoration(gradient: AppTheme.backgroundGradient),
         child: SingleChildScrollView(
           child: Column(
             children: [
@@ -416,7 +407,7 @@ class _RegisterContentState extends State<RegisterContent> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text('Registro', style: TextStyle(color: Colors.white, fontSize: 24, fontWeight: FontWeight.bold)),
-            Container(height: 4, width: 40, color: Color(0xFF00C896), margin: EdgeInsets.only(top: 4)),
+            Container(height: 4, width: 40, color: AppTheme.accentColor, margin: EdgeInsets.only(top: 4)),
           ],
         ),
       ],
@@ -426,7 +417,7 @@ class _RegisterContentState extends State<RegisterContent> {
   Widget _textLabel(String text) {
     return Padding(
       padding: EdgeInsets.only(left: 5, bottom: 12, top: 10),
-      child: Text(text, style: TextStyle(color: Color(0xFF00C896), fontSize: 13, fontWeight: FontWeight.bold, letterSpacing: 1)),
+      child: Text(text, style: TextStyle(color: AppTheme.accentColor, fontSize: 13, fontWeight: FontWeight.bold, letterSpacing: 1)),
     );
   }
 
@@ -441,7 +432,7 @@ class _RegisterContentState extends State<RegisterContent> {
         border: OutlineInputBorder(borderRadius: BorderRadius.circular(15), borderSide: BorderSide(color: Colors.white24)),
         enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(15), borderSide: BorderSide(color: Colors.white24)),
       ),
-      dropdownColor: Color(0xFF1B263B),
+      dropdownColor: AppTheme.backgroundDarkSecondary,
       style: TextStyle(color: Colors.white),
       items: facultades.map((f) => DropdownMenuItem(
         value: f, 
@@ -466,7 +457,7 @@ class _RegisterContentState extends State<RegisterContent> {
         border: OutlineInputBorder(borderRadius: BorderRadius.circular(15), borderSide: BorderSide(color: Colors.white24)),
         enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(15), borderSide: BorderSide(color: Colors.white24)),
       ),
-      dropdownColor: Color(0xFF1B263B),
+      dropdownColor: AppTheme.backgroundDarkSecondary,
       style: TextStyle(color: Colors.white),
       items: carreras.map((c) => DropdownMenuItem(
         value: c, 
@@ -494,7 +485,7 @@ class _RegisterContentState extends State<RegisterContent> {
             height: 110,
             decoration: BoxDecoration(
               shape: BoxShape.circle,
-              border: Border.all(color: Color(0xFF00C896), width: 3),
+              border: Border.all(color: AppTheme.accentColor, width: 3),
               boxShadow: [BoxShadow(color: Colors.black26, blurRadius: 10, offset: Offset(0, 5))]
             ),
             child: ClipOval(
@@ -510,7 +501,7 @@ class _RegisterContentState extends State<RegisterContent> {
             right: 0,
             child: Container(
               padding: EdgeInsets.all(8),
-              decoration: BoxDecoration(color: Color(0xFF00C896), shape: BoxShape.circle),
+              decoration: const BoxDecoration(color: AppTheme.accentColor, shape: BoxShape.circle),
               child: Icon(Icons.camera_alt_rounded, color: Colors.white, size: 20),
             ),
           )
@@ -528,7 +519,7 @@ class _RegisterContentState extends State<RegisterContent> {
             text: '¿Ya tienes cuenta? ',
             style: TextStyle(color: Colors.white60, fontSize: 14),
             children: [
-              TextSpan(text: 'Inicia Sesión', style: TextStyle(color: Color(0xFF00C896), fontWeight: FontWeight.bold))
+              TextSpan(text: 'Inicia Sesión', style: TextStyle(color: AppTheme.accentColor, fontWeight: FontWeight.bold))
             ]
           ),
         ),

@@ -6,6 +6,7 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:indriver_clone_flutter/src/domain/models/PlacemarkData.dart';
 import 'package:indriver_clone_flutter/src/domain/useCases/geolocator/GeolocatorUseCases.dart';
 import 'package:indriver_clone_flutter/src/presentation/pages/driver/publishTrip/bloc/TripMapPickerEvent.dart';
+import 'package:indriver_clone_flutter/src/presentation/theme/AppTheme.dart';
 import 'package:indriver_clone_flutter/src/presentation/pages/driver/publishTrip/bloc/TripMapPickerState.dart';
 
 class TripMapPickerBloc extends Bloc<TripMapPickerEvent, TripMapPickerState> {
@@ -176,7 +177,7 @@ class TripMapPickerBloc extends Bloc<TripMapPickerEvent, TripMapPickerState> {
         final polylinePoints = await geolocatorUseCases.getPolyline.run(originLatLng, destLatLng);
         polylines.add(Polyline(
           polylineId: const PolylineId('route'),
-          color: const Color(0xFF00C896),
+          color: AppTheme.accentColor,
           points: polylinePoints,
           width: 5,
         ));

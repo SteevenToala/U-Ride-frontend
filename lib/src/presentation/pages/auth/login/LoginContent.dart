@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:indriver_clone_flutter/src/presentation/pages/auth/login/bloc/LoginBloc.dart';
 import 'package:indriver_clone_flutter/src/presentation/pages/auth/login/bloc/LoginEvent.dart';
 import 'package:indriver_clone_flutter/src/presentation/pages/auth/login/bloc/LoginState.dart';
+import 'package:indriver_clone_flutter/src/presentation/theme/AppTheme.dart';
 import 'package:indriver_clone_flutter/src/presentation/utils/BlocFormItem.dart';
 import 'package:indriver_clone_flutter/src/presentation/widgets/DefaultButton.dart';
 import 'package:indriver_clone_flutter/src/presentation/widgets/DefaultTextField.dart';
@@ -18,17 +19,7 @@ class LoginContent extends StatelessWidget {
       child: Container(
         height: MediaQuery.of(context).size.height,
         width: MediaQuery.of(context).size.width,
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-            colors: [
-              Color(0xFF0D1B2A),
-              Color(0xFF1B263B),
-              Color(0xFF415A77),
-            ],
-          ),
-        ),
+        decoration: const BoxDecoration(gradient: AppTheme.backgroundGradient),
         child: SingleChildScrollView(
           child: Column(
             children: [
@@ -46,7 +37,7 @@ class LoginContent extends StatelessWidget {
       padding: EdgeInsets.only(top: MediaQuery.of(context).size.height * 0.05, bottom: 20),
       child: Column(
         children: [
-          Icon(Icons.directions_car_filled_rounded, size: 80, color: Color(0xFF00C896)),
+          Icon(Icons.directions_car_filled_rounded, size: 80, color: AppTheme.accentColor),
           SizedBox(height: 15),
           Text(
             'U-RIDE',
@@ -109,7 +100,7 @@ class LoginContent extends StatelessWidget {
                 },
                 icon: Icon(
                   state.isPasswordVisible ? Icons.visibility_rounded : Icons.visibility_off_rounded,
-                  color: Color(0xFF00C896),
+                  color: AppTheme.accentColor,
                 ),
               ),
               text: 'Tu contraseña', 
@@ -140,7 +131,7 @@ class LoginContent extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text('Ingreso', style: TextStyle(color: Colors.white, fontSize: 24, fontWeight: FontWeight.bold)),
-            Container(height: 4, width: 40, color: Color(0xFF00C896), margin: EdgeInsets.only(top: 4)),
+            Container(height: 4, width: 40, color: AppTheme.accentColor, margin: EdgeInsets.only(top: 4)),
           ],
         ),
         SizedBox(width: 30),
@@ -168,7 +159,7 @@ class LoginContent extends StatelessWidget {
         onTap: () => Navigator.pushNamed(context, 'forgot_password'),
         child: Text(
           '¿Olvidaste tu contraseña?',
-          style: TextStyle(color: Color(0xFF00C896), fontWeight: FontWeight.bold, fontSize: 13),
+          style: TextStyle(color: AppTheme.accentColor, fontWeight: FontWeight.bold, fontSize: 13),
         ),
       ),
     );

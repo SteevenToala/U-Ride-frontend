@@ -385,7 +385,7 @@ class _TripSearchCard extends StatelessWidget {
                     child: Icon(Icons.arrow_right_alt_rounded,
                         color: Colors.white.withValues(alpha: 0.35), size: 20),
                   ),
-                  const Icon(Icons.location_on_rounded, color: Color(0xFFF59E0B), size: 16),
+                  const Icon(Icons.location_on_rounded, color: AppTheme.textMuted, size: 16),
                   const SizedBox(width: 8),
                   Expanded(
                     child: Text(

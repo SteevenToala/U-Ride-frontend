@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:indriver_clone_flutter/src/domain/models/user.dart';
 import 'package:indriver_clone_flutter/src/presentation/pages/profile/info/bloc/ProfileInfoBloc.dart';
 import 'package:indriver_clone_flutter/src/presentation/pages/profile/info/bloc/ProfileInfoEvent.dart';
+import 'package:indriver_clone_flutter/src/presentation/theme/AppTheme.dart';
 
 class ProfileInfoContent extends StatelessWidget {
 
@@ -19,17 +20,7 @@ class ProfileInfoContent extends StatelessWidget {
     return Container(
       height: MediaQuery.of(context).size.height,
       width: MediaQuery.of(context).size.width,
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-          colors: [
-            Color(0xFF0D1B2A),
-            Color(0xFF1B263B),
-            Color(0xFF415A77),
-          ],
-        ),
-      ),
+      decoration: const BoxDecoration(gradient: AppTheme.backgroundGradient),
       child: SingleChildScrollView(
         child: Column(
           children: [
@@ -59,14 +50,10 @@ class ProfileInfoContent extends StatelessWidget {
                 ),
               ),
 
-            _actionProfile('EDITAR PERFIL', Icons.edit_rounded, () { 
+            _actionProfile('EDITAR PERFIL', Icons.edit_rounded, () {
               Navigator.pushNamed(context, 'profile/update', arguments: user);
             }),
-            
-            _actionProfile('CERRAR SESIÓN', Icons.logout_rounded, () {
-              // Implementar logout logic
-            }, isLogout: true),
-            
+
             SizedBox(height: 40),
           ],
         ),
@@ -92,7 +79,7 @@ class ProfileInfoContent extends StatelessWidget {
               height: 120,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                border: Border.all(color: Color(0xFF00B4D8), width: 3),
+                border: Border.all(color: AppTheme.accentColor, width: 3),
               ),
               child: ClipOval(
                 child: user?.image != null && user!.image!.isNotEmpty
@@ -137,7 +124,7 @@ class ProfileInfoContent extends StatelessWidget {
       padding: const EdgeInsets.symmetric(vertical: 8),
       child: Row(
         children: [
-          Icon(icon, size: 20, color: Color(0xFF00B4D8)),
+          Icon(icon, size: 20, color: AppTheme.accentColor),
           const SizedBox(width: 15),
           Expanded(
             child: Text(
@@ -163,9 +150,9 @@ class ProfileInfoContent extends StatelessWidget {
         return Container(
           padding: EdgeInsets.symmetric(horizontal: 12, vertical: 6),
           decoration: BoxDecoration(
-            color: (rol.id == 'ADMIN' ? Colors.redAccent : Color(0xFF00B4D8)).withOpacity(0.2),
+            color: (rol.id == 'ADMIN' ? Colors.redAccent : AppTheme.accentColor).withOpacity(0.2),
             borderRadius: BorderRadius.circular(20),
-            border: Border.all(color: (rol.id == 'ADMIN' ? Colors.redAccent : Color(0xFF00B4D8)).withOpacity(0.5)),
+            border: Border.all(color: (rol.id == 'ADMIN' ? Colors.redAccent : AppTheme.accentColor).withOpacity(0.5)),
           ),
           child: Text(
             roleName, 
@@ -181,7 +168,7 @@ class ProfileInfoContent extends StatelessWidget {
       constraints: BoxConstraints(maxWidth: 500),
       margin: EdgeInsets.only(left: 25, right: 25, top: 15),
       child: Material(
-        color: isPrimary ? Color(0xFF00B4D8) : Colors.white.withOpacity(0.05),
+        color: isPrimary ? AppTheme.accentColor : Colors.white.withOpacity(0.05),
         borderRadius: BorderRadius.circular(20),
         child: InkWell(
           borderRadius: BorderRadius.circular(20),
@@ -194,7 +181,7 @@ class ProfileInfoContent extends StatelessWidget {
             ),
             child: Row(
               children: [
-                Icon(icon, color: isLogout ? Colors.redAccent : (isPrimary ? Colors.white : Color(0xFF00B4D8)), size: 24),
+                Icon(icon, color: isLogout ? Colors.redAccent : (isPrimary ? Colors.white : AppTheme.accentColor), size: 24),
                 SizedBox(width: 20),
                 Text(
                   option,
