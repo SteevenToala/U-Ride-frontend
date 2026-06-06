@@ -7,8 +7,12 @@ import 'package:indriver_clone_flutter/src/presentation/pages/profile/info/bloc/
 import 'package:indriver_clone_flutter/src/presentation/pages/profile/info/bloc/ProfileInfoEvent.dart';
 import 'package:indriver_clone_flutter/src/presentation/pages/profile/info/bloc/ProfileInfoState.dart';
 
+/// Which role context is currently active — drives the profile accent color.
+enum ProfileRoleMode { passenger, driver, admin }
+
 class ProfileInfoPage extends StatefulWidget {
-  const ProfileInfoPage({super.key});
+  final ProfileRoleMode mode;
+  const ProfileInfoPage({super.key, this.mode = ProfileRoleMode.passenger});
 
   @override
   State<ProfileInfoPage> createState() => _ProfileInfoPageState();
@@ -38,7 +42,7 @@ class _ProfileInfoPageState extends State<ProfileInfoPage> {
       },
       child: BlocBuilder<ProfileInfoBloc, ProfileInfoState>(
         builder: (context, state) {
-          return ProfileInfoContent(state.user);
+          return ProfileInfoContent(state.user, widget.mode);
         },
       ),
     ));

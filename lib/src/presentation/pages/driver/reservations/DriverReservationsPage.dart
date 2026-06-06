@@ -6,6 +6,7 @@ import 'package:indriver_clone_flutter/src/domain/models/SharedTrip.dart';
 import 'package:indriver_clone_flutter/src/domain/models/TripReservation.dart';
 import 'package:indriver_clone_flutter/src/domain/utils/Resource.dart';
 import 'package:indriver_clone_flutter/src/presentation/theme/AppTheme.dart';
+import 'package:indriver_clone_flutter/src/presentation/widgets/ReportUserSheet.dart';
 import 'bloc/DriverReservationsBloc.dart';
 import 'bloc/DriverReservationsEvent.dart';
 import 'bloc/DriverReservationsState.dart';
@@ -105,6 +106,13 @@ class _DriverReservationsPageState extends State<DriverReservationsPage> {
                                     .add(RejectReservation(idReservation: r.id!)),
                                 isDestructive: true)
                             : null,
+                        onReport: r.isAccepted && r.passenger != null
+                            ? () => ReportUserSheet.show(
+                                context,
+                                reportedUserId: r.passenger!.id!,
+                                reportedUserName: '${r.passenger!.name} ${r.passenger!.lastname}',
+                              )
+                            : null,
                       );
                     },
                   ),
@@ -199,12 +207,14 @@ class _ReservationCard extends StatelessWidget {
   final double farePerSeat;
   final VoidCallback? onAccept;
   final VoidCallback? onReject;
+  final VoidCallback? onReport;
 
   const _ReservationCard({
     required this.reservation,
     required this.farePerSeat,
     this.onAccept,
     this.onReject,
+    this.onReport,
   });
 
   @override
@@ -345,8 +355,8 @@ class _ReservationCard extends StatelessWidget {
               ),
             ],
 
-            // ── Botones Aceptar / Rechazar ─────────────────────────
-            if (onAccept != null || onReject != null) ...[
+            // ── Botones Aceptar / Rechazar / Reportar ─────────────
+            if (onAccept != null || onReject != null || onReport != null) ...[
               const SizedBox(height: 12),
               Row(
                 children: [
@@ -377,6 +387,20 @@ class _ReservationCard extends StatelessWidget {
                         onPressed: onAccept,
                         icon: const Icon(Icons.check, size: 16),
                         label: const Text('Aceptar'),
+                      ),
+                    ),
+                  if (onReport != null)
+                    Expanded(
+                      child: OutlinedButton.icon(
+                        style: OutlinedButton.styleFrom(
+                          foregroundColor: Colors.orange,
+                          side: const BorderSide(color: Colors.orange),
+                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                          padding: const EdgeInsets.symmetric(vertical: 10),
+                        ),
+                        onPressed: onReport,
+                        icon: const Icon(Icons.flag_outlined, size: 16),
+                        label: const Text('Reportar'),
                       ),
                     ),
                 ],

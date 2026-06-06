@@ -6,7 +6,7 @@ import 'package:indriver_clone_flutter/src/presentation/pages/driver/home/bloc/D
 import 'package:indriver_clone_flutter/src/presentation/pages/driver/home/bloc/DriverHomeState.dart';
 import 'package:indriver_clone_flutter/src/presentation/pages/driver/home/bloc/DriverHomeEvent.dart';
 import 'package:indriver_clone_flutter/src/presentation/pages/driver/myTrips/DriverMyTripsPage.dart';
-import 'package:indriver_clone_flutter/src/presentation/pages/profile/info/ProfileInfoPage.dart';
+import 'package:indriver_clone_flutter/src/presentation/pages/profile/info/ProfileInfoPage.dart'; // exports ProfileRoleMode
 import 'package:indriver_clone_flutter/src/presentation/pages/roles/RolesPage.dart';
 import 'package:indriver_clone_flutter/src/presentation/theme/AppTheme.dart';
 
@@ -20,7 +20,7 @@ class DriverHomePage extends StatefulWidget {
 class _DriverHomePageState extends State<DriverHomePage> {
   final List<Widget> _pageList = [
     DriverMyTripsPage(),
-    ProfileInfoPage(),
+    ProfileInfoPage(mode: ProfileRoleMode.driver),
     const RolesPage(),
   ];
 

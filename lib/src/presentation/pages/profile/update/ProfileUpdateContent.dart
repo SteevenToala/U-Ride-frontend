@@ -76,10 +76,11 @@ class ProfileUpdateContent extends StatelessWidget {
     ]
   };
 
-  User? user;
-  ProfileUpdateState state;
+  final User? user;
+  final ProfileUpdateState state;
+  final Color accent;
 
-  ProfileUpdateContent(this.state, this.user);
+  const ProfileUpdateContent(this.state, this.user, {super.key, this.accent = const Color(0xFF8B5CF6)});
 
   @override
   Widget build(BuildContext context) {
@@ -131,7 +132,7 @@ class ProfileUpdateContent extends StatelessWidget {
             height: 120,
             decoration: BoxDecoration(
               shape: BoxShape.circle,
-              border: Border.all(color: AppTheme.accentColor, width: 3),
+              border: Border.all(color: accent, width: 3),
               boxShadow: [BoxShadow(color: Colors.black26, blurRadius: 10, offset: Offset(0, 5))]
             ),
             child: ClipOval(
@@ -153,7 +154,7 @@ class ProfileUpdateContent extends StatelessWidget {
             right: 0,
             child: Container(
               padding: EdgeInsets.all(8),
-              decoration: BoxDecoration(color: AppTheme.accentColor, shape: BoxShape.circle),
+              decoration: BoxDecoration(color: accent, shape: BoxShape.circle),
               child: Icon(Icons.edit_rounded, color: Colors.white, size: 20),
             ),
           )
@@ -274,7 +275,7 @@ class ProfileUpdateContent extends StatelessWidget {
         margin: EdgeInsets.symmetric(horizontal: 25, vertical: 20),
         child: DefaultButton(
           text: option,
-          color: AppTheme.accentColor,
+          color: accent,
           onPressed: () {
             if (state.formKey!.currentState?.validate() ?? true) {
               context.read<ProfileUpdateBloc>().add(FormSubmit());
@@ -316,7 +317,7 @@ class ProfileUpdateContent extends StatelessWidget {
         padding: EdgeInsets.only(left: 5, bottom: 12),
         child: Text(
           text, 
-          style: TextStyle(color: AppTheme.accentColor, fontSize: 13, fontWeight: FontWeight.bold, letterSpacing: 1)
+          style: TextStyle(color: accent, fontSize: 13, fontWeight: FontWeight.bold, letterSpacing: 1)
         ),
       ),
     );

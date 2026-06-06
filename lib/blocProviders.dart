@@ -39,6 +39,8 @@ import 'package:indriver_clone_flutter/src/presentation/pages/profile/info/bloc/
 import 'package:indriver_clone_flutter/src/presentation/pages/profile/update/bloc/ProfileUpdateBloc.dart';
 import 'package:indriver_clone_flutter/src/presentation/pages/roles/bloc/RolesBloc.dart';
 import 'package:indriver_clone_flutter/src/presentation/pages/roles/bloc/RolesEvent.dart';
+import 'package:indriver_clone_flutter/src/domain/useCases/reports/ReportsUseCases.dart';
+import 'package:indriver_clone_flutter/src/presentation/pages/admin/reports/bloc/AdminReportsBloc.dart';
 import 'package:indriver_clone_flutter/src/presentation/pages/admin/userManagement/bloc/UserManagementBloc.dart';
 import 'package:indriver_clone_flutter/src/presentation/pages/admin/userManagement/bloc/UserManagementEvent.dart';
 import 'package:indriver_clone_flutter/src/data/dataSource/local/SharefPref.dart';
@@ -71,4 +73,6 @@ List<BlocProvider> blocProviders = [
   BlocProvider<DriverMyTripsBloc>(create: (context) => DriverMyTripsBloc(sharedTripsUseCases: locator<SharedTripsUseCases>(), sharefPref: SharefPref())),
   BlocProvider<DriverReservationsBloc>(create: (context) => DriverReservationsBloc(reservationsUseCases: locator<TripReservationsUseCases>())),
   BlocProvider<ClientSearchTripsBloc>(create: (context) => ClientSearchTripsBloc(sharedTripsUseCases: locator<SharedTripsUseCases>())),
+  // U-Ride Reports BLoC
+  BlocProvider<AdminReportsBloc>(create: (context) => AdminReportsBloc(locator<ReportsUseCases>())),
 ];

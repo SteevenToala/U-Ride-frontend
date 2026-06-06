@@ -2,12 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:indriver_clone_flutter/blocSocketIO/BlocSocketIO.dart';
 import 'package:indriver_clone_flutter/blocSocketIO/BlocSocketIOEvent.dart';
+import 'package:indriver_clone_flutter/src/presentation/pages/admin/reports/AdminReportsPage.dart';
+import 'package:indriver_clone_flutter/src/presentation/pages/admin/reports/bloc/AdminReportsBloc.dart';
+import 'package:indriver_clone_flutter/src/presentation/pages/admin/reports/bloc/AdminReportsEvent.dart';
+import 'package:indriver_clone_flutter/src/presentation/pages/admin/userManagement/UserManagementPage.dart';
 import 'package:indriver_clone_flutter/src/presentation/pages/client/home/bloc/ClientHomeBloc.dart';
 import 'package:indriver_clone_flutter/src/presentation/pages/client/home/bloc/ClientHomeEvent.dart';
 import 'package:indriver_clone_flutter/src/presentation/pages/profile/info/ProfileInfoPage.dart';
-import 'package:indriver_clone_flutter/src/presentation/pages/roles/RolesPage.dart';
 import 'package:indriver_clone_flutter/src/presentation/theme/AppTheme.dart';
-import 'package:indriver_clone_flutter/src/presentation/pages/admin/userManagement/UserManagementPage.dart';
 
 class AdminHomePage extends StatefulWidget {
   const AdminHomePage({super.key});
@@ -17,89 +19,109 @@ class AdminHomePage extends StatefulWidget {
 }
 
 class _AdminHomePageState extends State<AdminHomePage> {
-  int _pageIndex = 0;
+  int _currentIndex = 0;
 
-  List<Widget> pageList = <Widget>[
+  static const _titles = ['Usuarios', 'Reportes', 'Mi Perfil'];
+
+  final List<Widget> _pages = const [
     UserManagementPage(),
-    Center(child: Text('Gestión de Reportes - Módulo Administrativo\n(En construcción)', textAlign: TextAlign.center,)),
-    ProfileInfoPage(),
-    RolesPage(),
+    AdminReportsPage(),
+    ProfileInfoPage(mode: ProfileRoleMode.admin),
   ];
+
+  static const _navItems = [
+    BottomNavigationBarItem(icon: Icon(Icons.people_alt_rounded), label: 'Usuarios'),
+    BottomNavigationBarItem(icon: Icon(Icons.flag_rounded), label: 'Reportes'),
+    BottomNavigationBarItem(icon: Icon(Icons.person_rounded), label: 'Perfil'),
+  ];
+
+  void _onTabTapped(int index) {
+    setState(() => _currentIndex = index);
+    if (index == 1) {
+      context.read<AdminReportsBloc>().add(LoadReports());
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: AppTheme.backgroundDark,
       appBar: AppBar(
-        title: Text('Panel de Administración'),
-      ),
-      body: pageList[_pageIndex],
-      drawer: Drawer(
-        child: ListView(
-          padding: EdgeInsets.zero,
+        backgroundColor: AppTheme.backgroundDarkCard,
+        elevation: 0,
+        title: Row(
           children: [
-            DrawerHeader(
-              decoration: const BoxDecoration(gradient: AppTheme.accentGradient),
-              child: Text(
-                'Menú del Administrador',
-                style: TextStyle(color: Colors.white, fontSize: 18),
-              )
+            Container(
+              width: 36,
+              height: 36,
+              decoration: BoxDecoration(
+                gradient: AppTheme.accentGradient,
+                borderRadius: BorderRadius.circular(10),
+              ),
+              child: const Icon(Icons.admin_panel_settings_rounded, color: Colors.white, size: 20),
             ),
-            ListTile(
-              title: Text('Gestión de Usuarios'),
-              selected: _pageIndex == 0,
-              onTap: () {
-                setState(() {
-                  _pageIndex = 0;
-                });
-                Navigator.pop(context);
-              },
+            const SizedBox(width: 12),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  _titles[_currentIndex],
+                  style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w800, fontSize: 16),
+                ),
+                const Text('Panel de Administración', style: TextStyle(color: AppTheme.textMuted, fontSize: 11)),
+              ],
             ),
-            ListTile(
-              title: Text('Solicitudes de Conductor'),
-              onTap: () {
-                Navigator.pop(context);
-                Navigator.pushNamed(context, 'admin/driver/approval');
-              },
-            ),
-            ListTile(
-              title: Text('Gestión de Reportes'),
-              selected: _pageIndex == 1,
-              onTap: () {
-                setState(() {
-                  _pageIndex = 1;
-                });
-                Navigator.pop(context);
-              },
-            ),
-            ListTile(
-              title: Text('Perfil del usuario'),
-              selected: _pageIndex == 2,
-              onTap: () {
-                setState(() {
-                  _pageIndex = 2;
-                });
-                Navigator.pop(context);
-              },
-            ),
-            ListTile(
-              title: Text('Roles de usuario'),
-              selected: _pageIndex == 3,
-              onTap: () {
-                setState(() {
-                  _pageIndex = 3;
-                });
-                Navigator.pop(context);
-              },
-            ),
-            ListTile(
-              title: Text('Cerrar sesión'),
-              onTap: () {
+          ],
+        ),
+        actions: [
+          // Quick access: conductor approvals
+          IconButton(
+            icon: const Icon(Icons.directions_car_rounded, color: AppTheme.accentColor),
+            tooltip: 'Solicitudes de Conductor',
+            onPressed: () => Navigator.pushNamed(context, 'admin/driver/approval'),
+          ),
+          // Logout
+          PopupMenuButton<String>(
+            icon: const Icon(Icons.more_vert, color: Colors.white70),
+            color: AppTheme.backgroundDarkCard,
+            onSelected: (v) {
+              if (v == 'logout') {
                 context.read<ClientHomeBloc>().add(Logout());
                 context.read<BlocSocketIO>().add(DisconnectSocketIO());
-                Navigator.pushNamedAndRemoveUntil(context, 'login', (route) => false);
-              },
-            )
-          ],
+                Navigator.pushNamedAndRemoveUntil(context, 'login', (r) => false);
+              }
+            },
+            itemBuilder: (_) => [
+              const PopupMenuItem(
+                value: 'logout',
+                child: Row(
+                  children: [
+                    Icon(Icons.logout_rounded, color: Colors.redAccent, size: 18),
+                    SizedBox(width: 8),
+                    Text('Cerrar sesión', style: TextStyle(color: Colors.white)),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
+      body: IndexedStack(index: _currentIndex, children: _pages),
+      bottomNavigationBar: Container(
+        decoration: BoxDecoration(
+          color: AppTheme.backgroundDarkCard,
+          border: const Border(top: BorderSide(color: AppTheme.borderSubtle)),
+        ),
+        child: BottomNavigationBar(
+          currentIndex: _currentIndex,
+          onTap: _onTabTapped,
+          backgroundColor: Colors.transparent,
+          elevation: 0,
+          selectedItemColor: AppTheme.accentColor,
+          unselectedItemColor: AppTheme.textFaint,
+          selectedLabelStyle: const TextStyle(fontWeight: FontWeight.w700, fontSize: 11),
+          unselectedLabelStyle: const TextStyle(fontSize: 11),
+          items: _navItems,
         ),
       ),
     );

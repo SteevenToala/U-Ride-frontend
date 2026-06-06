@@ -28,12 +28,30 @@ class _DriverApprovalPageState extends State<DriverApprovalPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: AppTheme.backgroundDark,
       appBar: AppBar(
-        title: Text('Solicitudes de Conductor'),
-        flexibleSpace: Container(
-          decoration: BoxDecoration(
-            gradient: AppTheme.accentGradient,
-          ),
+        backgroundColor: AppTheme.backgroundDarkCard,
+        elevation: 0,
+        iconTheme: const IconThemeData(color: Colors.white),
+        title: Row(
+          children: [
+            Container(
+              padding: const EdgeInsets.all(8),
+              decoration: BoxDecoration(
+                color: AppTheme.driverColor.withOpacity(0.15),
+                borderRadius: BorderRadius.circular(10),
+              ),
+              child: const Icon(Icons.directions_car_rounded, color: AppTheme.driverColor, size: 18),
+            ),
+            const SizedBox(width: 10),
+            const Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text('Solicitudes de Conductor', style: TextStyle(color: Colors.white, fontWeight: FontWeight.w800, fontSize: 15)),
+                Text('Aprobación pendiente', style: TextStyle(color: AppTheme.textMuted, fontSize: 11)),
+              ],
+            ),
+          ],
         ),
       ),
       body: BlocListener<DriverApprovalBloc, DriverApprovalState>(

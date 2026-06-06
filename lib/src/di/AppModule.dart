@@ -79,6 +79,13 @@ import 'package:indriver_clone_flutter/src/domain/useCases/users/RequestDriverRo
 import 'package:indriver_clone_flutter/src/domain/useCases/users/UpdateNotificationTokenUseCase.dart';
 import 'package:indriver_clone_flutter/src/domain/useCases/users/UpdateUserUseCase.dart';
 import 'package:indriver_clone_flutter/src/domain/useCases/users/UsersUseCases.dart';
+import 'package:indriver_clone_flutter/src/data/dataSource/remote/services/ReportsService.dart';
+import 'package:indriver_clone_flutter/src/data/repository/ReportsRepositoryImpl.dart';
+import 'package:indriver_clone_flutter/src/domain/repository/ReportsRepository.dart';
+import 'package:indriver_clone_flutter/src/domain/useCases/reports/CreateReportUseCase.dart';
+import 'package:indriver_clone_flutter/src/domain/useCases/reports/GetReportsUseCase.dart';
+import 'package:indriver_clone_flutter/src/domain/useCases/reports/ResolveReportUseCase.dart';
+import 'package:indriver_clone_flutter/src/domain/useCases/reports/ReportsUseCases.dart';
 import 'package:indriver_clone_flutter/src/domain/useCases/shared-trips/SharedTripsUseCases.dart';
 import 'package:indriver_clone_flutter/src/domain/useCases/trip-reservations/TripReservationsUseCases.dart';
 import 'package:injectable/injectable.dart';
@@ -222,6 +229,21 @@ abstract class AppModule {
    DriverCarInfoUseCases get driverCarInfoUseCases => DriverCarInfoUseCases(
     createDriverCarInfo: CreateDriverCarInfoUseCase(driverCarInfoRepository),
     getDriverCarInfo: GetDriverCarInfoUseCase(driverCarInfoRepository)
+  );
+
+  // ── U-Ride Reports ───────────────────────────────────────────────────────
+
+  @injectable
+  ReportsService get reportsService => ReportsService(token);
+
+  @injectable
+  ReportsRepository get reportsRepository => ReportsRepositoryImpl(reportsService);
+
+  @injectable
+  ReportsUseCases get reportsUseCases => ReportsUseCases(
+    createReport: CreateReportUseCase(reportsRepository),
+    getReports: GetReportsUseCase(reportsRepository),
+    resolveReport: ResolveReportUseCase(reportsRepository),
   );
 
   // ── U-Ride Shared Trips ──────────────────────────────────────────────────

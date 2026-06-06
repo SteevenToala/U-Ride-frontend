@@ -23,7 +23,7 @@ class _ClientHomePageState extends State<ClientHomePage> {
   final List<Widget> _pageList = [
     ClientSearchTripsPage(),
     ClientMyReservationsPage(),
-    ProfileInfoPage(),
+    ProfileInfoPage(mode: ProfileRoleMode.passenger),
     const RolesPage(),
   ];
 

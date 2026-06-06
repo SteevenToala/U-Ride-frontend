@@ -21,6 +21,8 @@ import 'package:indriver_clone_flutter/src/data/dataSource/remote/services/Drive
     as _i16;
 import 'package:indriver_clone_flutter/src/data/dataSource/remote/services/DriverTripRequestsService.dart'
     as _i15;
+import 'package:indriver_clone_flutter/src/data/dataSource/remote/services/ReportsService.dart'
+    as _i34;
 import 'package:indriver_clone_flutter/src/data/dataSource/remote/services/SharedTripsService.dart'
     as _i21;
 import 'package:indriver_clone_flutter/src/data/dataSource/remote/services/TripReservationsService.dart'
@@ -32,6 +34,8 @@ import 'package:indriver_clone_flutter/src/domain/repository/AuthRepository.dart
     as _i3;
 import 'package:indriver_clone_flutter/src/domain/repository/ClientRequestsRepository.dart'
     as _i6;
+import 'package:indriver_clone_flutter/src/domain/repository/ReportsRepository.dart'
+    as _i35;
 import 'package:indriver_clone_flutter/src/domain/repository/DriverCarInfoRepository.dart'
     as _i9;
 import 'package:indriver_clone_flutter/src/domain/repository/DriversPositionRepository.dart'
@@ -50,6 +54,8 @@ import 'package:indriver_clone_flutter/src/domain/repository/UsersRepository.dar
     as _i30;
 import 'package:indriver_clone_flutter/src/domain/useCases/auth/AuthUseCases.dart'
     as _i5;
+import 'package:indriver_clone_flutter/src/domain/useCases/reports/ReportsUseCases.dart'
+    as _i36;
 import 'package:indriver_clone_flutter/src/domain/useCases/client-requests/ClientRequestsUseCases.dart'
     as _i8;
 import 'package:indriver_clone_flutter/src/domain/useCases/driver-car-info/DriverCarInfoUseCases.dart'
@@ -129,6 +135,9 @@ extension GetItInjectableX on _i1.GetIt {
     gh.factory<_i30.UsersRepository>(() => appModule.usersRepository);
     gh.factory<_i31.UsersService>(() => appModule.usersService);
     gh.factory<_i32.UsersUseCases>(() => appModule.usersUseCases);
+    gh.factory<_i34.ReportsService>(() => appModule.reportsService);
+    gh.factory<_i35.ReportsRepository>(() => appModule.reportsRepository);
+    gh.factory<_i36.ReportsUseCases>(() => appModule.reportsUseCases);
     return this;
   }
 }

@@ -8,6 +8,7 @@ import 'package:indriver_clone_flutter/src/domain/useCases/trip-reservations/Tri
 import 'package:indriver_clone_flutter/src/domain/utils/Resource.dart';
 import 'package:indriver_clone_flutter/src/data/dataSource/local/SharefPref.dart';
 import 'package:indriver_clone_flutter/src/presentation/theme/AppTheme.dart';
+import 'package:indriver_clone_flutter/src/presentation/widgets/ReportUserSheet.dart';
 
 class ClientMyReservationsPage extends StatefulWidget {
   const ClientMyReservationsPage({super.key});
@@ -140,7 +141,8 @@ class _ClientMyReservationsPageState extends State<ClientMyReservationsPage>
                       _reservationsList(pending, useCases,
                           canCancelFn: (r) => r.trip?.isScheduled ?? false),
                       _reservationsList(accepted, useCases,
-                          canCancelFn: (r) => r.trip?.isScheduled ?? false),
+                          canCancelFn: (r) => r.trip?.isScheduled ?? false,
+                          showReport: true),
                       _historyList(),
                     ],
                   ),
@@ -224,6 +226,7 @@ class _ClientMyReservationsPageState extends State<ClientMyReservationsPage>
     List<TripReservation> items,
     TripReservationsUseCases? useCases, {
     bool Function(TripReservation)? canCancelFn,
+    bool showReport = false,
   }) {
     if (items.isEmpty) {
       return Center(
@@ -261,6 +264,11 @@ class _ClientMyReservationsPageState extends State<ClientMyReservationsPage>
           final r = items[i];
           final allowCancel = useCases != null &&
               (canCancelFn != null ? canCancelFn(r) : false);
+          final driverUser = r.trip?.driver;
+          final driverId = driverUser?.id ?? r.trip?.idDriver;
+          final driverName = driverUser != null
+              ? '${driverUser.name} ${driverUser.lastname}'
+              : 'el conductor';
           return _MyReservationCard(
             reservation: r,
             onCancel: allowCancel ? () => _cancelReservation(r, useCases!) : null,
@@ -270,6 +278,9 @@ class _ClientMyReservationsPageState extends State<ClientMyReservationsPage>
                       'client/shared-trips/route-map',
                       arguments: {'trip': r.trip},
                     )
+                : null,
+            onReport: showReport && driverId != null
+                ? () => ReportUserSheet.show(context, reportedUserId: driverId, reportedUserName: driverName)
                 : null,
           );
         },
@@ -293,11 +304,13 @@ class _MyReservationCard extends StatelessWidget {
   final TripReservation reservation;
   final VoidCallback? onCancel;
   final VoidCallback? onViewRoute;
+  final VoidCallback? onReport;
 
   const _MyReservationCard({
     required this.reservation,
     this.onCancel,
     this.onViewRoute,
+    this.onReport,
   });
 
   Color get _statusColor {
@@ -428,36 +441,66 @@ class _MyReservationCard extends StatelessWidget {
   Widget _actionRow(BuildContext context) {
     final hasRoute = onViewRoute != null;
     final hasCancel = onCancel != null;
+    final hasReport = onReport != null;
 
-    if (!hasRoute && !hasCancel) return const SizedBox.shrink();
+    if (!hasRoute && !hasCancel && !hasReport) return const SizedBox.shrink();
 
-    return Row(
+    return Column(
       children: [
-        if (hasRoute)
-          Expanded(
-            child: _solidBtn(
-              label: 'Ver Ruta',
-              icon: Icons.map_rounded,
-              color: AppTheme.passengerColor,
-              gradient: AppTheme.passengerGradient,
-              onTap: onViewRoute!,
-            ),
-          ),
-        if (hasRoute && hasCancel) const SizedBox(width: 10),
-        if (hasCancel)
-          Expanded(
-            child: _solidBtn(
-              label: 'Cancelar',
-              icon: Icons.cancel_rounded,
-              color: Colors.redAccent,
-              gradient: LinearGradient(
-                colors: [Colors.redAccent.withValues(alpha: 0.8), Colors.redAccent],
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
+        Row(
+          children: [
+            if (hasRoute)
+              Expanded(
+                child: _solidBtn(
+                  label: 'Ver Ruta',
+                  icon: Icons.map_rounded,
+                  color: AppTheme.passengerColor,
+                  gradient: AppTheme.passengerGradient,
+                  onTap: onViewRoute!,
+                ),
               ),
-              onTap: onCancel!,
+            if (hasRoute && hasCancel) const SizedBox(width: 10),
+            if (hasCancel)
+              Expanded(
+                child: _solidBtn(
+                  label: 'Cancelar',
+                  icon: Icons.cancel_rounded,
+                  color: Colors.redAccent,
+                  gradient: LinearGradient(
+                    colors: [Colors.redAccent.withOpacity(0.8), Colors.redAccent],
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                  ),
+                  onTap: onCancel!,
+                ),
+              ),
+          ],
+        ),
+        if (hasReport) ...[
+          const SizedBox(height: 8),
+          GestureDetector(
+            onTap: onReport,
+            child: Container(
+              padding: const EdgeInsets.symmetric(vertical: 9),
+              decoration: BoxDecoration(
+                color: Colors.orange.withOpacity(0.08),
+                borderRadius: BorderRadius.circular(12),
+                border: Border.all(color: Colors.orange.withOpacity(0.4)),
+              ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: const [
+                  Icon(Icons.flag_outlined, size: 14, color: Colors.orange),
+                  SizedBox(width: 6),
+                  Text(
+                    'Reportar conductor',
+                    style: TextStyle(color: Colors.orange, fontSize: 12, fontWeight: FontWeight.w700),
+                  ),
+                ],
+              ),
             ),
           ),
+        ],
       ],
     );
   }
