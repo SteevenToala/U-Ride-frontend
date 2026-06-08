@@ -7,7 +7,7 @@ import 'package:indriver_clone_flutter/src/domain/useCases/client-requests/Updat
 import 'package:indriver_clone_flutter/src/domain/useCases/client-requests/UpdateDriverAssignedUseCase.dart';
 import 'package:indriver_clone_flutter/src/domain/useCases/client-requests/UpdateDriverRatingUseCase.dart';
 import 'package:indriver_clone_flutter/src/domain/useCases/client-requests/UpdateStatusClientRequestUseCase.dart';
-import 'package:indriver_clone_flutter/src/domain/useCases/client-requests/getTimeAndDistanceUseCase.dart';
+import 'package:indriver_clone_flutter/src/domain/useCases/client-requests/GetTimeAndDistanceUseCase.dart';
 
 class ClientRequestsUseCases {
 
