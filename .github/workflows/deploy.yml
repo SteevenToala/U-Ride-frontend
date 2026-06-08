@@ -21,7 +21,7 @@ jobs:
       - name: Instalar dependencias y compilar
         run: |
           flutter pub get
-          flutter build web
+          flutter build web --dart-define=API_URL=${{ secrets.API_URL }}
 
       - name: Desplegar a Hostinger vía FTP
         uses: SamKirkland/FTP-Deploy-Action@v4.3.4
