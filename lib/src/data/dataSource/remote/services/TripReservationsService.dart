@@ -154,4 +154,38 @@ class TripReservationsService {
       return ErrorData(e.toString());
     }
   }
+
+  Future<Resource<TripReservation>> update(int id, TripReservation reservation) async {
+    try {
+      Uri url = ApiConfig.buildUri('/trip-reservations/$id');
+      Map<String, String> headers = {'Content-Type': 'application/json'};
+      String body = json.encode(reservation.toJson());
+      final response = await http.put(url, headers: headers, body: body);
+      final data = json.decode(response.body);
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        return Success(TripReservation.fromJson(data));
+      } else {
+        return ErrorData(listToString(data['message']));
+      }
+    } catch (e) {
+      return ErrorData(e.toString());
+    }
+  }
+
+  Future<Resource<TripReservation>> payPaypal(int id, String paypalOrderId) async {
+    try {
+      Uri url = ApiConfig.buildUri('/trip-reservations/$id/pay-paypal');
+      Map<String, String> headers = {'Content-Type': 'application/json'};
+      String body = json.encode({'paypal_order_id': paypalOrderId});
+      final response = await http.put(url, headers: headers, body: body);
+      final data = json.decode(response.body);
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        return Success(TripReservation.fromJson(data));
+      } else {
+        return ErrorData(listToString(data['message']));
+      }
+    } catch (e) {
+      return ErrorData(e.toString());
+    }
+  }
 }

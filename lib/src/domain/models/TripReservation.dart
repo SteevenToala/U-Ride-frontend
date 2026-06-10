@@ -13,6 +13,7 @@ class TripReservation {
   int seatsRequested;
   ReservationStatus status;
   String? message;
+  String? meetingPoint;
   String paymentMethod;
   String paymentStatus;
   String? paypalOrderId;
@@ -28,6 +29,7 @@ class TripReservation {
     this.seatsRequested = 1,
     this.status = ReservationStatus.PENDING,
     this.message,
+    this.meetingPoint,
     this.paymentMethod = 'EFECTIVO',
     this.paymentStatus = 'PENDIENTE',
     this.paypalOrderId,
@@ -48,6 +50,7 @@ class TripReservation {
         seatsRequested: json['seats_requested'] ?? 1,
         status: _parseStatus(json['status']),
         message: json['message'],
+        meetingPoint: json['meeting_point'],
         paymentMethod: json['payment_method'] ?? 'EFECTIVO',
         paymentStatus: json['payment_status'] ?? 'PENDIENTE',
         paypalOrderId: json['paypal_order_id'],
@@ -76,6 +79,7 @@ class TripReservation {
         'id_passenger': idPassenger,
         'seats_requested': seatsRequested,
         'status': status.name,
+        'meeting_point': meetingPoint,
         'message': message,
         'payment_method': paymentMethod,
         if (paypalOrderId != null) 'paypal_order_id': paypalOrderId,

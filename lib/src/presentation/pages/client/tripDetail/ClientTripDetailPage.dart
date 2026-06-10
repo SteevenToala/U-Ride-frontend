@@ -22,6 +22,7 @@ class ClientTripDetailPage extends StatefulWidget {
 class _ClientTripDetailPageState extends State<ClientTripDetailPage> {
   bool _isReserving = false;
   int? _passengerId;
+  final _meetingPointCtrl = TextEditingController();
   final _messageCtrl = TextEditingController();
 
   @override
@@ -41,6 +42,7 @@ class _ClientTripDetailPageState extends State<ClientTripDetailPage> {
 
   @override
   void dispose() {
+    _meetingPointCtrl.dispose();
     _messageCtrl.dispose();
     super.dispose();
   }
@@ -81,11 +83,30 @@ class _ClientTripDetailPageState extends State<ClientTripDetailPage> {
               ),
               const SizedBox(height: 16),
               TextField(
+                controller: _meetingPointCtrl,
+                style: const TextStyle(color: Colors.white),
+                decoration: InputDecoration(
+                  hintText: 'Punto de encuentro (ej. Entrada principal)',
+                  hintStyle: const TextStyle(color: AppTheme.textFaint),
+                  enabledBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10),
+                    borderSide: const BorderSide(color: AppTheme.borderSubtle),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10),
+                    borderSide: const BorderSide(color: AppTheme.accentColor),
+                  ),
+                  filled: true,
+                  fillColor: AppTheme.backgroundDark,
+                ),
+              ),
+              const SizedBox(height: 12),
+              TextField(
                 controller: _messageCtrl,
                 style: const TextStyle(color: Colors.white),
                 maxLines: 2,
                 decoration: InputDecoration(
-                  hintText: 'Mensaje al conductor (opcional)',
+                  hintText: 'Observaciones / Mensaje (opcional)',
                   hintStyle: const TextStyle(color: AppTheme.textFaint),
                   enabledBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(10),
@@ -142,11 +163,7 @@ class _ClientTripDetailPageState extends State<ClientTripDetailPage> {
               ),
               onPressed: () async {
                 Navigator.pop(ctx);
-                if (metodoPago == 'PAYPAL') {
-                  _showPaypalCheckout(useCases, seats);
-                } else {
-                  await _doReserve(useCases, seats);
-                }
+                await _doReserve(useCases, seats, metodoPago);
               },
               child: const Text('Confirmar Reserva'),
             ),
@@ -192,26 +209,7 @@ class _ClientTripDetailPageState extends State<ClientTripDetailPage> {
     );
   }
 
-  void _showPaypalCheckout(TripReservationsUseCases useCases, int seats) {
-    showDialog(
-      context: context,
-      barrierDismissible: false,
-      builder: (dialogContext) => PaypalCheckoutDialog(
-        total: seats * widget.trip.farePerSeat,
-        onCreateReservation: (orderId) => _doReserveAsync(useCases, seats, orderId),
-        onSuccess: () {
-          Fluttertoast.showToast(
-            msg: '¡Pago con PayPal procesado con éxito! Reserva enviada.',
-            toastLength: Toast.LENGTH_LONG,
-            backgroundColor: Colors.green,
-          );
-          if (mounted) Navigator.pop(context, true);
-        },
-      ),
-    );
-  }
-
-  Future<void> _doReserve(TripReservationsUseCases useCases, int seats) async {
+  Future<void> _doReserve(TripReservationsUseCases useCases, int seats, String paymentMethod) async {
     if (_passengerId == null) {
       Fluttertoast.showToast(msg: 'Error: usuario no identificado');
       return;
@@ -221,14 +219,15 @@ class _ClientTripDetailPageState extends State<ClientTripDetailPage> {
       idTrip: widget.trip.id!,
       idPassenger: _passengerId!,
       seatsRequested: seats,
+      meetingPoint: _meetingPointCtrl.text.isNotEmpty ? _meetingPointCtrl.text : null,
       message: _messageCtrl.text.isNotEmpty ? _messageCtrl.text : null,
-      paymentMethod: 'EFECTIVO',
+      paymentMethod: paymentMethod,
     );
     final response = await useCases.create.run(reservation);
     setState(() => _isReserving = false);
     if (response is Success) {
       Fluttertoast.showToast(
-        msg: '¡Reserva enviada! Espera la confirmación del conductor.',
+        msg: '¡Solicitud de reserva enviada con éxito! Espera la aceptación del conductor.',
         toastLength: Toast.LENGTH_LONG,
         backgroundColor: Colors.green,
       );
@@ -236,29 +235,6 @@ class _ClientTripDetailPageState extends State<ClientTripDetailPage> {
     } else if (response is ErrorData) {
       Fluttertoast.showToast(msg: (response as ErrorData<TripReservation>).message, backgroundColor: Colors.red);
     }
-  }
-
-  Future<bool> _doReserveAsync(TripReservationsUseCases useCases, int seats, String paypalOrderId) async {
-    if (_passengerId == null) {
-      Fluttertoast.showToast(msg: 'Error: usuario no identificado');
-      return false;
-    }
-    final reservation = TripReservation(
-      idTrip: widget.trip.id!,
-      idPassenger: _passengerId!,
-      seatsRequested: seats,
-      message: _messageCtrl.text.isNotEmpty ? _messageCtrl.text : null,
-      paymentMethod: 'PAYPAL',
-      paypalOrderId: paypalOrderId,
-    );
-    final response = await useCases.create.run(reservation);
-    if (response is Success) {
-      return true;
-    } else if (response is ErrorData) {
-      Fluttertoast.showToast(msg: (response as ErrorData<TripReservation>).message, backgroundColor: Colors.red);
-      return false;
-    }
-    return false;
   }
 
   @override

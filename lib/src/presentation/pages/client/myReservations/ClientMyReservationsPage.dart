@@ -99,6 +99,190 @@ class _ClientMyReservationsPageState extends State<ClientMyReservationsPage>
     }
   }
 
+  Future<void> _editReservation(
+      TripReservation reservation, TripReservationsUseCases useCases) async {
+    final meetingPointCtrl = TextEditingController(text: reservation.meetingPoint);
+    final messageCtrl = TextEditingController(text: reservation.message);
+    String metodoPago = reservation.paymentMethod;
+
+    await showDialog(
+      context: context,
+      builder: (ctx) => StatefulBuilder(
+        builder: (ctx, setS) => AlertDialog(
+          backgroundColor: AppTheme.backgroundDarkCard,
+          title: const Text('Editar Solicitud', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              TextField(
+                controller: meetingPointCtrl,
+                style: const TextStyle(color: Colors.white),
+                decoration: InputDecoration(
+                  hintText: 'Punto de encuentro',
+                  hintStyle: const TextStyle(color: AppTheme.textFaint),
+                  enabledBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10),
+                    borderSide: const BorderSide(color: AppTheme.borderSubtle),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10),
+                    borderSide: const BorderSide(color: AppTheme.accentColor),
+                  ),
+                  filled: true,
+                  fillColor: AppTheme.backgroundDark,
+                ),
+              ),
+              const SizedBox(height: 12),
+              TextField(
+                controller: messageCtrl,
+                style: const TextStyle(color: Colors.white),
+                maxLines: 2,
+                decoration: InputDecoration(
+                  hintText: 'Observaciones / Mensaje',
+                  hintStyle: const TextStyle(color: AppTheme.textFaint),
+                  enabledBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10),
+                    borderSide: const BorderSide(color: AppTheme.borderSubtle),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10),
+                    borderSide: const BorderSide(color: AppTheme.accentColor),
+                  ),
+                  filled: true,
+                  fillColor: AppTheme.backgroundDark,
+                ),
+              ),
+              const SizedBox(height: 16),
+              const Align(
+                alignment: Alignment.centerLeft,
+                child: Text(
+                  'MÉTODO DE PAGO',
+                  style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: AppTheme.textMuted, letterSpacing: 1.0),
+                ),
+              ),
+              const SizedBox(height: 8),
+              Row(
+                children: [
+                  _buildPaymentMethodOption(
+                    type: 'EFECTIVO',
+                    icon: Icons.money_rounded,
+                    label: 'Efectivo',
+                    selected: metodoPago == 'EFECTIVO',
+                    onTap: () => setS(() => metodoPago = 'EFECTIVO'),
+                  ),
+                  const SizedBox(width: 8),
+                  _buildPaymentMethodOption(
+                    type: 'PAYPAL',
+                    icon: Icons.paypal_rounded,
+                    label: 'PayPal',
+                    selected: metodoPago == 'PAYPAL',
+                    onTap: () => setS(() => metodoPago = 'PAYPAL'),
+                  ),
+                ],
+              ),
+            ],
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(ctx),
+              child: const Text('Cancelar', style: TextStyle(color: AppTheme.textMuted)),
+            ),
+            ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                backgroundColor: AppTheme.accentColor,
+                foregroundColor: Colors.white,
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+              ),
+              onPressed: () async {
+                Navigator.pop(ctx);
+                final updatedRes = TripReservation(
+                  idTrip: reservation.idTrip,
+                  idPassenger: reservation.idPassenger,
+                  meetingPoint: meetingPointCtrl.text.isNotEmpty ? meetingPointCtrl.text : null,
+                  message: messageCtrl.text.isNotEmpty ? messageCtrl.text : null,
+                  paymentMethod: metodoPago,
+                );
+                final response = await useCases.update.run(reservation.id!, updatedRes);
+                if (response is Success) {
+                  Fluttertoast.showToast(msg: 'Solicitud actualizada con éxito', backgroundColor: Colors.green);
+                  _loadReservations();
+                } else if (response is ErrorData) {
+                  Fluttertoast.showToast(msg: (response as ErrorData).message, backgroundColor: Colors.red);
+                }
+              },
+              child: const Text('Guardar Cambios'),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildPaymentMethodOption({
+    required String type,
+    required IconData icon,
+    required String label,
+    required bool selected,
+    required VoidCallback onTap,
+  }) {
+    return Expanded(
+      child: GestureDetector(
+        onTap: onTap,
+        child: Container(
+          padding: const EdgeInsets.symmetric(vertical: 12),
+          decoration: BoxDecoration(
+            color: selected ? AppTheme.accentColor.withOpacity(0.15) : AppTheme.backgroundDark,
+            borderRadius: BorderRadius.circular(12),
+            border: Border.all(color: selected ? AppTheme.accentColor : AppTheme.borderSubtle),
+          ),
+          child: Column(
+            children: [
+              Icon(icon, color: selected ? AppTheme.accentColor : Colors.white54, size: 20),
+              const SizedBox(height: 4),
+              Text(
+                label,
+                style: TextStyle(
+                  color: selected ? AppTheme.accentColor : Colors.white54,
+                  fontSize: 11,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  void _payWithPaypal(TripReservation reservation, TripReservationsUseCases useCases) {
+    final total = reservation.seatsRequested * (reservation.trip?.farePerSeat ?? 0.0);
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (dialogContext) => PaypalCheckoutDialog(
+        total: total,
+        onCreateReservation: (orderId) async {
+          final response = await useCases.payPaypal.run(reservation.id!, orderId);
+          if (response is Success) {
+            return true;
+          } else if (response is ErrorData) {
+            Fluttertoast.showToast(msg: (response as ErrorData).message, backgroundColor: Colors.red);
+            return false;
+          }
+          return false;
+        },
+        onSuccess: () {
+          Fluttertoast.showToast(
+            msg: '¡Pago con PayPal verificado con éxito! Tu cupo está confirmado.',
+            toastLength: Toast.LENGTH_LONG,
+            backgroundColor: Colors.green,
+          );
+          _loadReservations();
+        },
+      ),
+    );
+  }
+
   List<TripReservation> _filtered(ReservationStatus status) =>
       _reservations.where((r) => r.status == status).toList();
 
@@ -264,6 +448,11 @@ class _ClientMyReservationsPageState extends State<ClientMyReservationsPage>
           final r = items[i];
           final allowCancel = useCases != null &&
               (canCancelFn != null ? canCancelFn(r) : false);
+          final allowEdit = useCases != null && r.status == ReservationStatus.PENDING;
+          final allowPay = useCases != null &&
+              r.status == ReservationStatus.ACCEPTED &&
+              r.paymentMethod == 'PAYPAL' &&
+              r.paymentStatus == 'PENDIENTE';
           final driverUser = r.trip?.driver;
           final driverId = driverUser?.id ?? r.trip?.idDriver;
           final driverName = driverUser != null
@@ -272,6 +461,8 @@ class _ClientMyReservationsPageState extends State<ClientMyReservationsPage>
           return _MyReservationCard(
             reservation: r,
             onCancel: allowCancel ? () => _cancelReservation(r, useCases!) : null,
+            onEdit: allowEdit ? () => _editReservation(r, useCases!) : null,
+            onPay: allowPay ? () => _payWithPaypal(r, useCases!) : null,
             onViewRoute: r.trip != null
                 ? () => Navigator.pushNamed(
                       context,
@@ -305,12 +496,16 @@ class _MyReservationCard extends StatelessWidget {
   final VoidCallback? onCancel;
   final VoidCallback? onViewRoute;
   final VoidCallback? onReport;
+  final VoidCallback? onEdit;
+  final VoidCallback? onPay;
 
   const _MyReservationCard({
     required this.reservation,
     this.onCancel,
     this.onViewRoute,
     this.onReport,
+    this.onEdit,
+    this.onPay,
   });
 
   Color get _statusColor {
@@ -412,6 +607,23 @@ class _MyReservationCard extends StatelessWidget {
                       ),
                     ],
                   ),
+                  if (reservation.meetingPoint != null && reservation.meetingPoint!.isNotEmpty) ...[
+                    const SizedBox(height: 8),
+                    Row(
+                      children: [
+                        const Icon(Icons.meeting_room_rounded,
+                            color: AppTheme.accentColor, size: 14),
+                        const SizedBox(width: 6),
+                        Expanded(
+                          child: Text('Punto de encuentro: ${reservation.meetingPoint}',
+                              style: const TextStyle(
+                                  color: Colors.white70,
+                                  fontSize: 13),
+                              overflow: TextOverflow.ellipsis),
+                        ),
+                      ],
+                    ),
+                  ],
                 ] else
                   const Text('Viaje',
                       style: TextStyle(
@@ -447,8 +659,10 @@ class _MyReservationCard extends StatelessWidget {
     final hasRoute = onViewRoute != null;
     final hasCancel = onCancel != null;
     final hasReport = onReport != null;
+    final hasEdit = onEdit != null;
+    final hasPay = onPay != null;
 
-    if (!hasRoute && !hasCancel && !hasReport) return const SizedBox.shrink();
+    if (!hasRoute && !hasCancel && !hasReport && !hasEdit && !hasPay) return const SizedBox.shrink();
 
     return Column(
       children: [
@@ -457,14 +671,40 @@ class _MyReservationCard extends StatelessWidget {
             if (hasRoute)
               Expanded(
                 child: _solidBtn(
-                  label: 'Ver Ruta',
+                  label: 'Ruta',
                   icon: Icons.map_rounded,
                   color: AppTheme.passengerColor,
                   gradient: AppTheme.passengerGradient,
                   onTap: onViewRoute!,
                 ),
               ),
-            if (hasRoute && hasCancel) const SizedBox(width: 10),
+            if (hasRoute && (hasCancel || hasEdit || hasPay)) const SizedBox(width: 8),
+            if (hasEdit)
+              Expanded(
+                child: _solidBtn(
+                  label: 'Editar',
+                  icon: Icons.edit_rounded,
+                  color: AppTheme.accentColor,
+                  gradient: AppTheme.primaryGradient,
+                  onTap: onEdit!,
+                ),
+              ),
+            if (hasEdit && (hasCancel || hasPay)) const SizedBox(width: 8),
+            if (hasPay)
+              Expanded(
+                child: _solidBtn(
+                  label: 'Pagar',
+                  icon: Icons.paypal_rounded,
+                  color: const Color(0xFF0079C1),
+                  gradient: const LinearGradient(
+                    colors: [Color(0xFF0079C1), Color(0xFF00457C)],
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                  ),
+                  onTap: onPay!,
+                ),
+              ),
+            if (hasPay && hasCancel) const SizedBox(width: 8),
             if (hasCancel)
               Expanded(
                 child: _solidBtn(

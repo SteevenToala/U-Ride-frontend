@@ -10,4 +10,6 @@ abstract class TripReservationsRepository {
   Future<Resource<TripReservation>> cancel(int id);
   Future<Resource<TripReservation>> confirmPayment(int id);
   Future<Resource<Map<String, dynamic>>> createPaypalOrder(double amount);
+  Future<Resource<TripReservation>> update(int id, TripReservation reservation);
+  Future<Resource<TripReservation>> payPaypal(int id, String paypalOrderId);
 }

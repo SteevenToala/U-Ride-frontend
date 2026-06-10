@@ -284,6 +284,8 @@ abstract class AppModule {
     cancel: CancelReservationUseCase(tripReservationsRepository),
     confirmPayment: ConfirmPaymentUseCase(tripReservationsRepository),
     createPaypalOrder: CreatePaypalOrderUseCase(tripReservationsRepository),
+    update: UpdateReservationUseCase(tripReservationsRepository),
+    payPaypal: PayPaypalReservationUseCase(tripReservationsRepository),
   );
 
 }

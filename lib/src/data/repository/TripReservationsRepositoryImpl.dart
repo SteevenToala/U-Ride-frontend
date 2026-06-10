@@ -30,4 +30,10 @@ class TripReservationsRepositoryImpl implements TripReservationsRepository {
 
   @override
   Future<Resource<Map<String, dynamic>>> createPaypalOrder(double amount) => _service.createPaypalOrder(amount);
+
+  @override
+  Future<Resource<TripReservation>> update(int id, TripReservation reservation) => _service.update(id, reservation);
+
+  @override
+  Future<Resource<TripReservation>> payPaypal(int id, String paypalOrderId) => _service.payPaypal(id, paypalOrderId);
 }
