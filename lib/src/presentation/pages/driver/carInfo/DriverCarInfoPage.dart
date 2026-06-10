@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:indriver_clone_flutter/src/domain/models/user.dart';
 import 'package:indriver_clone_flutter/src/domain/utils/Resource.dart';
 import 'package:indriver_clone_flutter/src/presentation/pages/driver/carInfo/DriverCarInfoContent.dart';
 import 'package:indriver_clone_flutter/src/presentation/pages/driver/carInfo/bloc/DriverCarInfoBloc.dart';
 import 'package:indriver_clone_flutter/src/presentation/pages/driver/carInfo/bloc/DriverCarInfoEvent.dart';
 import 'package:indriver_clone_flutter/src/presentation/pages/driver/carInfo/bloc/DriverCarInfoState.dart';
+import 'package:indriver_clone_flutter/src/presentation/theme/AppTheme.dart';
 
 class DriverCarInfoPage extends StatefulWidget {
   const DriverCarInfoPage({super.key});
@@ -28,6 +28,16 @@ class _DriverCarInfoPageState extends State<DriverCarInfoPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: AppTheme.backgroundDark,
+      appBar: AppBar(
+        backgroundColor: AppTheme.backgroundDarkCard,
+        title: const Text(
+          'Datos del Vehículo',
+          style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+        ),
+        iconTheme: const IconThemeData(color: Colors.white),
+        elevation: 0,
+      ),
       body: BlocListener<DriverCarInfoBloc, DriverCarInfoState>(
         listener: (context, state) {
           final response = state.response;
@@ -45,7 +55,7 @@ class _DriverCarInfoPageState extends State<DriverCarInfoPage> {
               return Stack(
                 children: [
                   DriverCarInfoContent(state),
-                  Center(child: CircularProgressIndicator())
+                  const Center(child: CircularProgressIndicator(color: AppTheme.driverColor)),
                 ],
               );
             }

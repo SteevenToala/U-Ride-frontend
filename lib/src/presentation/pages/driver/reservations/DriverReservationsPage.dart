@@ -81,54 +81,91 @@ class _DriverReservationsPageState extends State<DriverReservationsPage> {
               children: [
                 _summaryBar(pending, accepted, dynamicAvailableSeats, widget.trip.totalSeats, widget.trip.isFinished || widget.trip.isCancelled),
                 Expanded(
-                  child: ListView.builder(
-                    padding: const EdgeInsets.all(16),
-                    itemCount: state.reservations.length,
-                    itemBuilder: (context, i) {
-                      final r = state.reservations[i];
-                      return _ReservationCard(
-                        reservation: r,
-                        farePerSeat: widget.trip.farePerSeat,
-                        onAccept: r.isPending
-                            ? () => _confirm(context,
-                                title: '¿Aceptar reserva?',
-                                message: 'El pasajero quedará confirmado.',
-                                onConfirm: () => context
-                                    .read<DriverReservationsBloc>()
-                                    .add(AcceptReservation(idReservation: r.id!)))
-                            : null,
-                        onReject: r.isPending
-                            ? () => _confirm(context,
-                                title: '¿Rechazar reserva?',
-                                message: 'El pasajero será notificado del rechazo.',
-                                onConfirm: () => context
-                                    .read<DriverReservationsBloc>()
-                                    .add(RejectReservation(idReservation: r.id!)),
-                                isDestructive: true)
-                            : null,
-                        onConfirmPayment: (r.isAccepted && r.paymentMethod == 'EFECTIVO' && r.paymentStatus == 'PENDIENTE')
-                            ? () => _confirm(context,
-                                title: '¿Confirmar pago en efectivo?',
-                                message: 'Se registrará el cobro de \$${(r.seatsRequested * widget.trip.farePerSeat).toStringAsFixed(2)} y se ocuparán los puestos de forma definitiva.',
-                                onConfirm: () => context
-                                    .read<DriverReservationsBloc>()
-                                    .add(ConfirmPayment(idReservation: r.id!)))
-                            : null,
-                        onReport: r.isAccepted && r.passenger != null
-                            ? () => ReportUserSheet.show(
-                                context,
-                                reportedUserId: r.passenger!.id!,
-                                reportedUserName: '${r.passenger!.name} ${r.passenger!.lastname}',
-                              )
-                            : null,
-                      );
-                    },
-                  ),
+                  child: _buildContent(context, state.reservations),
                 ),
               ],
             );
           },
         ),
+      ),
+    );
+  }
+
+  Widget _buildContent(BuildContext context, List<TripReservation> reservations) {
+    Widget buildCard(TripReservation r) {
+      return _ReservationCard(
+        reservation: r,
+        farePerSeat: widget.trip.farePerSeat,
+        onAccept: r.isPending
+            ? () => _confirm(context,
+                title: '¿Aceptar reserva?',
+                message: 'El pasajero quedará confirmado.',
+                onConfirm: () => context
+                    .read<DriverReservationsBloc>()
+                    .add(AcceptReservation(idReservation: r.id!)))
+            : null,
+        onReject: r.isPending
+            ? () => _confirm(context,
+                title: '¿Rechazar reserva?',
+                message: 'El pasajero será notificado del rechazo.',
+                onConfirm: () => context
+                    .read<DriverReservationsBloc>()
+                    .add(RejectReservation(idReservation: r.id!)),
+                isDestructive: true)
+            : null,
+        onConfirmPayment: (r.isAccepted && r.paymentMethod == 'EFECTIVO' && r.paymentStatus == 'PENDIENTE')
+            ? () => _confirm(context,
+                title: '¿Confirmar pago en efectivo?',
+                message: 'Se registrará el cobro de \$${(r.seatsRequested * widget.trip.farePerSeat).toStringAsFixed(2)} y se ocuparán los puestos de forma definitiva.',
+                onConfirm: () => context
+                    .read<DriverReservationsBloc>()
+                    .add(ConfirmPayment(idReservation: r.id!)))
+            : null,
+        onReport: r.isAccepted && r.passenger != null
+            ? () => ReportUserSheet.show(
+                context,
+                reportedUserId: r.passenger!.id!,
+                reportedUserName: '${r.passenger!.name} ${r.passenger!.lastname}',
+              )
+            : null,
+      );
+    }
+
+    return Center(
+      child: ConstrainedBox(
+        constraints: const BoxConstraints(maxWidth: 1280),
+        child: LayoutBuilder(builder: (context, constraints) {
+          final w = constraints.maxWidth;
+          final cols = w >= 960 ? 3 : w >= 580 ? 2 : 1;
+          final hPad = w >= 580 ? 20.0 : 16.0;
+          final spacing = 14.0;
+          final cardW = cols == 1
+              ? double.infinity
+              : (w - hPad * 2 - spacing * (cols - 1)) / cols;
+
+          if (cols == 1) {
+            return ListView.builder(
+              padding: EdgeInsets.fromLTRB(hPad, 16, hPad, 16),
+              itemCount: reservations.length,
+              itemBuilder: (context, i) => Padding(
+                padding: const EdgeInsets.only(bottom: 14),
+                child: buildCard(reservations[i]),
+              ),
+            );
+          }
+
+          return SingleChildScrollView(
+            physics: const AlwaysScrollableScrollPhysics(),
+            padding: EdgeInsets.fromLTRB(hPad, 16, hPad, 16),
+            child: Wrap(
+              spacing: spacing,
+              runSpacing: spacing,
+              children: reservations
+                  .map((r) => SizedBox(width: cardW, child: buildCard(r)))
+                  .toList(),
+            ),
+          );
+        }),
       ),
     );
   }
@@ -233,7 +270,6 @@ class _ReservationCard extends StatelessWidget {
     final totalCost = reservation.seatsRequested * farePerSeat;
 
     return Container(
-      margin: const EdgeInsets.only(bottom: 14),
       decoration: BoxDecoration(
         color: AppTheme.backgroundDarkCard,
         borderRadius: BorderRadius.circular(14),

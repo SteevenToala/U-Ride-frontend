@@ -1,130 +1,111 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:indriver_clone_flutter/src/domain/models/DriverCarInfo.dart';
 import 'package:indriver_clone_flutter/src/presentation/pages/driver/carInfo/bloc/DriverCarInfoBloc.dart';
 import 'package:indriver_clone_flutter/src/presentation/pages/driver/carInfo/bloc/DriverCarInfoEvent.dart';
 import 'package:indriver_clone_flutter/src/presentation/pages/driver/carInfo/bloc/DriverCarInfoState.dart';
 import 'package:indriver_clone_flutter/src/presentation/utils/BlocFormItem.dart';
-import 'package:indriver_clone_flutter/src/presentation/widgets/DefaultIconBack.dart';
 import 'package:indriver_clone_flutter/src/presentation/theme/AppTheme.dart';
-import 'package:indriver_clone_flutter/src/presentation/widgets/DefaultTextField.dart';
 
 class DriverCarInfoContent extends StatelessWidget {
+  final DriverCarInfoState state;
 
-  DriverCarInfoState state;
-
-  DriverCarInfoContent(this.state);
+  const DriverCarInfoContent(this.state, {super.key});
 
   @override
   Widget build(BuildContext context) {
-    return Form(
-      key: state.formKey,
-      child: Stack(
-        children: [
-          Column(
-            children: [
-              _headerProfile(context),
-              Spacer(),
-              _actionProfile(context, 'ACTUALIZAR DATOS', Icons.check),
-              SizedBox(height: 35,)
-            ],
-          ),
-          _cardUserInfo(context),
-          // DefaultIconBack(
-          //   margin: EdgeInsets.only(top: 20, left: 30),
-          // )
-        ],
-      ),
-    );
-  }
- 
-  Widget _cardUserInfo(BuildContext context) {
-    return Container(
-      margin: EdgeInsets.only(left: 35, right: 35, top: 100),
-      width: MediaQuery.of(context).size.width,
-      height: MediaQuery.of(context).size.height * 0.35,
-      child: Card(
-        color: Colors.white,
-        surfaceTintColor: Colors.white,
-        child: Column(
-          children: [
-            SizedBox(height: 40),
-            DefaultTextField(
-              text: 'Marca del vehiculo', 
-              icon: Icons.person, 
-              margin: EdgeInsets.only(left: 30, right: 30, top: 15),
-              backgroundColor: Colors.grey[200]!,
-              initialValue: state.brand.value,
-              onChanged: (text) {
-                context.read<DriverCarInfoBloc>().add(BrandChanged(brand: BlocFormItem(value: text)));
-              },
-              validator: (value) {
-                return state.brand.error;
-              },
-            ),
-            DefaultTextField(
-              text: 'Placa del vehiculo', 
-              icon: Icons.person_outline, 
-              backgroundColor: Colors.grey[200]!,
-              initialValue: state.plate.value,
-              margin: EdgeInsets.only(left: 30, right: 30, top: 15),
-              keyboardType: TextInputType.phone,
-              onChanged: (text) {
-                context.read<DriverCarInfoBloc>().add(PlateChanged(plate: BlocFormItem(value: text)));
-              },
-              validator: (value) {
-                return state.plate.error;
-              },
-            ),
-            DefaultTextField(
-              text: 'Color', 
-              icon: Icons.phone,
-              initialValue: state.color.value,
-              margin: EdgeInsets.only(left: 30, right: 30, top: 15),
-              backgroundColor: Colors.grey[200]!, 
-              onChanged: (text) {
-                context.read<DriverCarInfoBloc>().add(ColorChanged(color: BlocFormItem(value: text)));
-              },
-              validator: (value) {
-                return state.color.error;
-              },
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _actionProfile(BuildContext context, String option, IconData icon) {
-    return GestureDetector(
-      onTap: () {
-        if (state.formKey!.currentState != null) {
-          if (state.formKey!.currentState!.validate()) {
-            context.read<DriverCarInfoBloc>().add(FormSubmit());
-          }
-        }
-        else {
-          context.read<DriverCarInfoBloc>().add(FormSubmit());
-        }
-      },
-      child: Container(
-        margin: EdgeInsets.only(left: 20, right: 20, top: 15),
-        child: ListTile(
-          title: Text(
-            option,
-            style: TextStyle(
-              fontWeight: FontWeight.bold
-            ),
-          ),
-          leading: Container(
-            padding: EdgeInsets.all(10),
-            decoration: BoxDecoration(
-              gradient: AppTheme.accentGradient,
-              borderRadius: BorderRadius.all(Radius.circular(50))
-            ),
-            child: Icon(
-              icon,
-              color: Colors.white,
+    return SingleChildScrollView(
+      padding: const EdgeInsets.all(20),
+      child: Center(
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(maxWidth: 700),
+          child: Form(
+            key: state.formKey,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Container(
+                  width: double.infinity,
+                  padding: const EdgeInsets.all(20),
+                  decoration: BoxDecoration(
+                    gradient: AppTheme.driverGradient,
+                    borderRadius: BorderRadius.circular(16),
+                  ),
+                  child: const Row(
+                    children: [
+                      Icon(Icons.directions_car_rounded, color: Colors.white, size: 28),
+                      SizedBox(width: 12),
+                      Text(
+                        'Datos del vehículo',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.w900,
+                          fontSize: 18,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(height: 20),
+                _buildTextField(
+                  context,
+                  label: 'Marca del vehículo',
+                  icon: Icons.branding_watermark_outlined,
+                  initialValue: state.brand.value,
+                  onChanged: (text) => context
+                      .read<DriverCarInfoBloc>()
+                      .add(BrandChanged(brand: BlocFormItem(value: text))),
+                  validator: (value) => state.brand.error,
+                ),
+                const SizedBox(height: 16),
+                _buildTextField(
+                  context,
+                  label: 'Placa del vehículo',
+                  icon: Icons.confirmation_number_outlined,
+                  keyboardType: TextInputType.text,
+                  initialValue: state.plate.value,
+                  onChanged: (text) => context
+                      .read<DriverCarInfoBloc>()
+                      .add(PlateChanged(plate: BlocFormItem(value: text))),
+                  validator: (value) => state.plate.error,
+                ),
+                const SizedBox(height: 16),
+                _buildTextField(
+                  context,
+                  label: 'Color',
+                  icon: Icons.palette_outlined,
+                  initialValue: state.color.value,
+                  onChanged: (text) => context
+                      .read<DriverCarInfoBloc>()
+                      .add(ColorChanged(color: BlocFormItem(value: text))),
+                  validator: (value) => state.color.error,
+                ),
+                const SizedBox(height: 28),
+                SizedBox(
+                  width: double.infinity,
+                  height: 52,
+                  child: ElevatedButton.icon(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: AppTheme.driverColor,
+                      foregroundColor: Colors.white,
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+                      elevation: 4,
+                    ),
+                    onPressed: () {
+                      if (state.formKey?.currentState != null) {
+                        if (state.formKey!.currentState!.validate()) {
+                          context.read<DriverCarInfoBloc>().add(FormSubmit());
+                        }
+                      } else {
+                        context.read<DriverCarInfoBloc>().add(FormSubmit());
+                      }
+                    },
+                    icon: const Icon(Icons.check_rounded),
+                    label: const Text('ACTUALIZAR DATOS',
+                        style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+                  ),
+                ),
+                const SizedBox(height: 20),
+              ],
             ),
           ),
         ),
@@ -132,23 +113,44 @@ class DriverCarInfoContent extends StatelessWidget {
     );
   }
 
-  Widget _headerProfile(BuildContext context) {
-    return Container(
-      alignment: Alignment.topCenter,
-      padding: EdgeInsets.only(top: 30),
-      height: MediaQuery.of(context).size.height * 0.3,
-      width: MediaQuery.of(context).size.width,
-      decoration: BoxDecoration(
-        gradient: AppTheme.accentGradient,
-      ),
-      child: Text(
-        'DATOS DEL VEHICULO',
-        style: TextStyle(
-          color: Colors.white,
-          fontWeight: FontWeight.bold,
-          fontSize: 19
+  Widget _buildTextField(
+    BuildContext context, {
+    required String label,
+    required IconData icon,
+    required String? Function(String?) validator,
+    required Function(String) onChanged,
+    String? initialValue,
+    TextInputType keyboardType = TextInputType.text,
+  }) {
+    return TextFormField(
+      initialValue: initialValue,
+      keyboardType: keyboardType,
+      style: const TextStyle(color: Colors.white),
+      decoration: InputDecoration(
+        labelText: label,
+        labelStyle: const TextStyle(color: AppTheme.textMuted),
+        prefixIcon: Icon(icon, color: AppTheme.driverColor),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: const BorderSide(color: AppTheme.borderSubtle),
         ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: const BorderSide(color: AppTheme.driverColor, width: 2),
+        ),
+        errorBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: const BorderSide(color: Colors.redAccent),
+        ),
+        focusedErrorBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: const BorderSide(color: Colors.redAccent, width: 2),
+        ),
+        filled: true,
+        fillColor: AppTheme.backgroundDarkCard,
       ),
+      onChanged: onChanged,
+      validator: validator,
     );
   }
 }

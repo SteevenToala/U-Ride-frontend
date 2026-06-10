@@ -4,7 +4,7 @@ class ApiConfig {
   // Si no se pasa ninguna, usa la IP local por defecto.
   static const String API_PROJECT = String.fromEnvironment(
     'API_URL',
-    defaultValue: '192.168.100.10:3000',
+    defaultValue: '10.85.7.23:3000',
   );
 
   /// Construye una URI de forma segura y limpia.

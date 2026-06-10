@@ -52,18 +52,7 @@ class _ClientSearchTripsPageState extends State<ClientSearchTripsPage> {
                   backgroundColor: AppTheme.backgroundDarkSecondary,
                   onRefresh: () async =>
                       context.read<ClientSearchTripsBloc>().add(const SearchTrips()),
-                  child: ListView.builder(
-                    padding: const EdgeInsets.fromLTRB(16, 8, 16, 24),
-                    itemCount: state.trips.length,
-                    itemBuilder: (context, i) => _TripSearchCard(
-                      trip: state.trips[i],
-                      onTap: () => Navigator.pushNamed(
-                        context,
-                        'client/shared-trips/detail',
-                        arguments: {'trip': state.trips[i]},
-                      ),
-                    ),
-                  ),
+                  child: _buildContent(context, state.trips),
                 );
               },
             ),
@@ -237,6 +226,65 @@ class _ClientSearchTripsPageState extends State<ClientSearchTripsPage> {
     );
   }
 
+  // ── Responsive content ────────────────────────────────────────────────────
+
+  Widget _buildContent(BuildContext context, List<SharedTrip> trips) {
+    return Center(
+      child: ConstrainedBox(
+        constraints: const BoxConstraints(maxWidth: 1280),
+        child: LayoutBuilder(builder: (context, constraints) {
+          final w = constraints.maxWidth;
+          final cols = w >= 960 ? 3 : w >= 580 ? 2 : 1;
+          final hPad = w >= 580 ? 20.0 : 16.0;
+          final spacing = 14.0;
+          final cardW = cols == 1
+              ? double.infinity
+              : (w - hPad * 2 - spacing * (cols - 1)) / cols;
+
+          if (cols == 1) {
+            return ListView.builder(
+              padding: EdgeInsets.fromLTRB(hPad, 8, hPad, 24),
+              itemCount: trips.length,
+              itemBuilder: (context, i) => Padding(
+                padding: const EdgeInsets.only(bottom: 14),
+                child: _TripSearchCard(
+                  trip: trips[i],
+                  onTap: () => Navigator.pushNamed(
+                    context,
+                    'client/shared-trips/detail',
+                    arguments: {'trip': trips[i]},
+                  ),
+                ),
+              ),
+            );
+          }
+
+          return SingleChildScrollView(
+            physics: const AlwaysScrollableScrollPhysics(),
+            padding: EdgeInsets.fromLTRB(hPad, 8, hPad, 24),
+            child: Wrap(
+              spacing: spacing,
+              runSpacing: spacing,
+              children: trips
+                  .map((t) => SizedBox(
+                        width: cardW,
+                        child: _TripSearchCard(
+                          trip: t,
+                          onTap: () => Navigator.pushNamed(
+                            context,
+                            'client/shared-trips/detail',
+                            arguments: {'trip': t},
+                          ),
+                        ),
+                      ))
+                  .toList(),
+            ),
+          );
+        }),
+      ),
+    );
+  }
+
   Future<void> _pickDate() async {
     final date = await showDatePicker(
       context: context,
@@ -344,7 +392,6 @@ class _TripSearchCard extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        margin: const EdgeInsets.only(bottom: 14),
         decoration: BoxDecoration(
           color: AppTheme.backgroundDarkSecondary,
           borderRadius: BorderRadius.circular(18),

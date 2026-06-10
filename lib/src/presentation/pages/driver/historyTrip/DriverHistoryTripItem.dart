@@ -1,82 +1,169 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:indriver_clone_flutter/src/domain/models/ClientRequestResponse.dart';
+import 'package:indriver_clone_flutter/src/presentation/theme/AppTheme.dart';
 import 'package:indriver_clone_flutter/src/presentation/widgets/DefaultImageUrl.dart';
 
 class DriverHistoryTripItem extends StatelessWidget {
+  final ClientRequestResponse clientRequest;
 
-  ClientRequestResponse clientRequest;
-
-  DriverHistoryTripItem(this.clientRequest);
+  const DriverHistoryTripItem(this.clientRequest, {super.key});
 
   @override
   Widget build(BuildContext context) {
+    final client = clientRequest.client;
     return Container(
-      margin: EdgeInsets.only(left: 10, right: 10, top: 10),
-      child: Card(
-        child: Column(
-          children: [
-            _listTileClient(),
-            _listTilePickup(),
-            _listTileDestination(),
-            _listTileFarePaid(),
-            _listTileTime()
-          ],
+      decoration: BoxDecoration(
+        color: AppTheme.backgroundDarkSecondary,
+        borderRadius: BorderRadius.circular(18),
+        border: Border.all(
+          color: AppTheme.driverColor.withValues(alpha: 0.25),
+          width: 1.5,
         ),
-      ),
-    );
-  }
-
-  Widget _listTilePickup() {
-    return ListTile(
-      title: Text('Desde'),
-      subtitle: Text(clientRequest.pickupDescription),
-      trailing: Icon(Icons.location_on),
-    );
-  }
-
-  Widget _listTileDestination() {
-    return ListTile(
-      title: Text('Hasta'),
-      subtitle: Text(clientRequest.destinationDescription),
-      trailing: Icon(Icons.flag),
-    );
-  }
-
-  Widget _listTileFarePaid() {
-    return ListTile(
-      title: Text('Tarifa del viaje'),
-      subtitle: Text('\$${clientRequest.fareAssigned}'),
-      trailing: Icon(Icons.attach_money_outlined),
-    );
-  }
-
-  Widget _listTileClient() {
-    return ListTile(
-      title: Text('Cliente'),
-      subtitle: Text('${clientRequest.client.name} ${clientRequest.client.lastname}'),
-      trailing: DefaultImageUrl(
-        url: clientRequest.client.image,
-        width: 50,
-      ),
-    );
-  }
-
-  Widget _listTileTime() {
-    return ListTile(
-      title: Text('Fecha del viaje'),
-      subtitle: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text('Inicio: ${clientRequest.createdAt}'),
-          Text('Fin: ${clientRequest.updatedAt}'),
+        boxShadow: [
+          BoxShadow(
+            color: AppTheme.driverColor.withValues(alpha: 0.1),
+            blurRadius: 12,
+            offset: const Offset(0, 4),
+          ),
         ],
       ),
-      trailing: Icon(
-        Icons.watch_later
-      )
+      child: Column(
+        children: [
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+            decoration: BoxDecoration(
+              color: AppTheme.driverColor.withValues(alpha: 0.12),
+              borderRadius: const BorderRadius.vertical(top: Radius.circular(18)),
+            ),
+            child: Row(
+              children: [
+                const Icon(Icons.check_circle_rounded,
+                    color: AppTheme.driverColorLight, size: 14),
+                const SizedBox(width: 6),
+                const Text('Viaje finalizado',
+                    style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 12,
+                        fontWeight: FontWeight.w700)),
+                const Spacer(),
+                Text(
+                  _formatDateTime(clientRequest.updatedAt),
+                  style: TextStyle(
+                    color: Colors.white.withValues(alpha: 0.5),
+                    fontSize: 11,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(16),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    DefaultImageUrl(url: client.image, width: 40),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const Text('Cliente',
+                              style: TextStyle(color: Colors.white38, fontSize: 11)),
+                          Text('${client.name} ${client.lastname}',
+                              style: const TextStyle(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.w700,
+                                  fontSize: 14),
+                              overflow: TextOverflow.ellipsis),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 14),
+                Row(
+                  children: [
+                    const Icon(Icons.radio_button_checked,
+                        color: AppTheme.driverColorLight, size: 14),
+                    const SizedBox(width: 6),
+                    Expanded(
+                      child: Text(clientRequest.pickupDescription,
+                          style: const TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.w700,
+                              fontSize: 14),
+                          overflow: TextOverflow.ellipsis),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 2),
+                const Padding(
+                  padding: EdgeInsets.only(left: 6),
+                  child: Icon(Icons.more_vert, color: Colors.white24, size: 14),
+                ),
+                const SizedBox(height: 2),
+                Row(
+                  children: [
+                    const Icon(Icons.location_on_rounded,
+                        color: AppTheme.textMuted, size: 14),
+                    const SizedBox(width: 6),
+                    Expanded(
+                      child: Text(clientRequest.destinationDescription,
+                          style: const TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.w700,
+                              fontSize: 14),
+                          overflow: TextOverflow.ellipsis),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 12),
+                Wrap(
+                  spacing: 8,
+                  runSpacing: 8,
+                  children: [
+                    if (clientRequest.fareAssigned != null)
+                      _infoChip(Icons.attach_money_rounded,
+                          '\$${clientRequest.fareAssigned!.toStringAsFixed(2)}'),
+                    if (clientRequest.createdAt != null)
+                      _infoChip(Icons.watch_later_outlined,
+                          'Inicio: ${_formatDateTime(clientRequest.createdAt!)}'),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
     );
   }
 
-  
+  Widget _infoChip(IconData icon, String label) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+      decoration: BoxDecoration(
+        color: Colors.white.withValues(alpha: 0.06),
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(color: AppTheme.dividerColor, width: 1),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(icon, size: 12, color: Colors.white38),
+          const SizedBox(width: 5),
+          Text(label, style: const TextStyle(color: Colors.white54, fontSize: 12)),
+        ],
+      ),
+    );
+  }
+
+  String _formatDateTime(DateTime dt) {
+    return '${dt.day.toString().padLeft(2, '0')}/'
+        '${dt.month.toString().padLeft(2, '0')}/'
+        '${dt.year} '
+        '${dt.hour.toString().padLeft(2, '0')}:'
+        '${dt.minute.toString().padLeft(2, '0')}';
+  }
 }

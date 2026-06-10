@@ -105,7 +105,10 @@ class _DriverPublishTripPageState extends State<DriverPublishTripPage> {
           builder: (context, state) {
             return SingleChildScrollView(
               padding: const EdgeInsets.all(20),
-              child: Form(
+              child: Center(
+                child: ConstrainedBox(
+                  constraints: const BoxConstraints(maxWidth: 700),
+                  child: Form(
                 key: _formKey,
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -240,6 +243,8 @@ class _DriverPublishTripPageState extends State<DriverPublishTripPage> {
                     ),
                     const SizedBox(height: 20),
                   ],
+                ),
+                  ),
                 ),
               ),
             );

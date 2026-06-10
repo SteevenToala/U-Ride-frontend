@@ -26,7 +26,10 @@ class VerifyAccountState extends Equatable {
       email: email ?? this.email,
       code: code ?? this.code,
       formKey: formKey ?? this.formKey,
-      response: response ?? this.response,
+      // Sin "?? this.response": un copyWith sin `response` (p. ej. al teclear
+      // el código) lo limpia a null para que el toast de error anterior no
+      // se repita en cada cambio de estado.
+      response: response,
     );
   }
 

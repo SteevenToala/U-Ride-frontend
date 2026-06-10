@@ -81,46 +81,51 @@ class ProfileInfoContent extends StatelessWidget {
     final reputation = double.tryParse(user?.roles?.isNotEmpty == true ? '0' : '0') ?? 0.0;
 
     return Container(
-      height: MediaQuery.of(context).size.height,
-      width: MediaQuery.of(context).size.width,
+      width: double.infinity,
+      constraints: BoxConstraints(minHeight: MediaQuery.of(context).size.height),
       decoration: const BoxDecoration(gradient: AppTheme.backgroundGradient),
       child: SingleChildScrollView(
-        child: Column(
-          children: [
-            _buildHero(context, s),
-            _buildCard(context, s),
-            const SizedBox(height: 20),
-            if (!hasDriverRole && !isAdmin)
-              _actionButton(
-                context,
-                label: 'QUIERO SER CONDUCTOR',
-                icon: Icons.drive_eta_rounded,
-                accent: s.accent,
-                gradient: s.gradient,
-                filled: true,
-                onTap: () {
-                  if (user?.id != null) {
-                    context.read<ProfileInfoBloc>().add(RequestDriverRole(id: user!.id!));
-                  }
-                },
-              ),
-            if (hasDriverRole && !isDriverApproved)
-              _pendingBadge(s.accent),
-            _actionButton(
-              context,
-              label: 'EDITAR PERFIL',
-              icon: Icons.edit_rounded,
-              accent: s.accent,
-              gradient: s.gradient,
-              filled: false,
-              onTap: () => Navigator.pushNamed(
-                context,
-                'profile/update',
-                arguments: {'user': user, 'mode': mode},
-              ),
+        child: Center(
+          child: ConstrainedBox(
+            constraints: const BoxConstraints(maxWidth: 700),
+            child: Column(
+              children: [
+                _buildHero(context, s),
+                _buildCard(context, s),
+                const SizedBox(height: 20),
+                if (!hasDriverRole && !isAdmin)
+                  _actionButton(
+                    context,
+                    label: 'QUIERO SER CONDUCTOR',
+                    icon: Icons.drive_eta_rounded,
+                    accent: s.accent,
+                    gradient: s.gradient,
+                    filled: true,
+                    onTap: () {
+                      if (user?.id != null) {
+                        context.read<ProfileInfoBloc>().add(RequestDriverRole(id: user!.id!));
+                      }
+                    },
+                  ),
+                if (hasDriverRole && !isDriverApproved)
+                  _pendingBadge(s.accent),
+                _actionButton(
+                  context,
+                  label: 'EDITAR PERFIL',
+                  icon: Icons.edit_rounded,
+                  accent: s.accent,
+                  gradient: s.gradient,
+                  filled: false,
+                  onTap: () => Navigator.pushNamed(
+                    context,
+                    'profile/update',
+                    arguments: {'user': user, 'mode': mode},
+                  ),
+                ),
+                const SizedBox(height: 40),
+              ],
             ),
-            const SizedBox(height: 40),
-          ],
+          ),
         ),
       ),
     );

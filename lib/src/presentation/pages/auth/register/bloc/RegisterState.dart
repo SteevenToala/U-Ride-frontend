@@ -77,7 +77,10 @@ class RegisterState extends Equatable {
       confirmPassword: confirmPassword ?? this.confirmPassword,
       selectedFacultad: selectedFacultad ?? this.selectedFacultad,
       formKey: formKey ?? this.formKey,
-      response: response ?? this.response,
+      // NOTA: sin "?? this.response" -- así un copyWith sin pasar `response`
+      // (p. ej. al cambiar un campo) lo limpia a null y evita que un toast
+      // de error viejo se siga mostrando en cada cambio de estado.
+      response: response,
       image: image ?? this.image,
       isPasswordVisible: isPasswordVisible ?? this.isPasswordVisible,
       isConfirmPasswordVisible: isConfirmPasswordVisible ?? this.isConfirmPasswordVisible

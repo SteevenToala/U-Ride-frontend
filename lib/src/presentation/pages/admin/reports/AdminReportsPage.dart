@@ -69,11 +69,7 @@ class _AdminReportsPageState extends State<AdminReportsPage> {
                                 color: AppTheme.accentColor,
                                 backgroundColor: AppTheme.backgroundDarkCard,
                                 onRefresh: () async => context.read<AdminReportsBloc>().add(LoadReports()),
-                                child: ListView.builder(
-                                  padding: const EdgeInsets.only(top: 8, bottom: 24),
-                                  itemCount: filtered.length,
-                                  itemBuilder: (ctx, i) => AdminReportItem(filtered[i]),
-                                ),
+                                child: _buildContent(context, filtered),
                               ),
                       ),
                     ],
@@ -85,6 +81,46 @@ class _AdminReportsPageState extends State<AdminReportsPage> {
             ),
           ),
         ],
+      ),
+    );
+  }
+
+  Widget _buildContent(BuildContext context, List<Report> reports) {
+    return Center(
+      child: ConstrainedBox(
+        constraints: const BoxConstraints(maxWidth: 1280),
+        child: LayoutBuilder(builder: (context, constraints) {
+          final w = constraints.maxWidth;
+          final cols = w >= 960 ? 3 : w >= 580 ? 2 : 1;
+          final hPad = w >= 580 ? 20.0 : 16.0;
+          final spacing = 14.0;
+          final cardW = cols == 1
+              ? double.infinity
+              : (w - hPad * 2 - spacing * (cols - 1)) / cols;
+
+          if (cols == 1) {
+            return ListView.builder(
+              padding: EdgeInsets.fromLTRB(hPad, 12, hPad, 24),
+              itemCount: reports.length,
+              itemBuilder: (ctx, i) => Padding(
+                padding: const EdgeInsets.only(bottom: 14),
+                child: AdminReportItem(reports[i]),
+              ),
+            );
+          }
+
+          return SingleChildScrollView(
+            physics: const AlwaysScrollableScrollPhysics(),
+            padding: EdgeInsets.fromLTRB(hPad, 12, hPad, 24),
+            child: Wrap(
+              spacing: spacing,
+              runSpacing: spacing,
+              children: reports
+                  .map((r) => SizedBox(width: cardW, child: AdminReportItem(r)))
+                  .toList(),
+            ),
+          );
+        }),
       ),
     );
   }
@@ -142,23 +178,28 @@ class _AdminReportsPageState extends State<AdminReportsPage> {
   }
 
   Widget _buildSummaryBar(int open, int warned, int suspended) {
-    return Container(
-      margin: const EdgeInsets.fromLTRB(16, 12, 16, 4),
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-      decoration: BoxDecoration(
-        color: AppTheme.backgroundDarkCard,
-        borderRadius: BorderRadius.circular(14),
-        border: Border.all(color: AppTheme.borderSubtle),
-      ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceAround,
-        children: [
-          _statItem('Pendientes', open, Colors.orange, Icons.inbox_rounded),
-          _vDivider(),
-          _statItem('Advertidos', warned, Colors.amber, Icons.warning_amber_rounded),
-          _vDivider(),
-          _statItem('Suspendidos', suspended, Colors.redAccent, Icons.block_rounded),
-        ],
+    return Center(
+      child: ConstrainedBox(
+        constraints: const BoxConstraints(maxWidth: 1280),
+        child: Container(
+          margin: const EdgeInsets.fromLTRB(16, 12, 16, 4),
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+          decoration: BoxDecoration(
+            color: AppTheme.backgroundDarkCard,
+            borderRadius: BorderRadius.circular(14),
+            border: Border.all(color: AppTheme.borderSubtle),
+          ),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: [
+              _statItem('Pendientes', open, Colors.orange, Icons.inbox_rounded),
+              _vDivider(),
+              _statItem('Advertidos', warned, Colors.amber, Icons.warning_amber_rounded),
+              _vDivider(),
+              _statItem('Suspendidos', suspended, Colors.redAccent, Icons.block_rounded),
+            ],
+          ),
+        ),
       ),
     );
   }

@@ -442,40 +442,84 @@ class _ClientMyReservationsPageState extends State<ClientMyReservationsPage>
       color: AppTheme.passengerColor,
       backgroundColor: AppTheme.backgroundDarkSecondary,
       onRefresh: _loadReservations,
-      child: ListView.builder(
-        padding: const EdgeInsets.fromLTRB(16, 12, 16, 24),
-        itemCount: items.length,
-        itemBuilder: (context, i) {
-          final r = items[i];
-          final allowCancel = useCases != null &&
-              (canCancelFn != null ? canCancelFn(r) : false);
-          final allowEdit = useCases != null && r.status == ReservationStatus.PENDING;
-          final allowPay = useCases != null &&
-              r.status == ReservationStatus.ACCEPTED &&
-              r.paymentMethod == 'PAYPAL' &&
-              r.paymentStatus == 'PENDIENTE';
-          final driverUser = r.trip?.driver;
-          final driverId = driverUser?.id ?? r.trip?.idDriver;
-          final driverName = driverUser != null
-              ? '${driverUser.name} ${driverUser.lastname}'
-              : 'el conductor';
-          return _MyReservationCard(
-            reservation: r,
-            onCancel: allowCancel ? () => _cancelReservation(r, useCases!) : null,
-            onEdit: allowEdit ? () => _editReservation(r, useCases!) : null,
-            onPay: allowPay ? () => _payWithPaypal(r, useCases!) : null,
-            onViewRoute: r.trip != null
-                ? () => Navigator.pushNamed(
-                      context,
-                      'client/shared-trips/route-map',
-                      arguments: {'trip': r.trip},
-                    )
-                : null,
-            onReport: showReport && driverId != null
-                ? () => ReportUserSheet.show(context, reportedUserId: driverId, reportedUserName: driverName)
-                : null,
+      child: _buildReservationsGrid(items, useCases, canCancelFn: canCancelFn, showReport: showReport),
+    );
+  }
+
+  // ── Responsive grid ───────────────────────────────────────────────────────
+
+  Widget _buildReservationsGrid(
+    List<TripReservation> items,
+    TripReservationsUseCases? useCases, {
+    bool Function(TripReservation)? canCancelFn,
+    bool showReport = false,
+  }) {
+    Widget buildCard(TripReservation r) {
+      final allowCancel = useCases != null &&
+          (canCancelFn != null ? canCancelFn(r) : false);
+      final allowEdit = useCases != null && r.status == ReservationStatus.PENDING;
+      final allowPay = useCases != null &&
+          r.status == ReservationStatus.ACCEPTED &&
+          r.paymentMethod == 'PAYPAL' &&
+          r.paymentStatus == 'PENDIENTE';
+      final driverUser = r.trip?.driver;
+      final driverId = driverUser?.id ?? r.trip?.idDriver;
+      final driverName = driverUser != null
+          ? '${driverUser.name} ${driverUser.lastname}'
+          : 'el conductor';
+      return _MyReservationCard(
+        reservation: r,
+        onCancel: allowCancel ? () => _cancelReservation(r, useCases!) : null,
+        onEdit: allowEdit ? () => _editReservation(r, useCases!) : null,
+        onPay: allowPay ? () => _payWithPaypal(r, useCases!) : null,
+        onViewRoute: r.trip != null
+            ? () => Navigator.pushNamed(
+                  context,
+                  'client/shared-trips/route-map',
+                  arguments: {'trip': r.trip},
+                )
+            : null,
+        onReport: showReport && driverId != null
+            ? () => ReportUserSheet.show(context, reportedUserId: driverId, reportedUserName: driverName)
+            : null,
+      );
+    }
+
+    return Center(
+      child: ConstrainedBox(
+        constraints: const BoxConstraints(maxWidth: 1280),
+        child: LayoutBuilder(builder: (context, constraints) {
+          final w = constraints.maxWidth;
+          final cols = w >= 960 ? 3 : w >= 580 ? 2 : 1;
+          final hPad = w >= 580 ? 20.0 : 16.0;
+          final spacing = 14.0;
+          final cardW = cols == 1
+              ? double.infinity
+              : (w - hPad * 2 - spacing * (cols - 1)) / cols;
+
+          if (cols == 1) {
+            return ListView.builder(
+              padding: EdgeInsets.fromLTRB(hPad, 12, hPad, 24),
+              itemCount: items.length,
+              itemBuilder: (context, i) => Padding(
+                padding: const EdgeInsets.only(bottom: 14),
+                child: buildCard(items[i]),
+              ),
+            );
+          }
+
+          return SingleChildScrollView(
+            physics: const AlwaysScrollableScrollPhysics(),
+            padding: EdgeInsets.fromLTRB(hPad, 12, hPad, 24),
+            child: Wrap(
+              spacing: spacing,
+              runSpacing: spacing,
+              children: items
+                  .map((r) => SizedBox(width: cardW, child: buildCard(r)))
+                  .toList(),
+            ),
           );
-        },
+        }),
       ),
     );
   }
@@ -526,7 +570,6 @@ class _MyReservationCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final trip = reservation.trip;
     return Container(
-      margin: const EdgeInsets.only(bottom: 14),
       decoration: BoxDecoration(
         color: AppTheme.backgroundDarkSecondary,
         borderRadius: BorderRadius.circular(18),

@@ -16,7 +16,6 @@ class UserManagementItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       decoration: BoxDecoration(
         color: AppTheme.backgroundDarkCard,
         borderRadius: BorderRadius.circular(16),
