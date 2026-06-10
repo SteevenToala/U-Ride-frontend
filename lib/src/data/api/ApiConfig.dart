@@ -7,32 +7,39 @@ class ApiConfig {
     defaultValue: '10.85.7.23:3000',
   );
 
+  /// Host limpio, sin esquema ('https://', 'http://', '//') ni barras finales.
+  static String get _cleanHost => API_PROJECT
+      .replaceAll('https://', '')
+      .replaceAll('http://', '')
+      .replaceAll('//', '')
+      .replaceAll(RegExp(r'/+$'), '');
+
+  /// Determina si se debe utilizar HTTPS.
+  /// Usamos https si la URL original empezaba con https://, si contiene onrender.com
+  /// o si no es localhost ni una dirección IP local estándar.
+  static bool get _useHttps =>
+      API_PROJECT.startsWith('https://') ||
+      API_PROJECT.contains('onrender.com') ||
+      (!_cleanHost.contains('localhost') &&
+          !RegExp(r'^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}').hasMatch(_cleanHost));
+
+  /// URL base ('http://host' o 'https://host'), sin barra final.
+  /// Útil para construir manualmente URLs (imágenes, sockets, etc.).
+  static String get baseUrl => '${_useHttps ? 'https' : 'http'}://$_cleanHost';
+
   /// Construye una URI de forma segura y limpia.
   /// Evita FormatException eliminando esquemas duplicados ('https://', 'http://', '//')
   /// y decide si utilizar Uri.https o Uri.http según el entorno.
   static Uri buildUri(String path, [Map<String, dynamic>? queryParameters]) {
-    // 1. Limpiar el host de esquemas
-    String cleanHost = API_PROJECT
-        .replaceAll('https://', '')
-        .replaceAll('http://', '')
-        .replaceAll('//', '');
-    
     // Normalizar barras iniciales en la ruta
     if (path.startsWith('/')) {
       path = path.substring(1);
     }
 
-    // 2. Determinar si se debe utilizar HTTPS
-    // Usamos https si la URL original empezaba con https://, si contiene onrender.com
-    // o si no es localhost ni una dirección IP local estándar.
-    bool useHttps = API_PROJECT.startsWith('https://') || 
-                    API_PROJECT.contains('onrender.com') ||
-                    (!cleanHost.contains('localhost') && !RegExp(r'^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}').hasMatch(cleanHost));
-
-    if (useHttps) {
-      return Uri.https(cleanHost, path, queryParameters);
+    if (_useHttps) {
+      return Uri.https(_cleanHost, path, queryParameters);
     } else {
-      return Uri.http(cleanHost, path, queryParameters);
+      return Uri.http(_cleanHost, path, queryParameters);
     }
   }
 

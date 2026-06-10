@@ -41,7 +41,7 @@ class User {
     factory User.fromJson(Map<String, dynamic> json) {
         String? imagePath = json["image"];
         if (imagePath != null && imagePath.startsWith('/uploads/')) {
-            imagePath = 'http://${ApiConfig.API_PROJECT}$imagePath';
+            imagePath = '${ApiConfig.baseUrl}$imagePath';
         }
         
         return User(

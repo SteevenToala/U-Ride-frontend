@@ -98,7 +98,7 @@ abstract class AppModule {
   SharefPref get sharefPref => SharefPref();
 
   @injectable
-  Socket get socket => io('http://${ApiConfig.API_PROJECT}', 
+  Socket get socket => io(ApiConfig.baseUrl,
     OptionBuilder()
       .setTransports(['websocket']) // for Flutter or Dart VM
       .disableAutoConnect()  // disable auto-connection
