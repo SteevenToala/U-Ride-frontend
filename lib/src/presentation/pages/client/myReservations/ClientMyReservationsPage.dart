@@ -9,6 +9,7 @@ import 'package:indriver_clone_flutter/src/domain/utils/Resource.dart';
 import 'package:indriver_clone_flutter/src/data/dataSource/local/SharefPref.dart';
 import 'package:indriver_clone_flutter/src/presentation/theme/AppTheme.dart';
 import 'package:indriver_clone_flutter/src/presentation/widgets/ReportUserSheet.dart';
+import 'package:indriver_clone_flutter/src/presentation/widgets/PaypalCheckoutDialog.dart';
 
 class ClientMyReservationsPage extends StatefulWidget {
   const ClientMyReservationsPage({super.key});
@@ -685,7 +686,7 @@ class _MyReservationCard extends StatelessWidget {
                   label: 'Editar',
                   icon: Icons.edit_rounded,
                   color: AppTheme.accentColor,
-                  gradient: AppTheme.primaryGradient,
+                  gradient: AppTheme.accentGradient,
                   onTap: onEdit!,
                 ),
               ),
