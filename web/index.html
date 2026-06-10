@@ -45,12 +45,18 @@
 
 <body>
   <script>
+    // Desregistrar service workers anteriores para limpiar la caché de forma inmediata
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.getRegistrations().then(function(registrations) {
+        for(let registration of registrations) {
+          registration.unregister();
+        }
+      });
+    }
+
     window.addEventListener('load', function (ev) {
-      // Download main.dart.js
+      // Descargar main.dart.js sin usar caché de Service Worker
       _flutter.loader.loadEntrypoint({
-        serviceWorker: {
-          serviceWorkerVersion: serviceWorkerVersion,
-        },
         onEntrypointLoaded: function (engineInitializer) {
           engineInitializer.initializeEngine().then(function (appRunner) {
             appRunner.runApp();
