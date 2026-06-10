@@ -38,6 +38,18 @@ class CancelReservationUseCase {
   Future<Resource<TripReservation>> run(int id) => _repository.cancel(id);
 }
 
+class ConfirmPaymentUseCase {
+  final TripReservationsRepository _repository;
+  ConfirmPaymentUseCase(this._repository);
+  Future<Resource<TripReservation>> run(int id) => _repository.confirmPayment(id);
+}
+
+class CreatePaypalOrderUseCase {
+  final TripReservationsRepository _repository;
+  CreatePaypalOrderUseCase(this._repository);
+  Future<Resource<Map<String, dynamic>>> run(double amount) => _repository.createPaypalOrder(amount);
+}
+
 // Contenedor de todos los use cases de reservas
 class TripReservationsUseCases {
   final CreateReservationUseCase create;
@@ -46,6 +58,8 @@ class TripReservationsUseCases {
   final AcceptReservationUseCase accept;
   final RejectReservationUseCase reject;
   final CancelReservationUseCase cancel;
+  final ConfirmPaymentUseCase confirmPayment;
+  final CreatePaypalOrderUseCase createPaypalOrder;
 
   TripReservationsUseCases({
     required this.create,
@@ -54,5 +68,7 @@ class TripReservationsUseCases {
     required this.accept,
     required this.reject,
     required this.cancel,
+    required this.confirmPayment,
+    required this.createPaypalOrder,
   });
 }

@@ -92,7 +92,7 @@ class _DriverReservationsPageState extends State<DriverReservationsPage> {
                         onAccept: r.isPending
                             ? () => _confirm(context,
                                 title: '¿Aceptar reserva?',
-                                message: 'El pasajero quedará confirmado. Se descontarán ${r.seatsRequested} cupo${r.seatsRequested > 1 ? "s" : ""} del viaje.',
+                                message: 'El pasajero quedará confirmado.',
                                 onConfirm: () => context
                                     .read<DriverReservationsBloc>()
                                     .add(AcceptReservation(idReservation: r.id!)))
@@ -105,6 +105,14 @@ class _DriverReservationsPageState extends State<DriverReservationsPage> {
                                     .read<DriverReservationsBloc>()
                                     .add(RejectReservation(idReservation: r.id!)),
                                 isDestructive: true)
+                            : null,
+                        onConfirmPayment: (r.isAccepted && r.paymentMethod == 'EFECTIVO' && r.paymentStatus == 'PENDIENTE')
+                            ? () => _confirm(context,
+                                title: '¿Confirmar pago en efectivo?',
+                                message: 'Se registrará el cobro de \$${(r.seatsRequested * widget.trip.farePerSeat).toStringAsFixed(2)} y se ocuparán los puestos de forma definitiva.',
+                                onConfirm: () => context
+                                    .read<DriverReservationsBloc>()
+                                    .add(ConfirmPayment(idReservation: r.id!)))
                             : null,
                         onReport: r.isAccepted && r.passenger != null
                             ? () => ReportUserSheet.show(
@@ -208,6 +216,7 @@ class _ReservationCard extends StatelessWidget {
   final VoidCallback? onAccept;
   final VoidCallback? onReject;
   final VoidCallback? onReport;
+  final VoidCallback? onConfirmPayment;
 
   const _ReservationCard({
     required this.reservation,
@@ -215,6 +224,7 @@ class _ReservationCard extends StatelessWidget {
     this.onAccept,
     this.onReject,
     this.onReport,
+    this.onConfirmPayment,
   });
 
   @override
@@ -340,23 +350,47 @@ class _ReservationCard extends StatelessWidget {
               ),
             ],
 
-            // ── Fecha de solicitud ─────────────────────────────────
-            if (reservation.createdAt != null) ...[
-              const SizedBox(height: 8),
-              Row(
-                children: [
-                  const Icon(Icons.access_time, size: 12, color: AppTheme.textFaint),
-                  const SizedBox(width: 4),
-                  Text(
-                    'Solicitado: ${_formatDate(reservation.createdAt!)}',
-                    style: const TextStyle(color: AppTheme.textFaint, fontSize: 11),
+            // ── Fecha de solicitud y Estado de Pago ─────────────────
+            const SizedBox(height: 10),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                if (reservation.createdAt != null)
+                  Row(
+                    children: [
+                      const Icon(Icons.access_time, size: 12, color: AppTheme.textFaint),
+                      const SizedBox(width: 4),
+                      Text(
+                        'Solicitado: ${_formatDate(reservation.createdAt!)}',
+                        style: const TextStyle(color: AppTheme.textFaint, fontSize: 11),
+                      ),
+                    ],
                   ),
-                ],
-              ),
-            ],
+                Row(
+                  children: [
+                    Icon(
+                      reservation.paymentMethod == 'PAYPAL' ? Icons.paypal_rounded : Icons.money_rounded,
+                      size: 13,
+                      color: reservation.paymentStatus == 'PAGADO' ? Colors.green : Colors.amber,
+                    ),
+                    const SizedBox(width: 4),
+                    Text(
+                      reservation.paymentMethod == 'PAYPAL'
+                          ? 'PayPal: ${reservation.paymentStatus}'
+                          : 'Efectivo: ${reservation.paymentStatus}',
+                      style: TextStyle(
+                        color: reservation.paymentStatus == 'PAGADO' ? Colors.green : Colors.amber,
+                        fontSize: 11,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
 
-            // ── Botones Aceptar / Rechazar / Reportar ─────────────
-            if (onAccept != null || onReject != null || onReport != null) ...[
+            // ── Botones Aceptar / Rechazar / Reportar / Confirmar Pago ─────────────
+            if (onAccept != null || onReject != null || onReport != null || onConfirmPayment != null) ...[
               const SizedBox(height: 12),
               Row(
                 children: [
@@ -387,6 +421,20 @@ class _ReservationCard extends StatelessWidget {
                         onPressed: onAccept,
                         icon: const Icon(Icons.check, size: 16),
                         label: const Text('Aceptar'),
+                      ),
+                    ),
+                  if (onConfirmPayment != null)
+                    Expanded(
+                      child: ElevatedButton.icon(
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.green,
+                          foregroundColor: Colors.white,
+                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                          padding: const EdgeInsets.symmetric(vertical: 10),
+                        ),
+                        onPressed: onConfirmPayment,
+                        icon: const Icon(Icons.payments, size: 16),
+                        label: const Text('Confirmar Pago'),
                       ),
                     ),
                   if (onReport != null)

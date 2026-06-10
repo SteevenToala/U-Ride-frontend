@@ -282,6 +282,8 @@ abstract class AppModule {
     accept: AcceptReservationUseCase(tripReservationsRepository),
     reject: RejectReservationUseCase(tripReservationsRepository),
     cancel: CancelReservationUseCase(tripReservationsRepository),
+    confirmPayment: ConfirmPaymentUseCase(tripReservationsRepository),
+    createPaypalOrder: CreatePaypalOrderUseCase(tripReservationsRepository),
   );
 
 }

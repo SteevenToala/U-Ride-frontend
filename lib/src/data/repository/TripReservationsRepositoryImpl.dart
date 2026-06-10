@@ -24,4 +24,10 @@ class TripReservationsRepositoryImpl implements TripReservationsRepository {
 
   @override
   Future<Resource<TripReservation>> cancel(int id) => _service.cancel(id);
+
+  @override
+  Future<Resource<TripReservation>> confirmPayment(int id) => _service.confirmPayment(id);
+
+  @override
+  Future<Resource<Map<String, dynamic>>> createPaypalOrder(double amount) => _service.createPaypalOrder(amount);
 }

@@ -23,3 +23,9 @@ class RejectReservation extends DriverReservationsEvent {
   const RejectReservation({required this.idReservation});
   @override List<Object?> get props => [idReservation];
 }
+
+class ConfirmPayment extends DriverReservationsEvent {
+  final int idReservation;
+  const ConfirmPayment({required this.idReservation});
+  @override List<Object?> get props => [idReservation];
+}
