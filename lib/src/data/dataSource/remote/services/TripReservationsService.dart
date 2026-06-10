@@ -9,7 +9,7 @@ class TripReservationsService {
 
   Future<Resource<TripReservation>> create(TripReservation reservation) async {
     try {
-      Uri url = Uri.http(ApiConfig.API_PROJECT, '/trip-reservations');
+      Uri url = ApiConfig.buildUri( '/trip-reservations');
       Map<String, String> headers = {'Content-Type': 'application/json'};
       String body = json.encode(reservation.toJson());
       final response = await http.post(url, headers: headers, body: body);
@@ -26,7 +26,7 @@ class TripReservationsService {
 
   Future<Resource<List<TripReservation>>> getByTrip(int idTrip) async {
     try {
-      Uri url = Uri.http(ApiConfig.API_PROJECT, '/trip-reservations/trip/$idTrip');
+      Uri url = ApiConfig.buildUri( '/trip-reservations/trip/$idTrip');
       Map<String, String> headers = {'Content-Type': 'application/json'};
       final response = await http.get(url, headers: headers);
       final data = json.decode(response.body);
@@ -42,7 +42,7 @@ class TripReservationsService {
 
   Future<Resource<List<TripReservation>>> getByPassenger(int idPassenger) async {
     try {
-      Uri url = Uri.http(ApiConfig.API_PROJECT, '/trip-reservations/passenger/$idPassenger');
+      Uri url = ApiConfig.buildUri( '/trip-reservations/passenger/$idPassenger');
       Map<String, String> headers = {'Content-Type': 'application/json'};
       final response = await http.get(url, headers: headers);
       final data = json.decode(response.body);
@@ -58,7 +58,7 @@ class TripReservationsService {
 
   Future<Resource<TripReservation>> accept(int id) async {
     try {
-      Uri url = Uri.http(ApiConfig.API_PROJECT, '/trip-reservations/$id/accept');
+      Uri url = ApiConfig.buildUri( '/trip-reservations/$id/accept');
       Map<String, String> headers = {'Content-Type': 'application/json'};
       final response = await http.put(url, headers: headers);
       final data = json.decode(response.body);
@@ -74,7 +74,7 @@ class TripReservationsService {
 
   Future<Resource<TripReservation>> reject(int id) async {
     try {
-      Uri url = Uri.http(ApiConfig.API_PROJECT, '/trip-reservations/$id/reject');
+      Uri url = ApiConfig.buildUri( '/trip-reservations/$id/reject');
       Map<String, String> headers = {'Content-Type': 'application/json'};
       final response = await http.put(url, headers: headers);
       final data = json.decode(response.body);
@@ -90,7 +90,7 @@ class TripReservationsService {
 
   Future<Resource<TripReservation>> cancel(int id) async {
     try {
-      Uri url = Uri.http(ApiConfig.API_PROJECT, '/trip-reservations/$id/cancel');
+      Uri url = ApiConfig.buildUri( '/trip-reservations/$id/cancel');
       Map<String, String> headers = {'Content-Type': 'application/json'};
       final response = await http.put(url, headers: headers);
       final data = json.decode(response.body);

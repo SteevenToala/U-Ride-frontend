@@ -16,7 +16,7 @@ class UsersService {
 
   Future<Resource<User>> update(int id, User user) async {
     try {
-      Uri url = Uri.http(ApiConfig.API_PROJECT, '/users/$id');
+      Uri url = ApiConfig.buildUri( '/users/$id');
       Map<String, String> headers = {
         'Content-Type': 'application/json',
         'Authorization': await token
@@ -45,7 +45,7 @@ class UsersService {
 
   Future<Resource<User>> updateNotificationToken(int id, String notificationToken) async {
     try {
-      Uri url = Uri.http(ApiConfig.API_PROJECT, '/users/notification_token/$id');
+      Uri url = ApiConfig.buildUri( '/users/notification_token/$id');
       Map<String, String> headers = {
         'Content-Type': 'application/json',
       };
@@ -70,7 +70,7 @@ class UsersService {
 
   Future<Resource<User>> updateImage(int id, User user, XFile file) async { 
     try {
-      Uri url = Uri.http(ApiConfig.API_PROJECT, '/users/upload/$id');
+      Uri url = ApiConfig.buildUri( '/users/upload/$id');
       final request = http.MultipartRequest('PUT', url);
       request.headers['Authorization'] = await token;
       
@@ -104,7 +104,7 @@ class UsersService {
 
   Future<Resource<User>> requestDriverRole(int id) async {
     try {
-      Uri url = Uri.http(ApiConfig.API_PROJECT, '/users/request-driver/$id');
+      Uri url = ApiConfig.buildUri( '/users/request-driver/$id');
       Map<String, String> headers = {
         'Content-Type': 'application/json',
         'Authorization': await token
@@ -126,7 +126,7 @@ class UsersService {
 
   Future<Resource<List<User>>> getPendingDrivers() async {
     try {
-      Uri url = Uri.http(ApiConfig.API_PROJECT, '/users/pending-drivers');
+      Uri url = ApiConfig.buildUri( '/users/pending-drivers');
       Map<String, String> headers = {
         'Content-Type': 'application/json',
         'Authorization': await token
@@ -148,7 +148,7 @@ class UsersService {
 
   Future<Resource<User>> approveDriverRole(int id) async {
     try {
-      Uri url = Uri.http(ApiConfig.API_PROJECT, '/users/approve-driver/$id');
+      Uri url = ApiConfig.buildUri( '/users/approve-driver/$id');
       Map<String, String> headers = {
         'Content-Type': 'application/json',
         'Authorization': await token
@@ -170,7 +170,7 @@ class UsersService {
 
   Future<Resource<List<User>>> getUsers() async {
     try {
-      Uri url = Uri.http(ApiConfig.API_PROJECT, '/users');
+      Uri url = ApiConfig.buildUri( '/users');
       Map<String, String> headers = {
         'Content-Type': 'application/json',
         'Authorization': await token
@@ -192,7 +192,7 @@ class UsersService {
 
   Future<Resource<User>> suspendUser(int id) async {
     try {
-      Uri url = Uri.http(ApiConfig.API_PROJECT, '/users/suspend/$id');
+      Uri url = ApiConfig.buildUri( '/users/suspend/$id');
       Map<String, String> headers = {
         'Content-Type': 'application/json',
         'Authorization': await token

@@ -9,7 +9,7 @@ class SharedTripsService {
 
   Future<Resource<SharedTrip>> create(SharedTrip trip) async {
     try {
-      Uri url = Uri.http(ApiConfig.API_PROJECT, '/shared-trips');
+      Uri url = ApiConfig.buildUri( '/shared-trips');
       Map<String, String> headers = {'Content-Type': 'application/json'};
       String body = json.encode(trip.toJson());
       final response = await http.post(url, headers: headers, body: body);
@@ -26,7 +26,7 @@ class SharedTripsService {
 
   Future<Resource<SharedTrip>> update(int id, SharedTrip trip) async {
     try {
-      Uri url = Uri.http(ApiConfig.API_PROJECT, '/shared-trips/$id');
+      Uri url = ApiConfig.buildUri( '/shared-trips/$id');
       Map<String, String> headers = {'Content-Type': 'application/json'};
       String body = json.encode(trip.toJson());
       final response = await http.put(url, headers: headers, body: body);
@@ -43,7 +43,7 @@ class SharedTripsService {
 
   Future<Resource<bool>> delete(int id) async {
     try {
-      Uri url = Uri.http(ApiConfig.API_PROJECT, '/shared-trips/$id');
+      Uri url = ApiConfig.buildUri( '/shared-trips/$id');
       Map<String, String> headers = {'Content-Type': 'application/json'};
       final response = await http.delete(url, headers: headers);
       if (response.statusCode == 200 || response.statusCode == 204) {
@@ -68,7 +68,7 @@ class SharedTripsService {
       if (destinationZone != null && destinationZone.isNotEmpty) queryParams['destination_zone'] = destinationZone;
       if (date != null && date.isNotEmpty) queryParams['date'] = date;
 
-      Uri url = Uri.http(ApiConfig.API_PROJECT, '/shared-trips', queryParams);
+      Uri url = ApiConfig.buildUri( '/shared-trips', queryParams);
       Map<String, String> headers = {'Content-Type': 'application/json'};
       final response = await http.get(url, headers: headers);
       final data = json.decode(response.body);
@@ -85,7 +85,7 @@ class SharedTripsService {
 
   Future<Resource<SharedTrip>> getById(int id) async {
     try {
-      Uri url = Uri.http(ApiConfig.API_PROJECT, '/shared-trips/$id');
+      Uri url = ApiConfig.buildUri( '/shared-trips/$id');
       Map<String, String> headers = {'Content-Type': 'application/json'};
       final response = await http.get(url, headers: headers);
       final data = json.decode(response.body);
@@ -101,7 +101,7 @@ class SharedTripsService {
 
   Future<Resource<List<SharedTrip>>> getByDriver(int idDriver) async {
     try {
-      Uri url = Uri.http(ApiConfig.API_PROJECT, '/shared-trips/driver/$idDriver');
+      Uri url = ApiConfig.buildUri( '/shared-trips/driver/$idDriver');
       Map<String, String> headers = {'Content-Type': 'application/json'};
       final response = await http.get(url, headers: headers);
       final data = json.decode(response.body);
@@ -117,7 +117,7 @@ class SharedTripsService {
 
   Future<Resource<List<SharedTrip>>> getByPassenger(int idPassenger) async {
     try {
-      Uri url = Uri.http(ApiConfig.API_PROJECT, '/shared-trips/passenger/$idPassenger');
+      Uri url = ApiConfig.buildUri( '/shared-trips/passenger/$idPassenger');
       Map<String, String> headers = {'Content-Type': 'application/json'};
       final response = await http.get(url, headers: headers);
       final data = json.decode(response.body);
@@ -133,7 +133,7 @@ class SharedTripsService {
 
   Future<Resource<SharedTrip>> startTrip(int id) async {
     try {
-      Uri url = Uri.http(ApiConfig.API_PROJECT, '/shared-trips/$id/start');
+      Uri url = ApiConfig.buildUri( '/shared-trips/$id/start');
       Map<String, String> headers = {'Content-Type': 'application/json'};
       final response = await http.put(url, headers: headers);
       final data = json.decode(response.body);
@@ -149,7 +149,7 @@ class SharedTripsService {
 
   Future<Resource<SharedTrip>> cancelTrip(int id) async {
     try {
-      Uri url = Uri.http(ApiConfig.API_PROJECT, '/shared-trips/$id/cancel');
+      Uri url = ApiConfig.buildUri( '/shared-trips/$id/cancel');
       Map<String, String> headers = {'Content-Type': 'application/json'};
       final response = await http.put(url, headers: headers);
       final data = json.decode(response.body);
@@ -165,7 +165,7 @@ class SharedTripsService {
 
   Future<Resource<SharedTrip>> finishTrip(int id) async {
     try {
-      Uri url = Uri.http(ApiConfig.API_PROJECT, '/shared-trips/$id/finish');
+      Uri url = ApiConfig.buildUri( '/shared-trips/$id/finish');
       Map<String, String> headers = {'Content-Type': 'application/json'};
       final response = await http.put(url, headers: headers);
       final data = json.decode(response.body);

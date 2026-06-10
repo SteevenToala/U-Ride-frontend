@@ -10,7 +10,7 @@ class DriversPositionService {
    Future<Resource<bool>> create(DriverPosition driverPosition) async {
 
     try {
-      Uri url = Uri.http(ApiConfig.API_PROJECT, '/drivers-position');
+      Uri url = ApiConfig.buildUri( '/drivers-position');
       Map<String, String> headers = { 'Content-Type': 'application/json' };
       String body = json.encode(driverPosition);
       final response = await http.post(url, headers: headers, body: body);
@@ -32,7 +32,7 @@ class DriversPositionService {
    Future<Resource<DriverPosition>> getDriverPosition(int idDriver) async {
 
     try {
-      Uri url = Uri.http(ApiConfig.API_PROJECT, '/drivers-position/${idDriver}');
+      Uri url = ApiConfig.buildUri( '/drivers-position/${idDriver}');
       Map<String, String> headers = { 'Content-Type': 'application/json' };
       final response = await http.get(url, headers: headers);
       final data = json.decode(response.body);
@@ -54,7 +54,7 @@ class DriversPositionService {
    Future<Resource<bool>> delete(int idDriver) async {
 
     try {
-      Uri url = Uri.http(ApiConfig.API_PROJECT, '/drivers-position/${idDriver}');
+      Uri url = ApiConfig.buildUri( '/drivers-position/${idDriver}');
       Map<String, String> headers = { 'Content-Type': 'application/json' };
       final response = await http.delete(url, headers: headers);
       final data = json.decode(response.body);

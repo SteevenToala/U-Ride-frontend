@@ -13,7 +13,7 @@ class ClientRequestsService {
   Future<Resource<int>> create(ClientRequest clientRequest) async {
 
     try {
-      Uri url = Uri.http(ApiConfig.API_PROJECT, '/client-requests');
+      Uri url = ApiConfig.buildUri( '/client-requests');
       Map<String, String> headers = { 'Content-Type': 'application/json' };
       String body = json.encode(clientRequest);
       final response = await http.post(url, headers: headers, body: body);
@@ -34,7 +34,7 @@ class ClientRequestsService {
 
   Future<Resource<bool>> updateStatus(int idClientRequest, StatusTrip statusTrip) async {
     try {
-      Uri url = Uri.http(ApiConfig.API_PROJECT, '/client-requests/update_status');
+      Uri url = ApiConfig.buildUri( '/client-requests/update_status');
       Map<String, String> headers = { 'Content-Type': 'application/json' };
       String body = json.encode({
         'id_client_request': idClientRequest,
@@ -57,7 +57,7 @@ class ClientRequestsService {
 
   Future<Resource<bool>> updateDriverRating(int idClientRequest, double rating) async {
     try {
-      Uri url = Uri.http(ApiConfig.API_PROJECT, '/client-requests/update_driver_rating');
+      Uri url = ApiConfig.buildUri( '/client-requests/update_driver_rating');
       Map<String, String> headers = { 'Content-Type': 'application/json' };
       String body = json.encode({
         'id_client_request': idClientRequest,
@@ -80,7 +80,7 @@ class ClientRequestsService {
 
   Future<Resource<bool>> updateClientRating(int idClientRequest, double rating) async {
     try {
-      Uri url = Uri.http(ApiConfig.API_PROJECT, '/client-requests/update_client_rating');
+      Uri url = ApiConfig.buildUri( '/client-requests/update_client_rating');
       Map<String, String> headers = { 'Content-Type': 'application/json' };
       String body = json.encode({
         'id_client_request': idClientRequest,
@@ -104,7 +104,7 @@ class ClientRequestsService {
   Future<Resource<bool>> updateDriverAssigned(int idClientRequest, int idDriver, double fareAssigned) async {
 
     try {
-      Uri url = Uri.http(ApiConfig.API_PROJECT, '/client-requests');
+      Uri url = ApiConfig.buildUri( '/client-requests');
       Map<String, String> headers = { 'Content-Type': 'application/json' };
       String body = json.encode({
         'id': idClientRequest,
@@ -135,7 +135,7 @@ class ClientRequestsService {
   ) async {
 
     try {
-      Uri url = Uri.http(ApiConfig.API_PROJECT, '/client-requests/${originLat}/${originLng}/${destinationLat}/${destinationLng}');
+      Uri url = ApiConfig.buildUri( '/client-requests/${originLat}/${originLng}/${destinationLat}/${destinationLng}');
       Map<String, String> headers = { 'Content-Type': 'application/json' };
       final response = await http.get(url, headers: headers);
       final data = json.decode(response.body);
@@ -157,7 +157,7 @@ class ClientRequestsService {
   Future<Resource<List<ClientRequestResponse>>> getNearbyTripRequest(double driverLat, double driverLng) async {
 
     try {
-      Uri url = Uri.http(ApiConfig.API_PROJECT, '/client-requests/${driverLat}/${driverLng}');
+      Uri url = ApiConfig.buildUri( '/client-requests/${driverLat}/${driverLng}');
       Map<String, String> headers = { 'Content-Type': 'application/json' };
       final response = await http.get(url, headers: headers);
       final data = json.decode(response.body);
@@ -178,7 +178,7 @@ class ClientRequestsService {
 
   Future<Resource<List<ClientRequestResponse>>> getByDriverAssigned(int idDriver) async {
     try {
-      Uri url = Uri.http(ApiConfig.API_PROJECT, '/client-requests/driver/assigned/$idDriver');
+      Uri url = ApiConfig.buildUri( '/client-requests/driver/assigned/$idDriver');
       Map<String, String> headers = { 'Content-Type': 'application/json' };
       final response = await http.get(url, headers: headers);
       final data = json.decode(response.body);
@@ -198,7 +198,7 @@ class ClientRequestsService {
 
   Future<Resource<List<ClientRequestResponse>>> getByClientAssigned(int idClient) async {
     try {
-      Uri url = Uri.http(ApiConfig.API_PROJECT, '/client-requests/client/assigned/$idClient');
+      Uri url = ApiConfig.buildUri( '/client-requests/client/assigned/$idClient');
       Map<String, String> headers = { 'Content-Type': 'application/json' };
       final response = await http.get(url, headers: headers);
       final data = json.decode(response.body);
@@ -219,7 +219,7 @@ class ClientRequestsService {
   Future<Resource<ClientRequestResponse>> getByClientRequest(int idClientRequest) async {
 
     try {
-      Uri url = Uri.http(ApiConfig.API_PROJECT, '/client-requests/${idClientRequest}');
+      Uri url = ApiConfig.buildUri( '/client-requests/${idClientRequest}');
       Map<String, String> headers = { 'Content-Type': 'application/json' };
       final response = await http.get(url, headers: headers);
       final data = json.decode(response.body);

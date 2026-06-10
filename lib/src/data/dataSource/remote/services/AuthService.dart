@@ -15,7 +15,7 @@ class AuthService {
 
   Future<Resource<AuthResponse>> login(String email, String password) async {
     try {
-      Uri url = Uri.http(ApiConfig.API_PROJECT, '/auth/login');
+      Uri url = ApiConfig.buildUri( '/auth/login');
       Map<String, String> headers = { 'Content-Type': 'application/json' };
       String body = json.encode({
         'email': email,
@@ -41,7 +41,7 @@ class AuthService {
 
    Future<Resource<AuthResponse>> register(User user, XFile? image) async {
     try {
-      Uri url = Uri.http(ApiConfig.API_PROJECT, '/auth/register');
+      Uri url = ApiConfig.buildUri( '/auth/register');
       
       if (image == null) {
         Map<String, String> headers = { 'Content-Type': 'application/json' };
@@ -95,7 +95,7 @@ class AuthService {
 
   Future<Resource<bool>> forgotPassword(String email) async {
     try {
-      Uri url = Uri.http(ApiConfig.API_PROJECT, '/auth/forgot-password');
+      Uri url = ApiConfig.buildUri( '/auth/forgot-password');
       Map<String, String> headers = { 'Content-Type': 'application/json' };
       String body = json.encode({
         'email': email,
@@ -116,7 +116,7 @@ class AuthService {
 
   Future<Resource<bool>> validateResetCode(String email, String code) async {
     try {
-      Uri url = Uri.http(ApiConfig.API_PROJECT, '/auth/validate-reset-code');
+      Uri url = ApiConfig.buildUri( '/auth/validate-reset-code');
       Map<String, String> headers = { 'Content-Type': 'application/json' };
       String body = json.encode({
         'email': email,
@@ -138,7 +138,7 @@ class AuthService {
 
   Future<Resource<bool>> resetPassword(String email, String code, String newPassword) async {
     try {
-      Uri url = Uri.http(ApiConfig.API_PROJECT, '/auth/reset-password');
+      Uri url = ApiConfig.buildUri( '/auth/reset-password');
       Map<String, String> headers = { 'Content-Type': 'application/json' };
       String body = json.encode({
         'email': email,
@@ -161,7 +161,7 @@ class AuthService {
 
   Future<Resource<bool>> verifyAccount(String email, String code) async {
     try {
-      Uri url = Uri.http(ApiConfig.API_PROJECT, '/auth/verify-account');
+      Uri url = ApiConfig.buildUri( '/auth/verify-account');
       Map<String, String> headers = { 'Content-Type': 'application/json' };
       String body = json.encode({
         'email': email,

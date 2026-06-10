@@ -12,7 +12,7 @@ class ReportsService {
 
   Future<Resource<Report>> createReport(Report report) async {
     try {
-      Uri url = Uri.http(ApiConfig.API_PROJECT, '/reports');
+      Uri url = ApiConfig.buildUri( '/reports');
       Map<String, String> headers = {
         'Content-Type': 'application/json',
         'Authorization': await token,
@@ -32,7 +32,7 @@ class ReportsService {
 
   Future<Resource<List<Report>>> getReports() async {
     try {
-      Uri url = Uri.http(ApiConfig.API_PROJECT, '/reports');
+      Uri url = ApiConfig.buildUri( '/reports');
       Map<String, String> headers = {
         'Content-Type': 'application/json',
         'Authorization': await token,
@@ -58,7 +58,7 @@ class ReportsService {
     required int adminUserId,
   }) async {
     try {
-      Uri url = Uri.http(ApiConfig.API_PROJECT, '/reports/$id/resolve');
+      Uri url = ApiConfig.buildUri( '/reports/$id/resolve');
       Map<String, String> headers = {
         'Content-Type': 'application/json',
         'Authorization': await token,
