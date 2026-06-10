@@ -8,6 +8,7 @@ import 'package:indriver_clone_flutter/src/domain/useCases/trip-reservations/Tri
 import 'package:indriver_clone_flutter/src/domain/utils/Resource.dart';
 import 'package:indriver_clone_flutter/src/data/dataSource/local/SharefPref.dart';
 import 'package:indriver_clone_flutter/src/presentation/theme/AppTheme.dart';
+import 'package:indriver_clone_flutter/src/presentation/widgets/PaypalCheckoutDialog.dart';
 
 class ClientTripDetailPage extends StatefulWidget {
   final SharedTrip trip;
@@ -46,6 +47,7 @@ class _ClientTripDetailPageState extends State<ClientTripDetailPage> {
 
   Future<void> _showReserveDialog(TripReservationsUseCases useCases) async {
     int seats = 1;
+    String metodoPago = 'EFECTIVO';
     await showDialog(
       context: context,
       builder: (ctx) => StatefulBuilder(
@@ -97,6 +99,34 @@ class _ClientTripDetailPageState extends State<ClientTripDetailPage> {
                   fillColor: AppTheme.backgroundDark,
                 ),
               ),
+              const SizedBox(height: 16),
+              const Align(
+                alignment: Alignment.centerLeft,
+                child: Text(
+                  'MÉTODO DE PAGO',
+                  style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: AppTheme.textMuted, letterSpacing: 1.0),
+                ),
+              ),
+              const SizedBox(height: 8),
+              Row(
+                children: [
+                  _buildPaymentMethodOption(
+                    type: 'EFECTIVO',
+                    icon: Icons.money_rounded,
+                    label: 'Efectivo',
+                    selected: metodoPago == 'EFECTIVO',
+                    onTap: () => setS(() => metodoPago = 'EFECTIVO'),
+                  ),
+                  const SizedBox(width: 8),
+                  _buildPaymentMethodOption(
+                    type: 'PAYPAL',
+                    icon: Icons.paypal_rounded,
+                    label: 'PayPal',
+                    selected: metodoPago == 'PAYPAL',
+                    onTap: () => setS(() => metodoPago = 'PAYPAL'),
+                  ),
+                ],
+              ),
             ],
           ),
           actions: [
@@ -112,12 +142,71 @@ class _ClientTripDetailPageState extends State<ClientTripDetailPage> {
               ),
               onPressed: () async {
                 Navigator.pop(ctx);
-                await _doReserve(useCases, seats);
+                if (metodoPago == 'PAYPAL') {
+                  _showPaypalCheckout(useCases, seats);
+                } else {
+                  await _doReserve(useCases, seats);
+                }
               },
               child: const Text('Confirmar Reserva'),
             ),
           ],
         ),
+      ),
+    );
+  }
+
+  Widget _buildPaymentMethodOption({
+    required String type,
+    required IconData icon,
+    required String label,
+    required bool selected,
+    required VoidCallback onTap,
+  }) {
+    return Expanded(
+      child: GestureDetector(
+        onTap: onTap,
+        child: Container(
+          padding: const EdgeInsets.symmetric(vertical: 12),
+          decoration: BoxDecoration(
+            color: selected ? AppTheme.accentColor.withOpacity(0.15) : AppTheme.backgroundDark,
+            borderRadius: BorderRadius.circular(12),
+            border: Border.all(color: selected ? AppTheme.accentColor : AppTheme.borderSubtle),
+          ),
+          child: Column(
+            children: [
+              Icon(icon, color: selected ? AppTheme.accentColor : Colors.white54, size: 20),
+              const SizedBox(height: 4),
+              Text(
+                label,
+                style: TextStyle(
+                  color: selected ? AppTheme.accentColor : Colors.white54,
+                  fontSize: 11,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  void _showPaypalCheckout(TripReservationsUseCases useCases, int seats) {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (dialogContext) => PaypalCheckoutDialog(
+        total: seats * widget.trip.farePerSeat,
+        onCreateReservation: (orderId) => _doReserveAsync(useCases, seats, orderId),
+        onSuccess: () {
+          Fluttertoast.showToast(
+            msg: '¡Pago con PayPal procesado con éxito! Reserva enviada.',
+            toastLength: Toast.LENGTH_LONG,
+            backgroundColor: Colors.green,
+          );
+          if (mounted) Navigator.pop(context, true);
+        },
       ),
     );
   }
@@ -133,6 +222,7 @@ class _ClientTripDetailPageState extends State<ClientTripDetailPage> {
       idPassenger: _passengerId!,
       seatsRequested: seats,
       message: _messageCtrl.text.isNotEmpty ? _messageCtrl.text : null,
+      paymentMethod: 'EFECTIVO',
     );
     final response = await useCases.create.run(reservation);
     setState(() => _isReserving = false);
@@ -146,6 +236,29 @@ class _ClientTripDetailPageState extends State<ClientTripDetailPage> {
     } else if (response is ErrorData) {
       Fluttertoast.showToast(msg: (response as ErrorData<TripReservation>).message, backgroundColor: Colors.red);
     }
+  }
+
+  Future<bool> _doReserveAsync(TripReservationsUseCases useCases, int seats, String paypalOrderId) async {
+    if (_passengerId == null) {
+      Fluttertoast.showToast(msg: 'Error: usuario no identificado');
+      return false;
+    }
+    final reservation = TripReservation(
+      idTrip: widget.trip.id!,
+      idPassenger: _passengerId!,
+      seatsRequested: seats,
+      message: _messageCtrl.text.isNotEmpty ? _messageCtrl.text : null,
+      paymentMethod: 'PAYPAL',
+      paypalOrderId: paypalOrderId,
+    );
+    final response = await useCases.create.run(reservation);
+    if (response is Success) {
+      return true;
+    } else if (response is ErrorData) {
+      Fluttertoast.showToast(msg: (response as ErrorData<TripReservation>).message, backgroundColor: Colors.red);
+      return false;
+    }
+    return false;
   }
 
   @override

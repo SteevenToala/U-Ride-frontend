@@ -13,6 +13,9 @@ class TripReservation {
   int seatsRequested;
   ReservationStatus status;
   String? message;
+  String paymentMethod;
+  String paymentStatus;
+  String? paypalOrderId;
   DateTime? createdAt;
   DateTime? updatedAt;
   SharedTrip? trip;
@@ -25,6 +28,9 @@ class TripReservation {
     this.seatsRequested = 1,
     this.status = ReservationStatus.PENDING,
     this.message,
+    this.paymentMethod = 'EFECTIVO',
+    this.paymentStatus = 'PENDIENTE',
+    this.paypalOrderId,
     this.createdAt,
     this.updatedAt,
     this.trip,
@@ -42,6 +48,9 @@ class TripReservation {
         seatsRequested: json['seats_requested'] ?? 1,
         status: _parseStatus(json['status']),
         message: json['message'],
+        paymentMethod: json['payment_method'] ?? 'EFECTIVO',
+        paymentStatus: json['payment_status'] ?? 'PENDIENTE',
+        paypalOrderId: json['paypal_order_id'],
         createdAt: json['created_at'] != null ? DateTime.parse(json['created_at']) : null,
         updatedAt: json['updated_at'] != null ? DateTime.parse(json['updated_at']) : null,
         trip: json['trip'] != null ? SharedTrip.fromJson(json['trip']) : null,
@@ -68,10 +77,13 @@ class TripReservation {
         'seats_requested': seatsRequested,
         'status': status.name,
         'message': message,
+        'payment_method': paymentMethod,
+        if (paypalOrderId != null) 'paypal_order_id': paypalOrderId,
       };
 
   bool get isPending => status == ReservationStatus.PENDING;
   bool get isAccepted => status == ReservationStatus.ACCEPTED;
   bool get isRejected => status == ReservationStatus.REJECTED;
   bool get isCancelled => status == ReservationStatus.CANCELLED;
+  bool get isPaidWithPaypal => paymentMethod == 'PAYPAL' && paymentStatus == 'PAGADO';
 }

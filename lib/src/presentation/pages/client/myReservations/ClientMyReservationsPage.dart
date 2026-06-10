@@ -418,14 +418,19 @@ class _MyReservationCard extends StatelessWidget {
                           color: Colors.white,
                           fontWeight: FontWeight.bold)),
                 const SizedBox(height: 12),
-                Row(
+                Wrap(
+                  spacing: 8,
+                  runSpacing: 8,
                   children: [
                     _infoChip(Icons.people_rounded,
                         '${reservation.seatsRequested} cupo${reservation.seatsRequested > 1 ? 's' : ''}'),
-                    const SizedBox(width: 8),
                     if (trip != null)
                       _infoChip(Icons.attach_money_rounded,
                           '\$${(reservation.seatsRequested * trip.farePerSeat).toStringAsFixed(2)} total'),
+                    if (reservation.isPaidWithPaypal)
+                      _paypalChip()
+                    else
+                      _infoChip(Icons.money_rounded, 'Efectivo'),
                   ],
                 ),
                 const SizedBox(height: 14),
@@ -557,6 +562,27 @@ class _MyReservationCard extends StatelessWidget {
           Icon(icon, size: 12, color: Colors.white38),
           const SizedBox(width: 5),
           Text(label, style: const TextStyle(color: Colors.white54, fontSize: 12)),
+        ],
+      ),
+    );
+  }
+
+  Widget _paypalChip() {
+    const paypalBlue = Color(0xFF0079C1);
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+      decoration: BoxDecoration(
+        color: paypalBlue.withOpacity(0.15),
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(color: paypalBlue.withOpacity(0.5), width: 1),
+      ),
+      child: const Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(Icons.paypal_rounded, size: 12, color: paypalBlue),
+          SizedBox(width: 5),
+          Text('Pagado con PayPal',
+              style: TextStyle(color: paypalBlue, fontSize: 12, fontWeight: FontWeight.w700)),
         ],
       ),
     );
