@@ -4,7 +4,7 @@ class ApiConfig {
   // Si no se pasa ninguna, usa la IP local por defecto.
   static const String API_PROJECT = String.fromEnvironment(
     'API_URL',
-    defaultValue: '10.85.7.23:3000',
+    defaultValue: 'https://u-ride-backend-rj7v.onrender.com',
   );
 
   /// Host limpio, sin esquema ('https://', 'http://', '//') ni barras finales.
