@@ -105,82 +105,87 @@ class _ClientMyReservationsPageState extends State<ClientMyReservationsPage>
     final meetingPointCtrl = TextEditingController(text: reservation.meetingPoint);
     final messageCtrl = TextEditingController(text: reservation.message);
     String metodoPago = reservation.paymentMethod;
+    final isAccepted = reservation.isAccepted;
 
     await showDialog(
       context: context,
       builder: (ctx) => StatefulBuilder(
         builder: (ctx, setS) => AlertDialog(
           backgroundColor: AppTheme.backgroundDarkCard,
-          title: const Text('Editar Solicitud', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+          title: Text(isAccepted ? 'Método de Pago' : 'Editar Solicitud',
+              style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
           content: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              TextField(
-                controller: meetingPointCtrl,
-                style: const TextStyle(color: Colors.white),
-                decoration: InputDecoration(
-                  hintText: 'Punto de encuentro',
-                  hintStyle: const TextStyle(color: AppTheme.textFaint),
-                  enabledBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(10),
-                    borderSide: const BorderSide(color: AppTheme.borderSubtle),
+              if (!isAccepted) ...[
+                TextField(
+                  controller: meetingPointCtrl,
+                  style: const TextStyle(color: Colors.white),
+                  decoration: InputDecoration(
+                    hintText: 'Punto de encuentro',
+                    hintStyle: const TextStyle(color: AppTheme.textFaint),
+                    enabledBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(10),
+                      borderSide: const BorderSide(color: AppTheme.borderSubtle),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(10),
+                      borderSide: const BorderSide(color: AppTheme.accentColor),
+                    ),
+                    filled: true,
+                    fillColor: AppTheme.backgroundDark,
                   ),
-                  focusedBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(10),
-                    borderSide: const BorderSide(color: AppTheme.accentColor),
-                  ),
-                  filled: true,
-                  fillColor: AppTheme.backgroundDark,
                 ),
-              ),
-              const SizedBox(height: 12),
-              TextField(
-                controller: messageCtrl,
-                style: const TextStyle(color: Colors.white),
-                maxLines: 2,
-                decoration: InputDecoration(
-                  hintText: 'Observaciones / Mensaje',
-                  hintStyle: const TextStyle(color: AppTheme.textFaint),
-                  enabledBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(10),
-                    borderSide: const BorderSide(color: AppTheme.borderSubtle),
+                const SizedBox(height: 12),
+                TextField(
+                  controller: messageCtrl,
+                  style: const TextStyle(color: Colors.white),
+                  maxLines: 2,
+                  decoration: InputDecoration(
+                    hintText: 'Observaciones / Mensaje',
+                    hintStyle: const TextStyle(color: AppTheme.textFaint),
+                    enabledBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(10),
+                      borderSide: const BorderSide(color: AppTheme.borderSubtle),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(10),
+                      borderSide: const BorderSide(color: AppTheme.accentColor),
+                    ),
+                    filled: true,
+                    fillColor: AppTheme.backgroundDark,
                   ),
-                  focusedBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(10),
-                    borderSide: const BorderSide(color: AppTheme.accentColor),
-                  ),
-                  filled: true,
-                  fillColor: AppTheme.backgroundDark,
                 ),
-              ),
-              const SizedBox(height: 16),
-              const Align(
-                alignment: Alignment.centerLeft,
-                child: Text(
-                  'MÉTODO DE PAGO',
-                  style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: AppTheme.textMuted, letterSpacing: 1.0),
+              ],
+              if (isAccepted) ...[
+                const Align(
+                  alignment: Alignment.centerLeft,
+                  child: Text(
+                    'MÉTODO DE PAGO',
+                    style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: AppTheme.textMuted, letterSpacing: 1.0),
+                  ),
                 ),
-              ),
-              const SizedBox(height: 8),
-              Row(
-                children: [
-                  _buildPaymentMethodOption(
-                    type: 'EFECTIVO',
-                    icon: Icons.money_rounded,
-                    label: 'Efectivo',
-                    selected: metodoPago == 'EFECTIVO',
-                    onTap: () => setS(() => metodoPago = 'EFECTIVO'),
-                  ),
-                  const SizedBox(width: 8),
-                  _buildPaymentMethodOption(
-                    type: 'PAYPAL',
-                    icon: Icons.paypal_rounded,
-                    label: 'PayPal',
-                    selected: metodoPago == 'PAYPAL',
-                    onTap: () => setS(() => metodoPago = 'PAYPAL'),
-                  ),
-                ],
-              ),
+                const SizedBox(height: 8),
+                Row(
+                  children: [
+                    _buildPaymentMethodOption(
+                      type: 'EFECTIVO',
+                      icon: Icons.money_rounded,
+                      label: 'Efectivo',
+                      selected: metodoPago == 'EFECTIVO',
+                      onTap: () => setS(() => metodoPago = 'EFECTIVO'),
+                    ),
+                    const SizedBox(width: 8),
+                    _buildPaymentMethodOption(
+                      type: 'PAYPAL',
+                      icon: Icons.paypal_rounded,
+                      label: 'PayPal',
+                      selected: metodoPago == 'PAYPAL',
+                      onTap: () => setS(() => metodoPago = 'PAYPAL'),
+                    ),
+                  ],
+                ),
+              ],
             ],
           ),
           actions: [
@@ -199,8 +204,12 @@ class _ClientMyReservationsPageState extends State<ClientMyReservationsPage>
                 final updatedRes = TripReservation(
                   idTrip: reservation.idTrip,
                   idPassenger: reservation.idPassenger,
-                  meetingPoint: meetingPointCtrl.text.isNotEmpty ? meetingPointCtrl.text : null,
-                  message: messageCtrl.text.isNotEmpty ? messageCtrl.text : null,
+                  meetingPoint: isAccepted
+                      ? reservation.meetingPoint
+                      : (meetingPointCtrl.text.isNotEmpty ? meetingPointCtrl.text : null),
+                  message: isAccepted
+                      ? reservation.message
+                      : (messageCtrl.text.isNotEmpty ? messageCtrl.text : null),
                   paymentMethod: metodoPago,
                 );
                 final response = await useCases.update.run(reservation.id!, updatedRes);
@@ -211,7 +220,7 @@ class _ClientMyReservationsPageState extends State<ClientMyReservationsPage>
                   Fluttertoast.showToast(msg: (response as ErrorData).message, backgroundColor: Colors.red);
                 }
               },
-              child: const Text('Guardar Cambios'),
+              child: Text(isAccepted ? 'Guardar' : 'Guardar Cambios'),
             ),
           ],
         ),
@@ -457,7 +466,9 @@ class _ClientMyReservationsPageState extends State<ClientMyReservationsPage>
     Widget buildCard(TripReservation r) {
       final allowCancel = useCases != null &&
           (canCancelFn != null ? canCancelFn(r) : false);
-      final allowEdit = useCases != null && r.status == ReservationStatus.PENDING;
+      final allowEdit = useCases != null &&
+          (r.status == ReservationStatus.PENDING ||
+              (r.isAccepted && r.paymentStatus == 'PENDIENTE'));
       final allowPay = useCases != null &&
           r.status == ReservationStatus.ACCEPTED &&
           r.paymentMethod == 'PAYPAL' &&
@@ -726,8 +737,8 @@ class _MyReservationCard extends StatelessWidget {
             if (hasEdit)
               Expanded(
                 child: _solidBtn(
-                  label: 'Editar',
-                  icon: Icons.edit_rounded,
+                  label: reservation.isAccepted ? 'Método de pago' : 'Editar',
+                  icon: reservation.isAccepted ? Icons.payments_rounded : Icons.edit_rounded,
                   color: AppTheme.accentColor,
                   gradient: AppTheme.accentGradient,
                   onTap: onEdit!,
