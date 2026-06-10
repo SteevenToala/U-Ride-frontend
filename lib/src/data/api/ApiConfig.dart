@@ -8,11 +8,14 @@ class ApiConfig {
   );
 
   /// Host limpio, sin esquema ('https://', 'http://', '//') ni barras finales.
-  static String get _cleanHost => API_PROJECT
-      .replaceAll('https://', '')
-      .replaceAll('http://', '')
-      .replaceAll('//', '')
-      .replaceAll(RegExp(r'/+$'), '');
+  static String get _cleanHost {
+    String host = API_PROJECT.trim();
+    // Elimina de forma robusta 'https://', 'http://', '//', 'https:' o 'http:' al inicio
+    host = host.replaceAll(RegExp(r'^(https?:)?//+'), '');
+    // Elimina cualquier barra inclinada al final
+    host = host.replaceAll(RegExp(r'/+$'), '');
+    return host;
+  }
 
   /// Determina si se debe utilizar HTTPS.
   /// Usamos https si la URL original empezaba con https://, si contiene onrender.com
