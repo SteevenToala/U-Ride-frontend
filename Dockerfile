@@ -1,5 +1,5 @@
 # Etapa 1: Compilación de Flutter Web
-FROM instrumentisto/flutter:3.24.0 AS build
+FROM instrumentisto/flutter:3.27.0 AS build
 
 WORKDIR /app
 
