@@ -27,8 +27,11 @@ jobs:
         run: npm install --global vercel
 
       - name: Desplegar a Vercel (Producción)
-        run: vercel deploy ./build/web --prod --yes --token=${{ secrets.VERCEL_TOKEN }}
+        run: |
+          cd build/web
+          vercel deploy --prod --yes --token=${{ secrets.VERCEL_TOKEN }}
         env:
           VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
           VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+
 
